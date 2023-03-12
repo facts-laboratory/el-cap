@@ -9,66 +9,22 @@
       "executor": "@nrwl/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["packages/feed/**/*.{ts,svelte,spec.ts}"]
-      }
-    },
-    "check": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "svelte-check",
-        "cwd": "packages/feed"
+        "lintFilePatterns": ["packages/feed/**/*.{ts,tsx,js,jsx}"]
       }
     },
     "build": {
-      "executor": "@nxext/vite:package",
+      "executor": "@nrwl/vite:build",
       "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
       "options": {
-        "entryFile": "src/index.ts",
-        "frameworkConfigFile": "@nxext/svelte/plugins/vite",
-        "outputPath": "dist/packages/feed",
-        "assets": [
-          {
-            "glob": "/*",
-            "input": "./public/**",
-            "output": "./"
-          }
-        ],
-        "tsConfig": "packages/feed/tsconfig.lib.json"
+        "outputPath": "dist/packages/feed"
       },
       "configurations": {
-        "production": {}
-      }
-    },
-    "test": {
-      "executor": "@nxext/vitest:vitest",
-      "options": {
-        "vitestConfig": "packages/feed/vitest.config.ts"
-      }
-    },
-    "storybook": {
-      "executor": "@nrwl/storybook:storybook",
-      "options": {
-        "port": 4400,
-        "configDir": "packages/feed/.storybook",
-        "uiFramework": "@storybook/svelte"
-      },
-      "configurations": {
-        "ci": {
-          "quiet": true
-        }
-      }
-    },
-    "build-storybook": {
-      "executor": "@nrwl/storybook:build",
-      "outputs": ["{options.outputDir}"],
-      "options": {
-        "outputDir": "dist/storybook/feed",
-        "configDir": "packages/feed/.storybook",
-        "uiFramework": "@storybook/svelte"
-      },
-      "configurations": {
-        "ci": {
-          "quiet": true
+        "development": {
+          "mode": "development"
+        },
+        "production": {
+          "mode": "production"
         }
       }
     }
