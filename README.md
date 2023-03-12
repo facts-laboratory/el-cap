@@ -1,6 +1,9 @@
 # ElCapitan
 
-El Capitan is here to disrupt Coin Market Cap.
+![El Cap](./El-Capitan.png "El Capitan")
+
+
+El Capitan, the coin market Captain.
 
 ## Understand this workspace
 
