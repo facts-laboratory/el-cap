@@ -15,7 +15,9 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@el-cap/feed": ["packages/feed/src/index.ts"]
+      "@el-cap/coin": ["packages/coin/src/index.ts"],
+      "@el-cap/feed": ["packages/feed/src/index.ts"],
+      "@el-cap/layout": ["packages/layout/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]
