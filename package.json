@@ -4,11 +4,11 @@
   "license": "MIT",
   "scripts": {
     "nx": "nx",
-    "generate:lib": "npm run generate:react && npm run setup-storybook && npm run setup-tailwind",
+    "generate:lib": "npm run generate:react && npm run setup-storybook && npm run copy-storybook-config && npm run setup-tailwind",
     "generate:react": "nx generate @nrwl/react:library ${NAME} --unitTestRunner=none --bundler=vite --compiler=swc --globalCss --importPath=@el-cap/${NAME} --publishable",
     "setup-tailwind": "nx generate @nrwl/react:setup-tailwind ${NAME}",
     "setup-storybook": "nx generate @nrwl/storybook:configuration ${NAME} --uiFramework=@storybook/react --bundler=vite && nx generate @nrwl/react:stories --project=${NAME}",
-    "copy-storybook-config": "rm -rf packages/${NAME}/.storybook && cp -R tools/.storybook packages/${NAME}/"
+    "copy-storybook-config": "rm -rf packages/${NAME}/.storybook && cp -R .storybook packages/${NAME}/"
   },
   "private": true,
   "devDependencies": {
