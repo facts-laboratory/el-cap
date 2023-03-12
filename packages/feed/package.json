@@ -1,4 +1,12 @@
 {
-  "name": "@el-capitan/feed",
-  "version": "0.0.1"
+  "name": "@el-cap/feed",
+  "version": "0.0.1",
+  "main": "./index.js",
+  "types": "./index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./index.mjs",
+      "require": "./index.js"
+    }
+  }
 }

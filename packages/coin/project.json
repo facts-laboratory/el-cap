@@ -9,40 +9,23 @@
       "executor": "@nrwl/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["packages/coin/**/*.{ts,svelte,spec.ts}"]
-      }
-    },
-    "check": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "svelte-check",
-        "cwd": "packages/coin"
+        "lintFilePatterns": ["packages/coin/**/*.{ts,tsx,js,jsx}"]
       }
     },
     "build": {
-      "executor": "@nxext/vite:package",
+      "executor": "@nrwl/vite:build",
       "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
       "options": {
-        "entryFile": "src/index.ts",
-        "frameworkConfigFile": "@nxext/svelte/plugins/vite",
-        "outputPath": "dist/packages/coin",
-        "assets": [
-          {
-            "glob": "/*",
-            "input": "./public/**",
-            "output": "./"
-          }
-        ],
-        "tsConfig": "packages/coin/tsconfig.lib.json"
+        "outputPath": "dist/packages/coin"
       },
       "configurations": {
-        "production": {}
-      }
-    },
-    "test": {
-      "executor": "@nxext/vitest:vitest",
-      "options": {
-        "vitestConfig": "packages/coin/vitest.config.ts"
+        "development": {
+          "mode": "development"
+        },
+        "production": {
+          "mode": "production"
+        }
       }
     },
     "storybook": {
@@ -50,7 +33,7 @@
       "options": {
         "port": 4400,
         "configDir": "packages/coin/.storybook",
-        "uiFramework": "@storybook/svelte"
+        "uiFramework": "@storybook/react"
       },
       "configurations": {
         "ci": {
@@ -64,7 +47,7 @@
       "options": {
         "outputDir": "dist/storybook/coin",
         "configDir": "packages/coin/.storybook",
-        "uiFramework": "@storybook/svelte"
+        "uiFramework": "@storybook/react"
       },
       "configurations": {
         "ci": {

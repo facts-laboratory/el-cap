@@ -1,7 +1,6 @@
 # ElCapitan
 
-![El Cap](./El-Capitan.png "El Capitan")
-
+![El Cap](./El-Capitan.png 'El Capitan')
 
 El Capitan, the coin market Captain.
 
@@ -9,10 +8,22 @@ El Capitan, the coin market Captain.
 
 Run `nx graph` to see a diagram of the dependencies of the projects.
 
-## Remote caching
+## Install
 
-Run `npx nx connect-to-nx-cloud` to enable [remote caching](https://nx.app) and make CI faster.
+`npm i --legacy-peer-deps`
 
-## Further help
+## Tech
 
-Visit the [Nx Documentation](https://nx.dev) to learn more.
+- React
+- Tailwind
+- NX
+- Arweave
+- redstone api
+
+## Running storybook and other commands
+
+- Use the NX Console extension: `nrwl.angular-console`
+- [NX CLI](https://nx.dev/reference/commands) `npm run nx -- <command>`
+- https://github.com/nxext/nx-extensions/tree/main/packages/svelte
+
+![Running storybook and other commands](./run-libs.png 'Running storybook and other commands')

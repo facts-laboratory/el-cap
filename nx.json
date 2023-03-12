@@ -38,6 +38,10 @@
         "default",
         "^production",
         "!{projectRoot}/.storybook/**/*",
+        "!{projectRoot}/.storybook/**/*",
+        "!{projectRoot}/.storybook/**/*",
+        "!{projectRoot}/.storybook/**/*",
+        "!{projectRoot}/.storybook/**/*",
         "!{projectRoot}/.storybook/**/*"
       ]
     }
@@ -60,5 +64,15 @@
   "workspaceLayout": {
     "appsDir": "apps",
     "libsDir": "packages"
+  },
+  "generators": {
+    "@nrwl/react": {
+      "application": {
+        "babel": true
+      },
+      "library": {
+        "unitTestRunner": "none"
+      }
+    }
   }
 }
