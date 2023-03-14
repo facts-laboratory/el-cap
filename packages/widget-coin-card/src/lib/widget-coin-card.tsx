@@ -6,7 +6,7 @@ export interface WidgetCoinCardProps {}
 export function WidgetCoinCard(props: WidgetCoinCardProps) {
   return (
     <div className={styles['container']}>
-      <h1>Welcome to WidgetCoinCard!</h1>
+      <h1>Hi there to WidgetCoinCard!</h1>
     </div>
   );
 }
