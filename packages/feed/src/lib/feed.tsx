@@ -13,16 +13,27 @@ export function Feed(props: FeedProps) {
   useEffect(() => {
     redstone
       .getAllPrices().then((O: any) => {
-        setPrices(Object.values(O));
+        const arr = Object.entries(O).map((item) => {
+          return item[1];
+        });
+        setPrices(arr);
       })
       .catch(console.log);
   }, []);
+
+  useEffect(() => {
+    console.log(prices);
+  }, [prices]);
 
   return (
     <div className={styles['container']}>
       <h1>Welcome to Feed!</h1>
       <div className={styles['coin-container']}>
-        {JSON.stringify(prices)}
+        {prices &&
+          prices.map((item: CryptoData) => {
+            return <Coin data={item} />;
+          })}
+
       </div>
     </div>
   );
