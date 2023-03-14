@@ -1,14 +1,17 @@
-import styles from './footer.module.css';
+import { ReactNode } from 'react';
 
-/* eslint-disable-next-line */
-export interface FooterProps {}
+export interface StandardFooterProps {
+  children: ReactNode;
+}
 
-export function Footer(props: FooterProps) {
+export function StandardFooter(props: StandardFooterProps) {
+  const { children } = props;
+
   return (
-    <div className={styles['container']}>
-      <h1>Welcome to Footer!</h1>
-    </div>
+    <footer className="bg-primary w-full relative">
+      <div className="container mx-auto py-4">{children}</div>
+    </footer>
   );
 }
 
-export default Footer;
+export default StandardFooter;

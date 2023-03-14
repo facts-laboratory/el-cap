@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
+    "start": "nx run el-cap:serve",
     "nx": "nx",
     "generate:lib": "npm run generate:react && npm run setup-storybook && npm run copy-storybook-config && npm run setup-tailwind",
     "generate:react": "nx generate @nrwl/react:library ${NAME} --unitTestRunner=vitest --style=css --bundler=vite --compiler=swc --globalCss=true --importPath=@el-cap/${NAME} --publishable",
@@ -37,8 +38,10 @@
     "@testing-library/react": "14.0.0",
     "@types/jest": "28.1.1",
     "@types/node": "18.14.2",
+    "@types/ramda": "^0.28.23",
     "@types/react": "18.0.28",
     "@types/react-dom": "18.0.11",
+    "@types/redux-first-router": "^2.1.8",
     "@typescript-eslint/eslint-plugin": "^5.36.1",
     "@typescript-eslint/parser": "^5.36.1",
     "@vitejs/plugin-react": "^3.0.0",
@@ -62,6 +65,7 @@
     "postcss-loader": "^7.0.2",
     "prettier": "^2.6.2",
     "react-test-renderer": "18.2.0",
+    "swc-loader": "0.1.15",
     "tailwindcss": "^3.2.7",
     "ts-jest": "28.0.5",
     "ts-node": "10.9.1",
@@ -76,9 +80,13 @@
   },
   "dependencies": {
     "@angular-devkit/schematics": "^15.2.1",
+    "@reduxjs/toolkit": "1.9.3",
+    "ramda": "^0.28.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-redux": "8.0.5",
     "redstone-api": "^0.4.11",
+    "redux-first-router": "^2.1.5",
     "tslib": "^2.3.0"
   }
 }
