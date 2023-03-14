@@ -18,6 +18,7 @@
       "@el-cap/coin": ["packages/coin/src/index.ts"],
       "@el-cap/feed": ["packages/feed/src/index.ts"],
       "@el-cap/layout": ["packages/layout/src/index.ts"],
+      "@el-cap/store": ["packages/store/src/index.ts"],
       "@el-cap/widget-coin-card": ["packages/widget-coin-card/src/index.ts"]
     }
   },
