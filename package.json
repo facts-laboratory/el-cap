@@ -5,9 +5,9 @@
   "scripts": {
     "nx": "nx",
     "generate:lib": "npm run generate:react && npm run setup-storybook && npm run copy-storybook-config && npm run setup-tailwind",
-    "generate:react": "nx generate @nrwl/react:library ${NAME} --unitTestRunner=none --bundler=vite --compiler=swc --globalCss --importPath=@el-cap/${NAME} --publishable",
+    "generate:react": "nx generate @nrwl/react:library ${NAME} --unitTestRunner=vitest --style=css --bundler=vite --compiler=swc --globalCss=true --importPath=@el-cap/${NAME} --publishable",
     "setup-tailwind": "nx generate @nrwl/react:setup-tailwind ${NAME}",
-    "setup-storybook": "nx generate @nrwl/storybook:configuration ${NAME} --uiFramework=@storybook/react --bundler=vite && nx generate @nrwl/react:stories --project=${NAME}",
+    "setup-storybook": "nx generate @nrwl/storybook:configuration ${NAME} --uiFramework=@storybook/react --bundler=vite --configureCypress=false && nx generate @nrwl/react:stories --generateCypressSpecs=false --project=${NAME}",
     "copy-storybook-config": "rm -rf packages/${NAME}/.storybook && cp -R .storybook packages/${NAME}/"
   },
   "private": true,
@@ -37,6 +37,7 @@
     "@typescript-eslint/eslint-plugin": "^5.36.1",
     "@typescript-eslint/parser": "^5.36.1",
     "@vitejs/plugin-react": "^3.0.0",
+    "@vitest/coverage-c8": "~0.25.8",
     "@vitest/ui": "^0.25.8",
     "autoprefixer": "^10.4.14",
     "babel-loader": "8.1.0",
