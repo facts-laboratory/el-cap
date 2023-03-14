@@ -42,6 +42,7 @@
         "!{projectRoot}/.storybook/**/*",
         "!{projectRoot}/.storybook/**/*",
         "!{projectRoot}/.storybook/**/*",
+        "!{projectRoot}/.storybook/**/*",
         "!{projectRoot}/.storybook/**/*"
       ]
     }

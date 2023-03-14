@@ -4,9 +4,9 @@
 
 El Capitan, the coin market Captain.
 
-## Understand this workspace
+## Playbook
 
-Run `nx graph` to see a diagram of the dependencies of the projects.
+- Generate Library: `NAME=<library-name> npm run generate:lib`
 
 ## Install
 
