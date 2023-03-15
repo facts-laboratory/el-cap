@@ -9,7 +9,7 @@ export function StandardContentContainer(props: StandardContentContainerProps) {
   return (
     <section
       style={{ minWidth: 350 }}
-      className="w-full min-h-[92vh] h-full flex flex-col items-start relative"
+      className="w-full flex flex-col items-start relative grow"
     >
       <div className="container mx-auto">{children}</div>
     </section>
