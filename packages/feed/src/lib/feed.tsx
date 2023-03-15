@@ -6,7 +6,6 @@ import { mapStateToProps } from '@el-cap/store';
 import { WidgetCoinCard } from '@el-cap/widget-coin-card';
 import { PriceData } from 'redstone-api/lib/types';
 
-/* eslint-disable-next-line */
 export interface FeedProps {
   goToCoin: (ticker: string, entity?: PriceData) => void;
 }
@@ -24,31 +23,29 @@ export function Feed(props: FeedProps) {
           return item[1];
         });
         setPrices(arr);
-        console.log('PRICES', prices);
       })
       .catch(console.log);
   }, []);
 
-  useEffect(() => {
-    console.log(prices);
-  }, [prices]);
-
   return (
-    <div>
-      <h1>Welcome to Feed!</h1>
-      <div>
-        {prices &&
-          prices?.map((item: PriceData) => {
-            return (
-              <WidgetCoinCard
-                key={item.id}
-                entity={item}
-                goToCoin={() => goToCoin(item.symbol.toLowerCase(), item)}
-              />
-            );
-          })}
-      </div>
+
+  <div className="bg-gray-100 min-h-[calc(100vh-160px)]">
+    <div className="container mx-auto px-4 py-10">
+      <h1 className="text-4xl font-bold mb-8 text-center">Welcome to Feed!</h1>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+    {prices &&
+      prices?.map((item: PriceData) => {
+        return (
+          <WidgetCoinCard
+            key={item.id}
+            entity={item}
+            goToCoin={() => goToCoin(item.symbol.toLowerCase(), item)}
+          />
+          );
+      })}
     </div>
+  </div>
+</div>
   );
 }
 
@@ -56,5 +53,5 @@ export default Feed;
 
 export const ConnectedFeed = connect(mapStateToProps, (dispatch) => ({
   goToCoin: (ticker: string, entity?: PriceData) =>
-    dispatch({ type: 'COIN', payload: { ticker, entity: entity } }),
+  dispatch({ type: 'COIN', payload: { ticker, entity: entity } }),
 }))(Feed);
