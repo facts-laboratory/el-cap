@@ -65,3 +65,29 @@ This is the common `el-cap` interfaces will go.
 - Use the NX Console extension: `nrwl.angular-console`
 
 ![Running storybook and other commands](./run-libs.png 'Running storybook and other commands')
+
+## Deployment
+
+In order for deployments to work, please set the environment variable `PATH_TO_WALLET` to your wallet keyfile (`/Users/<you>/path/to/<your-wallets-name>.json`).
+
+```sh
+echo 'export PATH_TO_WALLET=/Users/<you>/path/to/<your-wallets-name>.json' >> ~/.zshrc  you use
+```
+
+(it might not be `~/.zshrc` if you use a different shell)
+
+then
+
+```
+source ~/.zshrc
+```
+
+## Renderers
+
+After each librariy is published, it will be published as a renderer. Renderers will be stored in `/apps`.
+
+The script for the renderer will be added when this pull request is finished:
+
+The naming standard for renderers is:
+
+- `<project-name>-renderer` (eg. `widget-coin-card-renderer`)
