@@ -43,6 +43,8 @@
         "!{projectRoot}/.storybook/**/*",
         "!{projectRoot}/.storybook/**/*",
         "!{projectRoot}/.storybook/**/*",
+        "!{projectRoot}/.storybook/**/*",
+        "!{projectRoot}/.storybook/**/*",
         "!{projectRoot}/.storybook/**/*"
       ]
     }
@@ -56,8 +58,6 @@
       "!{projectRoot}/jest.config.[jt]s",
       "!{projectRoot}/.eslintrc.json",
       "!{projectRoot}/.storybook/**/*",
-      "!{projectRoot}/**/*.stories.@(js|jsx|ts|tsx|mdx)",
-      "!{projectRoot}/.storybook/**/*",
       "!{projectRoot}/**/*.stories.@(js|jsx|ts|tsx|mdx)"
     ],
     "sharedGlobals": []
@@ -69,10 +69,18 @@
   "generators": {
     "@nrwl/react": {
       "application": {
+        "style": "css",
+        "linter": "eslint",
+        "bundler": "vite",
         "babel": true
       },
       "library": {
+        "style": "css",
+        "linter": "eslint",
         "unitTestRunner": "none"
+      },
+      "component": {
+        "style": "css"
       }
     }
   }

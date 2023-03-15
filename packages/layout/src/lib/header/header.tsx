@@ -1,14 +1,23 @@
-import styles from './header.module.css';
+import { ReactNode, useRef } from 'react';
 
-/* eslint-disable-next-line */
-export interface HeaderProps {}
+export interface StandardHeaderProps {
+  children: ReactNode;
+}
 
-export function Header(props: HeaderProps) {
+export function StandardHeader(props: StandardHeaderProps) {
+  const { children } = props;
+
+  const ref: React.RefObject<HTMLDivElement> = useRef(null);
+
   return (
-    <div className={styles['container']}>
-      <h1>Welcome to Header!</h1>
-    </div>
+    <header className="bg-primary w-full relative">
+      <div className="container mx-auto py-4">
+        <div className="navbar" ref={ref}>
+          {children}
+        </div>
+      </div>
+    </header>
   );
 }
 
-export default Header;
+export default StandardHeader;
