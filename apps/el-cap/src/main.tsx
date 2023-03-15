@@ -3,7 +3,7 @@ import { Provider } from 'react-redux';
 import * as ReactDOM from 'react-dom/client';
 import { store } from '@el-cap/store';
 
-import App from './app/app';
+import { ConnectedApp } from './app/app';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -11,7 +11,7 @@ const root = ReactDOM.createRoot(
 root.render(
   <Provider store={store}>
     <StrictMode>
-      <App />
+      <ConnectedApp />
     </StrictMode>
   </Provider>
 );
