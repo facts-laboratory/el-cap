@@ -29,8 +29,13 @@ export interface LocationProps {
   location: any;
 }
 
-export const mapStateToProps = (props: LocationProps) => ({
-  entity: props.location?.payload?.entity,
-  // tx: props.location?.payload?.tx,
-  coin: props.location?.payload?.coin,
-});
+export const mapStateToProps = (state: any, props: any) => {
+  console.log('STATE', state);
+  return {
+    ...props,
+    page: state.page,
+    tx: state?.location?.payload?.tx,
+    ticker: state?.location?.payload?.ticker,
+    entity: state?.location?.payload?.entity,
+  };
+};
