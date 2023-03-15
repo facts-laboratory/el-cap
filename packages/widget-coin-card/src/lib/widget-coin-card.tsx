@@ -1,12 +1,23 @@
-import styles from './widget-coin-card.module.css';
+import { PriceData } from 'redstone-api/lib/types';
 
-/* eslint-disable-next-line */
-export interface WidgetCoinCardProps {}
+export interface WidgetCoinCardProps {
+  goToCoin: () => void;
+  entity: PriceData;
+}
 
 export function WidgetCoinCard(props: WidgetCoinCardProps) {
+  const { goToCoin, entity } = props;
+
   return (
-    <div className={styles['container']}>
+    <div>
       <h1>Hi there to WidgetCoinCard!</h1>
+      <p onClick={() => goToCoin()}>Symbol: {entity?.symbol} -------</p>
+      <button
+        className="btn normal-case bg-transparent underline"
+        onClick={() => goToCoin()}
+      >
+        Go to {entity.symbol}
+      </button>
     </div>
   );
 }
