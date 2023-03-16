@@ -2,6 +2,8 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.2.0](https://github.com/permafacts/el-cap/compare/coin-0.1.0...coin-0.2.0) (2023-03-16)
+
 ## 0.1.0 (2023-03-16)
 
 
