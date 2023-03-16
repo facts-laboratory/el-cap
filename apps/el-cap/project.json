@@ -66,6 +66,12 @@
       "options": {
         "lintFilePatterns": ["apps/el-cap/**/*.{ts,tsx,js,jsx}"]
       }
+    },
+    "version": {
+      "executor": "@jscutlery/semver:version",
+      "options": {
+        "preset": "conventional"
+      }
     }
   },
   "tags": []
