@@ -16,7 +16,7 @@
     "build-storybook": "nx run ${NAME}:build-storybook",
     "storybook": "nx run ${NAME}:storybook",
     "prepare": "husky install",
-    "version": "nx run workspace:version --releaseAs=${TYPE}",
+    "version": "nx run-many --targets=version --all --releaseAs=${TYPE}",
     "version:pre-release": "nx run workspace:version --releaseAs=prerelease --preid=${TYPE}"
   },
   "private": true,
