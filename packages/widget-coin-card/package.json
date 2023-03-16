@@ -1,6 +1,6 @@
 {
   "name": "@el-cap/widget-coin-card",
-  "version": "0.3.0",
+  "version": "0.0.1",
   "main": "./index.js",
   "types": "./index.d.ts",
   "exports": {
