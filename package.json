@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "start": "nx run el-cap:serve",
+    "start": "nx run ${NAME}:serve",
     "nx": "nx",
     "generate:lib": "npm run generate:react && npm run setup-storybook && npm run copy-storybook-config && npm run setup-tailwind",
     "generate:react": "nx generate @nrwl/react:library ${NAME} --unitTestRunner=vitest --style=css --bundler=vite --compiler=swc --globalCss=true --importPath=@el-cap/${NAME} --publishable",
