@@ -8,9 +8,11 @@ export function StandardFooter(props: StandardFooterProps) {
   const { children } = props;
 
   return (
-    <footer className="bg-primary w-full relative">
-      <div className="container mx-auto py-4">{children}</div>
-
+    <footer className="bg-gray-800 w-full relative text-white">
+      <div className="container mx-auto py-4 flex justify-center items-center">
+        {children}
+      </div>
+2a4c547eed23468a56d57df0a
     </footer>
   );
 }

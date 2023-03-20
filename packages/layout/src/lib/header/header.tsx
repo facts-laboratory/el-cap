@@ -10,9 +10,9 @@ export function StandardHeader(props: StandardHeaderProps) {
   const ref: React.RefObject<HTMLDivElement> = useRef(null);
 
   return (
-    <header className="bg-primary w-full relative">
+    <header className="bg-gray-800 w-full relative text-white">
       <div className="container mx-auto py-4">
-        <div className="navbar" ref={ref}>
+        <div className="navbar flex justify-between items-center" ref={ref}>
           {children}
         </div>
       </div>
