@@ -1,6 +1,5 @@
 {
   "compilerOptions": {
-    "emitDecoratorMetadata": true,
     "outDir": ""
   },
   "files": [

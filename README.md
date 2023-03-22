@@ -8,6 +8,14 @@ El Capitan, the coin market Captain.
 
 `npm i`
 
+## Run
+
+`NAME=el-cap npm run start`
+
+## Theme
+
+- [Tailwind Config](./apps/el-cap/tailwind.config.js)
+
 ## Playbook
 
 The app is in `/apps/el-cap`, the only component in there is `app.tsx`;
@@ -71,7 +79,7 @@ This is the common `el-cap` interfaces will go.
 In order for deployments to work, please set the environment variable `PATH_TO_WALLET` to your wallet keyfile (`/Users/<you>/path/to/<your-wallets-name>.json`).
 
 ```sh
-echo 'export PATH_TO_WALLET=/Users/<you>/path/to/<your-wallets-name>.json' >> ~/.zshrc  you use
+echo 'export PATH_TO_WALLET=/Users/<you>/path/to/<your-wallets-name>.json' >> ~/.zshrc # you might use ~/.bash_profile or ~/.bashrc?
 ```
 
 (it might not be `~/.zshrc` if you use a different shell)

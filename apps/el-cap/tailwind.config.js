@@ -8,6 +8,9 @@ module.exports = {
       __dirname,
       '{src,pages,components}/**/*!(*.stories|*.spec).{ts,tsx,html}'
     ),
+    // Configure Ui Kit
+    './node_modules/@facts-kit/ui-kit/**/*.{js,ts,jsx,tsx}',
+    // ----------------
     ...createGlobPatternsForDependencies(__dirname),
   ],
   theme: {
@@ -17,8 +20,8 @@ module.exports = {
         secondary: '#FF8500',
       },
       backgroundColor: {
-        primary: '#293241',
-        secondary: '#FF8500',
+        primary: '#000',
+        secondary: '#F2F3F4',
       },
       borderColor: {
         primary: '#293241',

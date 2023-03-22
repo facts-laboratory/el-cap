@@ -30,7 +30,6 @@ export interface LocationProps {
 }
 
 export const mapStateToProps = (state: any, props: any) => {
-  console.log('STATE', state);
   return {
     ...props,
     page: state.page,

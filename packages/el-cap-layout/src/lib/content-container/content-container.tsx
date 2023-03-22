@@ -1,4 +1,4 @@
-import { StandardContentContainer } from '@el-cap/layout';
+import { StandardContentContainer } from '@facts-kit/ui-kit';
 import { ReactNode } from 'react';
 /* eslint-disable-next-line */
 export interface ContentContainerProps {

@@ -89,6 +89,7 @@
   },
   "dependencies": {
     "@angular-devkit/schematics": "^15.2.1",
+    "@facts-kit/ui-kit": "^0.1.0",
     "@loadable/component": "^5.15.3",
     "@reduxjs/toolkit": "1.9.3",
     "ramda": "^0.28.0",

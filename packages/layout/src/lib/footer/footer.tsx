@@ -12,7 +12,6 @@ export function StandardFooter(props: StandardFooterProps) {
       <div className="container mx-auto py-4 flex justify-center items-center">
         {children}
       </div>
-2a4c547eed23468a56d57df0a
     </footer>
   );
 }
