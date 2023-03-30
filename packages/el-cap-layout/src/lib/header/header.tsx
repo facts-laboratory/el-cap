@@ -1,7 +1,7 @@
 import { mapStateToProps } from '@el-cap/store';
-import { StandardHeader } from '@facts-kit/ui-kit';
 import { connect } from 'react-redux';
-// import { useRef } from 'react';
+import StatusBar from './statusBar';
+import SearchBar from './searchBar';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface HeaderProps {}
@@ -9,7 +9,12 @@ export interface HeaderProps {}
 export function Header(props: HeaderProps) {
   // const ref: React.RefObject<HTMLDivElement> = useRef(null);
 
-  return <StandardHeader>Header</StandardHeader>;
+  return (
+    <div className="bg-white min-w-full">
+      <StatusBar />
+      <SearchBar />
+    </div>
+  );
 }
 
 export default Header;
