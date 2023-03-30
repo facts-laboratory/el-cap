@@ -5,6 +5,7 @@ import {
   ArrowDownIcon,
   ArrowUpIcon,
 } from '../icons';
+
 export interface IData {
   icon: string;
   text: string;
