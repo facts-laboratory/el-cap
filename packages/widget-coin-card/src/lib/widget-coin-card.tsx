@@ -16,7 +16,7 @@ export interface IMarketCap {
   data: IData[];
 }
 
-const MarketCapComponent: React.FC<IMarketCap> = (props) => {
+export function WidgetCoinCard(props: IMarketCap) {
   return (
     <div className="rounded-3xl sm:p-6 p-2 bg-white">
       <div className="flex justify-between">
@@ -91,6 +91,6 @@ const MarketCapComponent: React.FC<IMarketCap> = (props) => {
       </div>
     </div>
   );
-};
+}
 
-export default MarketCapComponent;
+export default WidgetCoinCard;

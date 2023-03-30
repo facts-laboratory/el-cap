@@ -2,8 +2,7 @@ import { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 
 import { mapStateToProps } from '@el-cap/store';
-import { PriceData } from 'redstone-api/lib/types';
-import MarketCapComponent from './components/MarketCapComponent';
+import { WidgetCoinCard } from '@el-cap/widget-coin-card';
 import TabComponent from './components/tabComponent';
 import DropDownAllTypes from './components/dropDownAllTypes';
 
@@ -38,7 +37,7 @@ const data = [
 ];
 
 export interface FeedProps {
-  goToCoin: (ticker: string, entity?: PriceData) => void;
+  goToCoin: (ticker: string) => void;
 }
 
 export function Feed(props: FeedProps) {
@@ -62,7 +61,7 @@ export function Feed(props: FeedProps) {
           {data.map((val, key) => {
             return (
               <div className="flex-1" key={key}>
-                <MarketCapComponent
+                <WidgetCoinCard
                   title={val.title}
                   type={val.type}
                   data={val.data}
@@ -83,6 +82,5 @@ export function Feed(props: FeedProps) {
 export default Feed;
 
 export const ConnectedFeed = connect(mapStateToProps, (dispatch) => ({
-  goToCoin: (ticker: string, entity?: PriceData) =>
-    dispatch({ type: 'COIN', payload: { ticker, entity: entity } }),
+  goToCoin: (ticker: string) => dispatch({ type: 'COIN', payload: { ticker } }),
 }))(Feed);
