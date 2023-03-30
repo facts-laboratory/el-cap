@@ -1,11 +1,38 @@
 import { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
-import redstone from 'redstone-api';
 
 import { mapStateToProps } from '@el-cap/store';
-import { WidgetCoinCard } from '@el-cap/widget-coin-card';
 import { PriceData } from 'redstone-api/lib/types';
 
+const data = [
+  {
+    title: 'Trending',
+    type: 'trending',
+    data: [
+      { text: 'Shiba Inu', icon: 'SHIB', value: '-4.28' },
+      { text: 'Shiba Inu', icon: 'SHIB', value: '4.28' },
+      { text: 'Shiba Inu', icon: 'SHIB', value: '-4.28' },
+    ],
+  },
+  {
+    title: 'Biggest Gainer',
+    type: 'price',
+    data: [
+      { text: 'Timeseries AI', icon: 'TIMESERIES', value: '0.000251' },
+      { text: 'Timeseries AI', icon: 'TIMESERIES', value: '0.000251' },
+      { text: 'Timeseries AI', icon: 'TIMESERIES', value: '0.000251' },
+    ],
+  },
+  {
+    title: 'Recently Updated Socials',
+    type: 'price',
+    data: [
+      { text: 'Timeseries AI', icon: 'TIMESERIES', value: '0.000251' },
+      { text: 'Shiba Inu', icon: 'SHIB', value: '0.000251' },
+      { text: 'Timeseries AI', icon: 'TIMESERIES', value: '0.000251' },
+    ],
+  },
+];
 export interface FeedProps {
   goToCoin: (ticker: string, entity?: PriceData) => void;
 }
@@ -13,39 +40,22 @@ export interface FeedProps {
 export function Feed(props: FeedProps) {
   const { goToCoin } = props;
 
-  const [prices, setPrices] = useState<any>();
-
-  useEffect(() => {
-    redstone
-      .getPrice(['BTC', 'ETH', 'AR', 'ECT', 'XRP'])
-      .then((O: any) => {
-        const arr = Object.entries(O).map((item) => {
-          return item[1];
-        });
-        setPrices(arr);
-      })
-      .catch(console.log);
-  }, []);
-
   return (
-
-  <div className="bg-gray-100 min-h-[calc(100vh-160px)]">
-    <div className="container mx-auto px-4 py-10">
-      <h1 className="text-4xl font-bold mb-8 text-center">Welcome to Feed!</h1>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-    {prices &&
-      prices?.map((item: PriceData) => {
-        return (
-          <WidgetCoinCard
-            key={item.id}
-            entity={item}
-            goToCoin={() => goToCoin(item.symbol.toLowerCase(), item)}
-          />
-          );
-      })}
+    <div className="bg-gray-100 min-h-[calc(100vh-160px)]">
+      <div className="container mx-auto px-4 py-10">
+        <div className="mb-8">
+          <p className="text-black font-bold text-3xl">
+            Today's Cryptocurrency Prices by Market Cap
+          </p>
+          <p className="text-gray-500">
+            The global market cap is{' '}
+            <span className="text-green-500 font-bold">$1.18T,</span>a
+            <span className="text-green-500 font-bold">+1.38%</span> increase
+            over the last day. <span className="text-gray-400">Read More</span>
+          </p>
+        </div>
+      </div>
     </div>
-  </div>
-</div>
   );
 }
 
@@ -53,5 +63,5 @@ export default Feed;
 
 export const ConnectedFeed = connect(mapStateToProps, (dispatch) => ({
   goToCoin: (ticker: string, entity?: PriceData) =>
-  dispatch({ type: 'COIN', payload: { ticker, entity: entity } }),
+    dispatch({ type: 'COIN', payload: { ticker, entity: entity } }),
 }))(Feed);
