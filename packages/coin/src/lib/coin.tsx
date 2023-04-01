@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import { mapStateToProps } from '@el-cap/store';
+import { Chat } from '@el-cap/chat';
 import { connect } from 'react-redux';
 import { PriceData } from 'redstone-api/lib/types';
 import { ArrowUpIcon, WatchlistIcon } from '../assets/icons';
@@ -12,6 +13,36 @@ interface CoinProps {
   entity?: PriceData;
   ticker: string;
 }
+
+const data = [
+  {
+    title: 'Trending',
+    type: 'trending',
+    data: [
+      { text: 'Shiba Inu', icon: 'SHIB', value: '-4.28' },
+      { text: 'Shiba Inu', icon: 'SHIB', value: '4.28' },
+      { text: 'Shiba Inu', icon: 'SHIB', value: '-4.28' },
+    ],
+  },
+  {
+    title: 'Biggest Gainer',
+    type: 'price',
+    data: [
+      { text: 'Timeseries AI', icon: 'TIMESERIES', value: '0.000251' },
+      { text: 'Timeseries AI', icon: 'TIMESERIES', value: '0.000251' },
+      { text: 'Timeseries AI', icon: 'TIMESERIES', value: '0.000251' },
+    ],
+  },
+  {
+    title: 'Recently Updated Socials',
+    type: 'price',
+    data: [
+      { text: 'Timeseries AI', icon: 'TIMESERIES', value: '0.000251' },
+      { text: 'Shiba Inu', icon: 'SHIB', value: '0.000251' },
+      { text: 'Timeseries AI', icon: 'TIMESERIES', value: '0.000251' },
+    ],
+  },
+];
 
 export function Coin(props: CoinProps) {
   const { goToFeed, entity, ticker } = props;
@@ -132,6 +163,15 @@ export function Coin(props: CoinProps) {
             </div>
           </div>
         </div>
+      </div>
+      <div className="flex flex-wrap gap-5 my-6">
+        {data.map((val, key) => {
+          return (
+            <div className="flex-1" key={key}>
+              <Chat title={val.title} type={val.type} data={val.data} />
+            </div>
+          );
+        })}
       </div>
     </div>
   );
