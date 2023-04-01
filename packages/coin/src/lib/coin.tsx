@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import { mapStateToProps } from '@el-cap/store';
-import { Chat } from '@el-cap/chat';
+import { TradingView } from '@el-cap/trading-view';
 import { connect } from 'react-redux';
 import { PriceData } from 'redstone-api/lib/types';
 import { ArrowUpIcon, WatchlistIcon } from '../assets/icons';
@@ -165,13 +165,7 @@ export function Coin(props: CoinProps) {
         </div>
       </div>
       <div className="flex flex-wrap gap-5 my-6">
-        {data.map((val, key) => {
-          return (
-            <div className="flex-1" key={key}>
-              <Chat title={val.title} type={val.type} data={val.data} />
-            </div>
-          );
-        })}
+        <TradingView />
       </div>
     </div>
   );

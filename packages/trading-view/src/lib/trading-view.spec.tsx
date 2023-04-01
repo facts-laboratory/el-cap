@@ -1,10 +1,10 @@
 import { render } from '@testing-library/react';
 
-import Chat from './chat';
+import TradingView from './trading-view';
 
-describe('Chat', () => {
+describe('TradingView', () => {
   it('should render successfully', () => {
-    const { baseElement } = render(<Chat />);
+    const { baseElement } = render(<TradingView />);
     expect(baseElement).toBeTruthy();
   });
 });

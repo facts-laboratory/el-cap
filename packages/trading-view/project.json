@@ -1,7 +1,7 @@
 {
-  "name": "chat",
+  "name": "trading-view",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "packages/chat/src",
+  "sourceRoot": "packages/trading-view/src",
   "projectType": "library",
   "tags": [],
   "targets": {
@@ -9,7 +9,7 @@
       "executor": "@nrwl/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["packages/chat/**/*.{ts,tsx,js,jsx}"]
+        "lintFilePatterns": ["packages/trading-view/**/*.{ts,tsx,js,jsx}"]
       }
     },
     "build": {
@@ -17,7 +17,7 @@
       "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
       "options": {
-        "outputPath": "dist/packages/chat"
+        "outputPath": "dist/packages/trading-view"
       },
       "configurations": {
         "development": {
@@ -30,17 +30,17 @@
     },
     "test": {
       "executor": "@nrwl/vite:test",
-      "outputs": ["coverage/packages/chat"],
+      "outputs": ["coverage/packages/trading-view"],
       "options": {
         "passWithNoTests": true,
-        "reportsDirectory": "../../coverage/packages/chat"
+        "reportsDirectory": "../../coverage/packages/trading-view"
       }
     },
     "storybook": {
       "executor": "@nrwl/storybook:storybook",
       "options": {
         "port": 4400,
-        "configDir": "packages/chat/.storybook",
+        "configDir": "packages/trading-view/.storybook",
         "uiFramework": "@storybook/react"
       },
       "configurations": {
@@ -53,28 +53,14 @@
       "executor": "@nrwl/storybook:build",
       "outputs": ["{options.outputDir}"],
       "options": {
-        "outputDir": "dist/storybook/chat",
-        "configDir": "packages/chat/.storybook",
+        "outputDir": "dist/storybook/trading-view",
+        "configDir": "packages/trading-view/.storybook",
         "uiFramework": "@storybook/react"
       },
       "configurations": {
         "ci": {
           "quiet": true
         }
-      }
-    },
-    "deploy": {
-      "executor": "ngx-deploy-npm:deploy",
-      "options": {
-        "access": "public",
-        "buildTarget": "production"
-      }
-    },
-    "version": {
-      "executor": "@jscutlery/semver:version",
-      "options": {
-        "preset": "conventional",
-        "baseBranch": "main"
       }
     }
   }

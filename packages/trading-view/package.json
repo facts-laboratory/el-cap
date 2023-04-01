@@ -1,5 +1,5 @@
 {
-  "name": "@el-cap/chat",
+  "name": "@el-cap/trading-view",
   "version": "0.0.1",
   "main": "./index.js",
   "types": "./index.d.ts",
