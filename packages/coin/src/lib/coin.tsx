@@ -14,36 +14,6 @@ interface CoinProps {
   ticker: string;
 }
 
-const data = [
-  {
-    title: 'Trending',
-    type: 'trending',
-    data: [
-      { text: 'Shiba Inu', icon: 'SHIB', value: '-4.28' },
-      { text: 'Shiba Inu', icon: 'SHIB', value: '4.28' },
-      { text: 'Shiba Inu', icon: 'SHIB', value: '-4.28' },
-    ],
-  },
-  {
-    title: 'Biggest Gainer',
-    type: 'price',
-    data: [
-      { text: 'Timeseries AI', icon: 'TIMESERIES', value: '0.000251' },
-      { text: 'Timeseries AI', icon: 'TIMESERIES', value: '0.000251' },
-      { text: 'Timeseries AI', icon: 'TIMESERIES', value: '0.000251' },
-    ],
-  },
-  {
-    title: 'Recently Updated Socials',
-    type: 'price',
-    data: [
-      { text: 'Timeseries AI', icon: 'TIMESERIES', value: '0.000251' },
-      { text: 'Shiba Inu', icon: 'SHIB', value: '0.000251' },
-      { text: 'Timeseries AI', icon: 'TIMESERIES', value: '0.000251' },
-    ],
-  },
-];
-
 export function Coin(props: CoinProps) {
   const { goToFeed, entity, ticker } = props;
   const [error, setError] = useState<string | undefined>();
@@ -164,9 +134,7 @@ export function Coin(props: CoinProps) {
           </div>
         </div>
       </div>
-      <div className="flex flex-wrap gap-5 my-6">
-        <TradingView />
-      </div>
+      <TradingView />
     </div>
   );
 }
