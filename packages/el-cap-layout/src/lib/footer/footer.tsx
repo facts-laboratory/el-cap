@@ -4,7 +4,7 @@ import { StandardFooter } from '@facts-kit/ui-kit';
 export interface FooterProps {}
 
 export function Footer(props: FooterProps) {
-  return <StandardFooter>Footer</StandardFooter>;
+  return <StandardFooter>Loading...</StandardFooter>;
 }
 
 export default Footer;

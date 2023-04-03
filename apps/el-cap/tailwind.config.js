@@ -22,7 +22,7 @@ module.exports = {
         secondary: '#FF8500',
       },
       backgroundColor: {
-        primary: '#000',
+        primary: '#FFF',
         secondary: '#F2F3F4',
       },
       borderColor: {

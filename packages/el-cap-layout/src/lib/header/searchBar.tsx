@@ -17,7 +17,7 @@ const SearchBar: React.FC = () => {
         <div className="flex text-2xl items-center">
           <CapitionIcon className="mr-2 w-10 h-10" />
           <span className="font-bold mr-10 hover:text-blue-500 hover:cursor-pointer">
-            El Capition
+            El Capitan
           </span>
           <span className="font-bold mr-10 hover:text-blue-500 hover:cursor-pointer">
             Cryptocurrencies
@@ -72,7 +72,7 @@ const SearchBar: React.FC = () => {
           <div className="flex border-b-2 border-gray-600 py-2 px-1">
             <CapitionIcon className="mr-2 w-8 h-8" />
             <span className="font-bold mr-10 hover:text-blue-500 hover:cursor-pointer">
-              El Capition
+              El Capitan
             </span>
           </div>
           <div className="border-b-2 border-gray-600 py-2 px-1">
