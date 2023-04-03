@@ -1,9 +1,8 @@
-import styles from './trading-view.module.css';
-import BitTabComponent from './components/TabComponent';
 import ChartComponent from './components/ChartComponent';
+import BitTabComponent from './components/TabComponent';
 
 /* eslint-disable-next-line */
-export interface TradingViewProps {}
+export interface ChartWidgetProps {}
 
 const initialData = [
   { time: '2018-12-22', value: 32.51 },
@@ -28,7 +27,7 @@ const initialData = [
   { time: '2019-01-10', value: 40.67 },
 ];
 
-export function TradingView(props: TradingViewProps) {
+export function ChartWidget(props: ChartWidgetProps) {
   return (
     <>
       <div className="sm:flex items-center justify-between my-4">
@@ -44,4 +43,4 @@ export function TradingView(props: TradingViewProps) {
   );
 }
 
-export default TradingView;
+export default ChartWidget;

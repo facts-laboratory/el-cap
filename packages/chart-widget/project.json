@@ -1,7 +1,7 @@
 {
-  "name": "trading-view",
+  "name": "chart-widget",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "packages/trading-view/src",
+  "sourceRoot": "packages/chart-widget/src",
   "projectType": "library",
   "tags": [],
   "targets": {
@@ -9,7 +9,7 @@
       "executor": "@nrwl/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["packages/trading-view/**/*.{ts,tsx,js,jsx}"]
+        "lintFilePatterns": ["packages/chart-widget/**/*.{ts,tsx,js,jsx}"]
       }
     },
     "build": {
@@ -17,7 +17,7 @@
       "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
       "options": {
-        "outputPath": "dist/packages/trading-view"
+        "outputPath": "dist/packages/chart-widget"
       },
       "configurations": {
         "development": {
@@ -30,17 +30,17 @@
     },
     "test": {
       "executor": "@nrwl/vite:test",
-      "outputs": ["coverage/packages/trading-view"],
+      "outputs": ["coverage/packages/chart-widget"],
       "options": {
         "passWithNoTests": true,
-        "reportsDirectory": "../../coverage/packages/trading-view"
+        "reportsDirectory": "../../coverage/packages/chart-widget"
       }
     },
     "storybook": {
       "executor": "@nrwl/storybook:storybook",
       "options": {
         "port": 4400,
-        "configDir": "packages/trading-view/.storybook",
+        "configDir": "packages/chart-widget/.storybook",
         "uiFramework": "@storybook/react"
       },
       "configurations": {
@@ -53,8 +53,8 @@
       "executor": "@nrwl/storybook:build",
       "outputs": ["{options.outputDir}"],
       "options": {
-        "outputDir": "dist/storybook/trading-view",
-        "configDir": "packages/trading-view/.storybook",
+        "outputDir": "dist/storybook/chart-widget",
+        "configDir": "packages/chart-widget/.storybook",
         "uiFramework": "@storybook/react"
       },
       "configurations": {

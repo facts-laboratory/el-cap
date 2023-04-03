@@ -1,10 +1,10 @@
 import { render } from '@testing-library/react';
 
-import TradingView from './trading-view';
+import ChartWidget from './chart-widget';
 
-describe('TradingView', () => {
+describe('ChartWidget', () => {
   it('should render successfully', () => {
-    const { baseElement } = render(<TradingView />);
+    const { baseElement } = render(<ChartWidget />);
     expect(baseElement).toBeTruthy();
   });
 });

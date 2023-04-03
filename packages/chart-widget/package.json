@@ -1,5 +1,5 @@
 {
-  "name": "@el-cap/trading-view",
+  "name": "@el-cap/chart-widget",
   "version": "0.0.1",
   "main": "./index.js",
   "types": "./index.d.ts",
@@ -8,8 +8,5 @@
       "import": "./index.mjs",
       "require": "./index.js"
     }
-  },
-  "dependencies": {
-    "lightweight-charts": "^4.0.1"
   }
 }

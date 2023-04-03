@@ -1,6 +1,6 @@
-import { createChart, ColorType, IChartApi } from "lightweight-charts";
-import React, { useEffect, useRef } from "react";
-import "./chat.css";
+import { createChart, ColorType, IChartApi } from 'lightweight-charts';
+import React, { useEffect, useRef } from 'react';
+import './chart.css';
 
 interface ChartProps {
   data: { time: string; value: number }[];
@@ -16,11 +16,11 @@ interface ChartProps {
 const ChartComponent: React.FC<ChartProps> = ({
   data,
   colors = {
-    backgroundColor: "white",
-    lineColor: "#F95153",
-    textColor: "black",
-    areaTopColor: "#F89E9EB9",
-    areaBottomColor: "#F2E0E0DC",
+    backgroundColor: 'white',
+    lineColor: '#F95153',
+    textColor: 'black',
+    areaTopColor: '#F89E9EB9',
+    areaBottomColor: '#F2E0E0DC',
   },
 }) => {
   const chartContainerRef = useRef<HTMLDivElement>(null);
@@ -53,11 +53,11 @@ const ChartComponent: React.FC<ChartProps> = ({
       });
       newSeries.setData(data);
 
-      window.addEventListener("resize", handleResize);
+      window.addEventListener('resize', handleResize);
     }
 
     return () => {
-      window.removeEventListener("resize", handleResize);
+      window.removeEventListener('resize', handleResize);
 
       chart.current?.remove();
     };

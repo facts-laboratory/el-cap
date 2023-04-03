@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import { mapStateToProps } from '@el-cap/store';
-import { TradingView } from '@el-cap/trading-view';
+import { ChartWidget } from '@el-cap/chart-widget';
 import { connect } from 'react-redux';
 import { PriceData } from 'redstone-api/lib/types';
 import { ArrowUpIcon, WatchlistIcon } from '../assets/icons';
@@ -134,7 +134,7 @@ export function Coin(props: CoinProps) {
           </div>
         </div>
       </div>
-      <TradingView />
+      <ChartWidget />
     </div>
   );
 }
