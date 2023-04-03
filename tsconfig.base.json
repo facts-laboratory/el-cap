@@ -22,6 +22,7 @@
       "@el-cap/feed": ["packages/feed/src/index.ts"],
       "@el-cap/interfaces": ["packages/interfaces/src/index.ts"],
       "@el-cap/layout": ["packages/layout/src/index.ts"],
+      "@el-cap/showcase-widget": ["packages/showcase-widget/src/index.ts"],
       "@el-cap/store": ["packages/store/src/index.ts"],
       "@el-cap/widget-coin-card": ["packages/widget-coin-card/src/index.ts"]
     }
