@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 
 import { mapStateToProps } from '@el-cap/store';
 import { WidgetCoinCard } from '@el-cap/widget-coin-card';
+import { TokenTable } from '@el-cap/token-table';
 import TabComponent from './components/tabComponent';
 import DropDownAllTypes from './components/dropDownAllTypes';
 
@@ -94,6 +95,7 @@ export function Feed(props: FeedProps) {
           <TabComponent />
           <DropDownAllTypes />
         </div>
+        <TokenTable />
       </div>
     </div>
   );
