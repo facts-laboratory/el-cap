@@ -48,7 +48,7 @@ export function Feed(props: FeedProps) {
   return (
     <div className="min-h-[calc(100vh-217px)]">
       <div className="mx-auto p-4">
-        <div className="mb-8 flex justify-between items-center">
+        <div className="mb-8 sm:flex justify-between items-center">
           <div>
             <p className="text-black font-bold text-3xl">
               Today's Cryptocurrency Prices by Market Cap
@@ -61,7 +61,7 @@ export function Feed(props: FeedProps) {
               <span className="text-gray-400">Read More</span>
             </p>
           </div>
-          <div className="flex items-center">
+          <div className="flex items-center mt-2">
             <span className="text-sm font-medium text-gray-900 mr-2 dark:text-gray-300">
               Showcase
             </span>
