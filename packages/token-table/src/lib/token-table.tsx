@@ -42,6 +42,42 @@ const data = [
     graphSrc:
       'https://s3.coinmarketcap.com/generated/sparklines/web/7d/2781/1.svg',
   },
+  {
+    coin: 'BTC',
+    price: 2801346,
+    '1h': 0.01,
+    '24h': 0.02,
+    '7d': 13.51,
+    marketCap: 541335905352,
+    volume: 36421460548,
+    circulatingSupply: 19324137,
+    graphSrc:
+      'https://s3.coinmarketcap.com/generated/sparklines/web/7d/2781/1.svg',
+  },
+  {
+    coin: 'BTC',
+    price: 2801346,
+    '1h': 0.01,
+    '24h': 0.02,
+    '7d': 13.51,
+    marketCap: 541335905352,
+    volume: 36421460548,
+    circulatingSupply: 19324137,
+    graphSrc:
+      'https://s3.coinmarketcap.com/generated/sparklines/web/7d/2781/1.svg',
+  },
+  {
+    coin: 'BTC',
+    price: 2801346,
+    '1h': 0.01,
+    '24h': 0.02,
+    '7d': 13.51,
+    marketCap: 541335905352,
+    volume: 36421460548,
+    circulatingSupply: 19324137,
+    graphSrc:
+      'https://s3.coinmarketcap.com/generated/sparklines/web/7d/2781/1.svg',
+  },
 ];
 export function TokenTable(props: TokenTableProps) {
   return (
