@@ -5,16 +5,27 @@ import {
   ArrowDownIcon,
   ArrowUpIcon,
 } from '../icons';
-export interface IData {
-  icon: string;
-  text: string;
-  value: string;
-}
+
+export interface Token {
+  id: string;
+  symbol: string;
+  provider: string;
+  value: number;
+  liteEvmSignature: string;
+  permawebTx: string;
+  source: {
+    [key: string]: number;
+  };
+  timestamp: number;
+  minutes: number;
+};
+
 export interface IMarketCap {
   title: string;
   type: string;
-  data: IData[];
+  data: Token[];
 }
+
 
 export function WidgetCoinCard(props: IMarketCap) {
   return (

@@ -1,5 +1,19 @@
-import { ContentContainer, Header, Footer } from '@el-cap/el-cap-layout';
-import { mapStateToProps } from '@el-cap/store';
+import {
+  ContentContainer,
+  Content,
+  Header,
+  Footer,
+} from '@el-cap/el-cap-layout';
+import {
+  mapStateToProps,
+  useAppDispatch,
+  useAppSelector,
+  selectAllFeed,
+  selectFeedLoadingStatus,
+  selectAllCoin,
+  fetchFeed,
+  fetchCoin,
+} from '@el-cap/store';
 import { connect } from 'react-redux';
 import loadable from '@loadable/component';
 
@@ -23,11 +37,26 @@ export interface AppProps {
 }
 export function App(props: AppProps) {
   const { page } = props;
+  const dispatch = useAppDispatch();
+  const feedPage = {
+    entities: useAppSelector(selectAllFeed),
+    loadingStatus: useAppSelector(selectFeedLoadingStatus),
+    fetchFeed: () => dispatch(fetchFeed()),
+  };
+
+  const coinPage = {
+    loadingStatus: useAppSelector(selectFeedLoadingStatus),
+    fetchCoin: (input: string) => dispatch(fetchCoin(input)),
+    fetchedEntity: useAppSelector(selectAllCoin),
+  };
+
   const Component = components[(page as keyof ObjectKeys) || 'Feed'];
   return (
     <div className="flex flex-col h-screen">
       <Header />
-      <ContentContainer children={<Component />} />
+      <ContentContainer
+        children={<Component feedPage={feedPage} coinPage={coinPage} />}
+      />
       <Footer />
     </div>
   );

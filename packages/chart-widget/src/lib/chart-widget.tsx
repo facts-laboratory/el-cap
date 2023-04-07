@@ -28,11 +28,12 @@ const initialData = [
 ];
 
 export function ChartWidget(props: ChartWidgetProps) {
+  const { entity } = props;
   return (
     <>
       <div className="sm:flex items-center justify-between my-4">
         <span className="font-bold md:text-3xl text-xl whitespace-nowrap mx-2 mb-2">
-          Bitcoin To USD Chart
+          {entity.coin} To USD Chart
         </span>
         <BitTabComponent />
       </div>

@@ -6,6 +6,9 @@ import {
   EntityState,
   PayloadAction,
 } from '@reduxjs/toolkit';
+import redstone from 'redstone-api';
+
+import { RootState } from "../store";
 
 export const FEED_FEATURE_KEY = 'feed';
 
@@ -18,7 +21,7 @@ export interface FeedEntity {
 
 export interface FeedState extends EntityState<FeedEntity> {
   loadingStatus: 'not loaded' | 'loading' | 'loaded' | 'error';
-  error: string;
+  error: string | null;
 }
 
 export const feedAdapter = createEntityAdapter<FeedEntity>();
@@ -40,15 +43,21 @@ export const feedAdapter = createEntityAdapter<FeedEntity>();
  * }, [dispatch]);
  * ```
  */
+
 export const fetchFeed = createAsyncThunk(
   'feed/fetchStatus',
   async (_, thunkAPI) => {
-    /**
-     * Replace this with your custom fetch call.
-     * For example, `return myApi.getFeeds()`;
-     * Right now we just return an empty array.
-     */
-    return Promise.resolve([]);
+    try {
+      console.log('fetching feed');
+      const O = await redstone.getPrice(["BTC", "ETH", "BSC", "BNB", "ADA", "DOGE", "XRP", "DOT", "USDT", "SOL", "ICP", "UNI", "BCH", "LINK", "LTC", "MATIC", "XLM", "ETC", "VET", "THETA", "FIL", "TRX", "EOS", "SUSHI", "ATOM", "DAI", "AAVE", "XMR", "FTT", "ALGO", "CAKE", "HBAR", "KSM", "XTZ", "CEL", "NEO", "GRT", "SNX", "MIOTA", "MKR", "CRO", "COMP", "CHZ", "WAVES", "DCR", "HOT", "ZEC", "BAT", "RUNE", "MANA", "ENJ", "DASH", "SRM", "ZIL", "REN", "AVAX", "IOST", "KAVA", "OMG", "UMA", "QNT", "ZRX", "YFI", "CRV", "SXP", "1INCH", "LUNA", "FTM", "ANKR", "NANO", "CQT", "SC", "QTUM", "BNT", "BTT", "STX", "HNT", "OCEAN", "LSK", "AR", "SNT", "LRC", "BAL", "SUSHI", "CKB", "FLOW", "DODO", "CELO", "NEXO", "LPT", "HIVE", "MIR", "RSR", "NMR", "ARPA"]);
+      console.log('O',O);
+      const arr = Object.entries(O).map((item) => item[1]);
+      console.log(arr);
+      return arr;
+    } catch (error) {
+      console.log(error);
+      return [];
+    }
   }
 );
 
@@ -125,9 +134,14 @@ export const feedActions = feedSlice.actions;
  */
 const { selectAll, selectEntities } = feedAdapter.getSelectors();
 
-export const getFeedState = (rootState: unknown): FeedState =>
+export const getFeedState = (rootState: RootState): FeedState =>
   rootState[FEED_FEATURE_KEY];
 
 export const selectAllFeed = createSelector(getFeedState, selectAll);
+
+export const selectFeedLoadingStatus = createSelector(
+  getFeedState,
+  (state: FeedState) => state.loadingStatus
+);
 
 export const selectFeedEntities = createSelector(getFeedState, selectEntities);
