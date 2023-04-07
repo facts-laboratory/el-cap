@@ -30,7 +30,7 @@ export const fetchCoin = createAsyncThunk(
     try {
       const coinData = await redstone.getPrice(input);
       console.log('coindata',coinData);
-      return coinData;
+      return [coinData];
     } catch (error) {
       console.log('fetching error',error);
       return [];

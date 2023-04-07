@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-
+import { getTokenData } from '@el-cap/token-table';
 import { mapStateToProps } from '@el-cap/store';
 import { ChartWidget } from '@el-cap/chart-widget';
 import { connect } from 'react-redux';
@@ -15,41 +15,51 @@ interface CoinProps {
     goToFeed: () => void;
     fetchCoin: (ticker: string) => void;
     loadingStatus: string;
-    fetchedEntity: TokenData;
+    fetchedEntity: TokenData[]
   };
 }
 
 export function Coin(props: CoinProps) {
+  const [localEntity, setLocalEntity] = useState<TokenData | undefined>(undefined)
+
+  const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const { ticker, entity, coinPage } = props;
-  const { goToFeed, fetchCoin, fetchedEntity, loadingStatus } =
-    props.coinPage;
+  const { goToFeed, fetchCoin, fetchedEntity, loadingStatus } = props.coinPage;
   const [error, setError] = useState<string | undefined>();
-  console.log(
-    !entity,
-    'loadingStatus',
-    loadingStatus,
-    'props',
-    props
-  );
 
   useEffect(() => {
-    console.log('useEffect');
     if (!entity || entity?.coin !== ticker) {
-      console.log('fetching coin');
       fetchCoin(ticker);
     }
   }, []);
 
-  if (error) return <p>{error}</p>;
+  useEffect(() => {
+    if (entity || fetchedEntity) {
+      setLocalEntity(entity || getTokenData(fetchedEntity)[0]);
+    }
+    // setLocalEntity(entity || getTokenData(fetchedEntity));
+  }, [entity, fetchedEntity]);
 
-  console.log('entity', entity);
+  useEffect(() => {
+    console.log('localEntity before', localEntity);
+    if (localEntity !== undefined ) {
+      console.log('set isLoaded to true');
+      setIsLoaded(true);
+    }
+  }, [localEntity]);
 
+  if (loadingStatus === 'loading') {
+    return <div>Loading...YOOOO</div>; }
+
+
+  if (isLoaded) {
   return (
     <div className="bg-gray-100 min-h-screen">
-      {loadingStatus !== 'loaded' && <div />}
-
-      {loadingStatus === 'loaded' && (
+  {localEntity && (
         <>
+          {console.log('localEntity here', localEntity, 'typeof', typeof localEntity)}
+          {console.log('localEntity', localEntity)}
+          {console.log('localEntity', localEntity)}
           <div className="flex">
             <div className="text-gray-400 hover:text-gray-600 cursor-pointer font-medium text-sm py-2 inline-flex mr-2">
               Cryptocurrencies &gt;
@@ -58,7 +68,7 @@ export function Coin(props: CoinProps) {
               Coins &gt;
             </div>
             <div className="text-black hover:text-gray-600 cursor-pointer font-medium text-sm py-2 inline-flex mr-2">
-              {entity?.coin}
+              {localEntity?.coin}
             </div>
           </div>
           <div className="grid md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-x-8 gap-y-4">
@@ -69,8 +79,10 @@ export function Coin(props: CoinProps) {
                   src="https://s2.coinmarketcap.com/static/img/coins/64x64/24029.png"
                   alt="bitcoin"
                 />
-                <span className="font-bold text-lg mr-2">{entity?.coin}</span>
-                <GrayButton text={entity?.coin || 'coin'} />
+                <span className="font-bold text-lg mr-2">
+                  {localEntity?.coin}
+                </span>
+                <GrayButton text={localEntity?.coin || 'coin'} />
                 <WatchlistIcon className="ml-2" width={18} height={18} />
               </div>
               <div className="flex flex-wrap gap-4">
@@ -96,7 +108,7 @@ export function Coin(props: CoinProps) {
             <div className="md:col-span-2 col-span-1">
               <div className="font-bold flex items-center mb-8">
                 <span className="md:text-[60px] text-3xl mr-2 p-2">
-                  {entity?.price}
+                  {localEntity?.price}
                 </span>
                 <span className="p-2 text-white bg-green-500 rounded-2xl flex items-center md:text-2xl text-md">
                   <ArrowUpIcon
@@ -129,7 +141,7 @@ export function Coin(props: CoinProps) {
                   </span>
                   <br />
                   <span className="font-bold">
-                    ${entity?.marketCap.toLocaleString()}
+                    ${localEntity?.marketCap.toLocaleString()}
                   </span>
                   <span className="flex items-center text-green-500">
                     <ArrowUpIcon
@@ -145,7 +157,7 @@ export function Coin(props: CoinProps) {
                   <span className="text-[#7D7D7D]">Volume</span>
                   <br />
                   <span className="font-bold">
-                    ${entity?.volume.toLocaleString()}
+                    ${localEntity?.volume.toLocaleString()}
                   </span>
                   <span className="flex items-center text-green-500">
                     <ArrowUpIcon
@@ -162,7 +174,7 @@ export function Coin(props: CoinProps) {
                   <br />
                   <div className="flex justify-between">
                     <span className="font-bold">
-                      ${entity?.circulatingSupply.toLocaleString()}
+                      ${localEntity?.circulatingSupply.toLocaleString()}
                     </span>
                     <span className="font-bold">92%</span>
                   </div>
@@ -178,11 +190,13 @@ export function Coin(props: CoinProps) {
               </div>
             </div>
           </div>
-          <ChartWidget entity={entity} />
+          {console.log('localEntity', localEntity)}
+          <ChartWidget entity={localEntity} />
         </>
       )}
     </div>
   );
+};
 }
 
 export default Coin;

@@ -13,7 +13,7 @@ const getDummyData = (index: number) => {
   return dummyData[dummyIndex];
 };
 
-const getTokenData = (data: TokenData[]) => {
+export const getTokenData = (data: TokenData[]) => {
   console.log('data', data);
   return data.map((token, index) => {
     const dummyToken = getDummyData(index);
