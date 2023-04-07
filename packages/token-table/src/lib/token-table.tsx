@@ -7,16 +7,15 @@ import { TokenData } from '@el-cap/interfaces';
 /* eslint-disable-next-line */
 export interface TokenTableProps {}
 
-const getDummyData = (index: number) => {
-  console.log('getDummyData');
-  const dummyIndex = index % dummyData.length;
-  return dummyData[dummyIndex];
+
+export const orderByMarketCap = (data: TokenData[]) => {
+  return data.sort((a, b) => b.marketCap - a.marketCap);
 };
 
 export const getTokenData = (data: TokenData[]) => {
   console.log('data', data);
   return data.map((token, index) => {
-    const dummyToken = getDummyData(index);
+    const dummyToken = dummyData.find((dummy) => dummy.coin === token.symbol);
     const {
       symbol,
       value,
@@ -49,19 +48,21 @@ export const getTokenData = (data: TokenData[]) => {
       return token;
     } else {
       return {
-        coin: symbol || dummyToken.coin,
-        price: value || dummyToken.price,
-        marketCap: marketCap || dummyToken.marketCap,
-        volume: volume || dummyToken.volume,
-        circulatingSupply: circulatingSupply || dummyToken.circulatingSupply,
-        graphSrc: graphSrc || dummyToken.graphSrc,
-        '1h': token['1h'] || dummyToken['1h'],
-        '24h': token['24h'] || dummyToken['24h'],
-        '7d': token['7d'] || dummyToken['7d'],
+        coin: symbol || dummyToken?.coin || '',
+        price: value || dummyToken?.price || 0,
+        marketCap: marketCap || dummyToken?.marketCap || 0,
+        volume: volume || dummyToken?.volume || 0,
+        circulatingSupply: circulatingSupply || dummyToken?.circulatingSupply || 0,
+        graphSrc: graphSrc || dummyToken?.graphSrc || '',
+        '1h': token['1h'] || dummyToken?.['1h'] || 0,
+        '24h': token['24h'] || dummyToken?.['24h'] || 0,
+        '7d': token['7d'] || dummyToken?.['7d'] || 0,
       };
     }
   });
 };
+
+ ;
 
 const dummyData = [
   {
@@ -72,7 +73,8 @@ const dummyData = [
     '7d': 13.51,
     marketCap: 541335905352,
     volume: 36421460548,
-    circulatingSupply: 19324137,
+
+    circulatingSupply: 214553124,
     graphSrc:
       'https://s3.coinmarketcap.com/generated/sparklines/web/7d/2781/1.svg',
   },
@@ -82,9 +84,10 @@ const dummyData = [
     '1h': 0.015,
     '24h': -0.025,
     '7d': 9.23,
-    marketCap: 36422495153,
     volume: 2354346553,
-    circulatingSupply: 214553124,
+
+    marketCap: 46648597347,
+    circulatingSupply: 19324137,
     graphSrc:
       'https://s3.coinmarketcap.com/generated/sparklines/web/7d/1027/1.svg',
   },
@@ -106,8 +109,9 @@ const dummyData = [
     '1h': -0.01,
     '24h': 0.035,
     '7d': 6.14,
-    marketCap: 46648597347,
     volume: 1161254368,
+
+    marketCap: 36422495153,
     circulatingSupply: 32862965419,
     graphSrc:
       'https://s3.coinmarketcap.com/generated/sparklines/web/7d/2010/1.svg',
@@ -156,7 +160,7 @@ export function TokenTable(props: TokenTableProps) {
   useEffect(() => {
     console.log('data', data);
     if (data) {
-      setTokenData(getTokenData(data));
+      setTokenData(orderByMarketCap(getTokenData(data)));
     }
   }, [data]);
   return (
