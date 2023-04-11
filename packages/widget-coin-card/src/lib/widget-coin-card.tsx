@@ -35,7 +35,7 @@ export function WidgetCoinCard(props: IMarketCap) {
         </span>
       </div>
       <div className="py-4 text-sm sm:text-base">
-        {props.data.map((val, index) => {
+        {props.data?.map((val, index) => {
           return (
             <div className="flex justify-between m-2" key={index}>
               <div className="flex items-center gap-3 whitespace-nowrap">
