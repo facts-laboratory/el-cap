@@ -99,3 +99,5 @@ The script for the renderer will be added when this pull request is finished:
 The naming standard for renderers is:
 
 - `<project-name>-renderer` (eg. `widget-coin-card-renderer`)
+
+<img src="https://oqfrmvvkx6kfvhswy45wpmpppwjwd6seafaaehb2tmb47i2bgpgq.arweave.net/dAsWVqq_lFqeVsc7Z7HvfZNh-kQBQAIcOpsDz6NBM80"  width="100">
