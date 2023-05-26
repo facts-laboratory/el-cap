@@ -6,7 +6,9 @@ import { useState } from 'react';
 export interface ChartWidgetProps {}
 
 export function ChartWidget(props: ChartWidgetProps) {
-  const [chartData, setChartData] = useState<{ time: string; value: number }[]>([]);
+  const [chartData, setChartData] = useState<{ time: string; value: number }[]>(
+    []
+  );
   return (
     <>
       <div className="sm:flex items-center justify-between my-4">
@@ -16,7 +18,7 @@ export function ChartWidget(props: ChartWidgetProps) {
         <BitTabComponent chartData={chartData} setChartData={setChartData} />
       </div>
       <div>
-        <ChartComponent data={chartData}  />
+        <ChartComponent data={chartData} />
       </div>
     </>
   );
