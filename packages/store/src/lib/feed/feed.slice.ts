@@ -7,8 +7,9 @@ import {
   PayloadAction,
 } from '@reduxjs/toolkit';
 import redstone from 'redstone-api';
+import { getPrices } from './el-cap-kit.js';
 
-import { RootState } from "../store";
+import { RootState } from '../store';
 
 export const FEED_FEATURE_KEY = 'feed';
 
@@ -22,6 +23,32 @@ export interface FeedEntity {
 export interface FeedState extends EntityState<FeedEntity> {
   loadingStatus: 'not loaded' | 'loading' | 'loaded' | 'error';
   error: string | null;
+}
+
+type RedstoneObject = { [ticker: string]: unknown };
+type RemainingObject = {
+  [index: string]: { symbol: string } & Record<string, unknown>;
+};
+
+function mergeObjects(
+  redstone: RedstoneObject,
+  remaining: RemainingObject
+): Array<unknown> {
+  const redstoneLowered: Record<string, unknown> = Object.keys(redstone).reduce<
+    Record<string, unknown>
+  >((c, k) => {
+    c[k.toLowerCase()] = redstone[k];
+    return c;
+  }, {});
+
+  return Object.keys(remaining).map((key) => {
+    const symbolLower = remaining[key].symbol.toLowerCase();
+    if (Object.prototype.hasOwnProperty.call(redstoneLowered, symbolLower)) {
+      return { ...remaining[key], ...(redstoneLowered[symbolLower] as object) };
+    } else {
+      return remaining[key];
+    }
+  });
 }
 
 export const feedAdapter = createEntityAdapter<FeedEntity>();
@@ -49,8 +76,107 @@ export const fetchFeed = createAsyncThunk(
   async (_, thunkAPI) => {
     try {
       console.log('fetching feed');
-      const O = await redstone.getPrice(["BTC", "ETH", "BSC", "BNB", "ADA", "DOGE", "XRP", "DOT", "USDT", "SOL", "ICP", "UNI", "BCH", "LINK", "LTC", "MATIC", "XLM", "ETC", "VET", "THETA", "FIL", "TRX", "EOS", "SUSHI", "ATOM", "DAI", "AAVE", "XMR", "FTT", "ALGO", "CAKE", "HBAR", "KSM", "XTZ", "CEL", "NEO", "GRT", "SNX", "MIOTA", "MKR", "CRO", "COMP", "CHZ", "WAVES", "DCR", "HOT", "ZEC", "BAT", "RUNE", "MANA", "ENJ", "DASH", "SRM", "ZIL", "REN", "AVAX", "IOST", "KAVA", "OMG", "UMA", "QNT", "ZRX", "YFI", "CRV", "SXP", "1INCH", "LUNA", "FTM", "ANKR", "NANO", "CQT", "SC", "QTUM", "BNT", "BTT", "STX", "HNT", "OCEAN", "LSK", "AR", "SNT", "LRC", "BAL", "SUSHI", "CKB", "FLOW", "DODO", "CELO", "NEXO", "LPT", "HIVE", "MIR", "RSR", "NMR", "ARPA"]);
-      console.log('O',O);
+      const O = await redstone.getPrice([
+        'BTC',
+        'ETH',
+        'BSC',
+        'BNB',
+        'ADA',
+        'DOGE',
+        'XRP',
+        'DOT',
+        'USDT',
+        'SOL',
+        'ICP',
+        'UNI',
+        'BCH',
+        'LINK',
+        'LTC',
+        'MATIC',
+        'XLM',
+        'ETC',
+        'VET',
+        'THETA',
+        'FIL',
+        'TRX',
+        'EOS',
+        'SUSHI',
+        'ATOM',
+        'DAI',
+        'AAVE',
+        'XMR',
+        'FTT',
+        'ALGO',
+        'CAKE',
+        'HBAR',
+        'KSM',
+        'XTZ',
+        'CEL',
+        'NEO',
+        'GRT',
+        'SNX',
+        'MIOTA',
+        'MKR',
+        'CRO',
+        'COMP',
+        'CHZ',
+        'WAVES',
+        'DCR',
+        'HOT',
+        'ZEC',
+        'BAT',
+        'RUNE',
+        'MANA',
+        'ENJ',
+        'DASH',
+        'SRM',
+        'ZIL',
+        'REN',
+        'AVAX',
+        'IOST',
+        'KAVA',
+        'OMG',
+        'UMA',
+        'QNT',
+        'ZRX',
+        'YFI',
+        'CRV',
+        'SXP',
+        '1INCH',
+        'LUNA',
+        'FTM',
+        'ANKR',
+        'NANO',
+        'CQT',
+        'SC',
+        'QTUM',
+        'BNT',
+        'BTT',
+        'STX',
+        'HNT',
+        'OCEAN',
+        'LSK',
+        'AR',
+        'SNT',
+        'LRC',
+        'BAL',
+        'SUSHI',
+        'CKB',
+        'FLOW',
+        'DODO',
+        'CELO',
+        'NEXO',
+        'LPT',
+        'HIVE',
+        'MIR',
+        'RSR',
+        'NMR',
+        'ARPA',
+      ]);
+      const prices = await getPrices();
+      const combinedPrices = mergeObjects(prices.redstone, prices.remaining);
+      console.log('prices', prices, 'combined', combinedPrices);
+      console.log('O', O);
       const arr = Object.entries(O).map((item) => item[1]);
       console.log(arr);
       return arr;
