@@ -20,6 +20,11 @@ enum TimeRange {
   YEAR_1 = '1y',
 }
 
+interface ChartData {
+  time: number;
+  value: number;
+}
+
 enum LoadingStatus {
   LOADED = 'loaded',
   LOADING = 'loading',
@@ -57,7 +62,7 @@ export function ChartWidget(props: CoinChartProps) {
   };
 
   function convertTimeStampAndSetData(data: HistoricalDataPoint[]) {
-    const newData: any = [];
+    const newData: ChartData[] = [];
     data.forEach((el) => {
       newData.push({
         time: el.timestamp,
