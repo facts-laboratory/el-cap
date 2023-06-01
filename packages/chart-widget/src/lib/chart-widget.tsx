@@ -21,8 +21,8 @@ enum TimeRange {
 }
 
 interface ChartData {
-  time: number;
-  value: number;
+  time: number,
+  value: number
 }
 
 enum LoadingStatus {
