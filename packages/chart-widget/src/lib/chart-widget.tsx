@@ -20,6 +20,11 @@ enum TimeRange {
   YEAR_1 = '1y',
 }
 
+interface ChartData {
+  time: number;
+  value: number;
+}
+
 enum LoadingStatus {
   LOADED = 'loaded',
   LOADING = 'loading',
@@ -29,13 +34,14 @@ interface CoinChartProps {
   chartData: CoinChart;
   fetch: (symbol: string) => void;
   loadingStatus: LoadingStatus;
-  error: string | null;
+  error?: string | null;
 }
 
 export function ChartWidget(props: CoinChartProps) {
   const { chartData, fetch, loadingStatus, error } = props;
   const [selectedTimeRange, setSelectedTimeRange] = useState(TimeRange.DAY_1);
   const underlineRef = useRef(null);
+  const buttonRefs = useRef(new Map()).current;
 
   useEffect(() => {
     if (loadingStatus === LoadingStatus.NOT_LOADED) {
@@ -44,10 +50,7 @@ export function ChartWidget(props: CoinChartProps) {
   }, [loadingStatus, fetch, selectedTimeRange]);
 
   useEffect(() => {
-    const selectedButton = document.querySelector(
-      `.time-range-button[data-time-range='${selectedTimeRange}']`
-    );
-
+    const selectedButton = buttonRefs.get(selectedTimeRange);
     if (selectedButton && underlineRef.current) {
       underlineRef.current.style.transform = `translateX(${selectedButton.offsetLeft}px)`;
       underlineRef.current.style.width = `${selectedButton.offsetWidth}px`;
@@ -59,14 +62,14 @@ export function ChartWidget(props: CoinChartProps) {
   };
 
   function convertTimeStampAndSetData(data: HistoricalDataPoint[]) {
-    const NewData: any = [];
+    const newData: ChartData[] = [];
     data.forEach((el) => {
-      NewData.push({
+      newData.push({
         time: el.timestamp,
         value: el.value,
       });
     });
-    return NewData;
+    return newData;
   }
 
   if (loadingStatus !== LoadingStatus.LOADED) {
