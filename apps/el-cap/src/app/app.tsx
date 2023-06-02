@@ -1,5 +1,11 @@
 import { ContentContainer, Header, Footer } from '@el-cap/el-cap-layout';
-import { mapStateToProps } from '@el-cap/store';
+import {
+  fetchCoinChart,
+  selectChartData,
+  mapStateToProps,
+  useAppDispatch,
+  useAppSelector,
+} from '@el-cap/store';
 import { connect } from 'react-redux';
 import loadable from '@loadable/component';
 
@@ -22,12 +28,20 @@ export interface AppProps {
   page?: string;
 }
 export function App(props: AppProps) {
+  const dispatch = useAppDispatch();
   const { page } = props;
-  const Component = components[(page as keyof ObjectKeys) || 'Feed'];
+  const coinPage = {
+    coinChartProps: {
+      fetch: (input) => dispatch(fetchCoinChart(input)),
+      chartData: useAppSelector(selectChartData),
+      loadingStatus: useAppSelector((state) => state.coinChart.loadingStatus),
+    },
+  };
+  const Page = components[(page as keyof ObjectKeys) || 'Feed'];
   return (
     <div className="flex flex-col h-screen">
       <Header />
-      <ContentContainer children={<Component />} />
+      <ContentContainer children={<Page coinPage={coinPage} />} />
       <Footer />
     </div>
   );
