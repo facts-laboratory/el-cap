@@ -12,10 +12,16 @@ interface CoinProps {
   goToFeed: () => void;
   entity?: PriceData;
   ticker: string;
+  coinPage: {
+    coinChartProps: {
+      fetch: ({ symbol: string, interval: string }) => void;
+      chart24hourData: PriceData | undefined;
+    };
+  };
 }
 
 enum TimeRange {
-  DAY_1 = '1d',
+  DAY_1 = '24h',
   DAY_7 = '7d',
   MONTH_1 = '1m',
   MONTH_3 = '3m',
@@ -29,8 +35,15 @@ enum LoadingStatus {
 }
 
 export function Coin(props: CoinProps) {
-  const { goToFeed, entity, ticker } = props;
+  const { goToFeed, entity, ticker, coinPage } = props;
+  const { coinChartProps } = coinPage;
+
+  const { fetch, chart24hourData } = coinChartProps;
   const [error, setError] = useState<string | undefined>();
+
+  useEffect(() => {
+    fetch({ symbol: ticker, interval: '24h' });
+  }, []);
 
   const coinChart = {
     [TimeRange.DAY_1]: [
@@ -119,11 +132,6 @@ export function Coin(props: CoinProps) {
     // more time ranges...
   };
 
-  const fetch = (symbol: string) => {
-    console.log(`Fetching data for symbol: ${symbol}`);
-    // This is where you'd actually fetch the data, for now it's just a mock.
-  };
-
   if (error) return <p>{error}</p>;
 
   return (
@@ -156,7 +164,7 @@ export function Coin(props: CoinProps) {
             <GrayButton text="White Paper" />
             <GrayButton text="Source Code" />
           </div>
-          <p className="my-2">Tages</p>
+          <p className="my-2">Tags</p>
           <div className="flex gap-4 flex-wrap">
             <GrayButton text="PoW" />
             <GrayButton text="SHA-256" />
@@ -240,14 +248,8 @@ export function Coin(props: CoinProps) {
           </div>
         </div>
       </div>
-
       <div>
-        <ChartWidget
-          coinChart={coinChart}
-          fetch={fetch}
-          loadingStatus={LoadingStatus.NOT_LOADED}
-          error={null}
-        />
+        <ChartWidget coinChart={coinChart} {...coinChartProps} />
       </div>
     </div>
   );
