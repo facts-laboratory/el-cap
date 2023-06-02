@@ -1,6 +1,10 @@
 import { configureStore, applyMiddleware } from '@reduxjs/toolkit';
 import { connectRoutes } from 'redux-first-router';
 import page, { routesMap } from './routes/pages';
+import {
+  COIN_CHART_FEATURE_KEY,
+  coinChartSlice,
+} from './coin-chart/coin-chart.slice';
 
 import { feedReducer, FEED_FEATURE_KEY } from './feed/feed.slice';
 
@@ -12,6 +16,7 @@ const { reducer, middleware, enhancer } = connectRoutes(routesMap, {
 
 export const store = configureStore({
   reducer: {
+    [COIN_CHART_FEATURE_KEY]: coinChartSlice.reducer,
     location: reducer,
     [FEED_FEATURE_KEY]: feedReducer,
     [COIN_FEATURE_KEY]: coinReducer,

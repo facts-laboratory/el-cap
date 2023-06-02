@@ -1,47 +1,132 @@
+import { useEffect, useState, useRef } from 'react';
+import { CSSTransition } from 'react-transition-group';
 import ChartComponent from './components/ChartComponent';
-import BitTabComponent from './components/TabComponent';
+import './components/slideranimations.css';
 
-/* eslint-disable-next-line */
-export interface ChartWidgetProps {}
+type CoinChart = {
+  [timeRange: string]: HistoricalDataPoint[];
+};
 
-const initialData = [
-  { time: '2018-12-22', value: 32.51 },
-  { time: '2018-12-23', value: 31.11 },
-  { time: '2018-12-24', value: 27.02 },
-  { time: '2018-12-25', value: 27.32 },
-  { time: '2018-12-26', value: 25.17 },
-  { time: '2018-12-27', value: 28.89 },
-  { time: '2018-12-28', value: 25.46 },
-  { time: '2018-12-29', value: 23.92 },
-  { time: '2018-12-30', value: 22.68 },
-  { time: '2018-12-31', value: 28.67 },
-  { time: '2019-01-01', value: 25.68 },
-  { time: '2019-01-02', value: 24.67 },
-  { time: '2019-01-03', value: 26.68 },
-  { time: '2019-01-04', value: 28.67 },
-  { time: '2019-01-05', value: 23.68 },
-  { time: '2019-01-06', value: 25.67 },
-  { time: '2019-01-07', value: 30.68 },
-  { time: '2019-01-08', value: 32.67 },
-  { time: '2019-01-09', value: 34.68 },
-  { time: '2019-01-10', value: 40.67 },
-];
+type HistoricalDataPoint = {
+  timestamp: number;
+  value: number;
+};
 
-export function ChartWidget(props: ChartWidgetProps) {
-  const { entity } = props;
-  return (
-    <>
-      <div className="sm:flex items-center justify-between my-4">
-        <span className="font-bold md:text-3xl text-xl whitespace-nowrap mx-2 mb-2">
-          {entity.coin} To USD Chart
-        </span>
-        <BitTabComponent />
-      </div>
-      <div>
-        <ChartComponent data={initialData} />;
-      </div>
-    </>
-  );
+enum TimeRange {
+  DAY_1 = '24h',
+  DAY_7 = '7d',
+  MONTH_1 = '1m',
+  MONTH_3 = '3m',
+  YEAR_1 = '1y',
+}
+
+interface ChartData {
+  time: number;
+  value: number;
+}
+
+enum LoadingStatus {
+  LOADED = 'loaded',
+  LOADING = 'loading',
+  NOT_LOADED = 'not loaded',
+}
+interface CoinChartProps {
+  chartData: CoinChart;
+  fetch: (symbol: string) => void;
+  loadingStatus: LoadingStatus;
+  error?: string | null;
+}
+
+export function ChartWidget(props: CoinChartProps) {
+  const { chartData, fetch, loadingStatus, error } = props;
+  const [selectedTimeRange, setSelectedTimeRange] = useState(TimeRange.DAY_1);
+  const underlineRef = useRef(null);
+  const buttonRefs = useRef(new Map()).current;
+
+  useEffect(() => {
+    if (loadingStatus === LoadingStatus.NOT_LOADED) {
+      // fetch(selectedTimeRange);
+    }
+  }, [loadingStatus, fetch, selectedTimeRange]);
+
+  useEffect(() => {
+    const selectedButton = buttonRefs.get(selectedTimeRange);
+    if (selectedButton && underlineRef.current) {
+      underlineRef.current.style.transform = `translateX(${selectedButton.offsetLeft}px)`;
+      underlineRef.current.style.width = `${selectedButton.offsetWidth}px`;
+    }
+  }, [selectedTimeRange]);
+
+  const handleTimeRangeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedTimeRange(e.target.value as TimeRange);
+  };
+
+  function convertTimeStampAndSetData(data: HistoricalDataPoint[]) {
+    const newData: ChartData[] = [];
+    data.forEach((el) => {
+      newData.push({
+        time: el.timestamp,
+        value: el.value,
+      });
+    });
+    return newData;
+  }
+
+  if (loadingStatus !== LoadingStatus.LOADED) {
+    return <p>Loading...</p>;
+  }
+
+  if (error) {
+    return <p>Error: {error}</p>;
+  }
+
+  if (loadingStatus === LoadingStatus.LOADED && chartData['1m']) {
+    return (
+      <>
+        <div className="sm:flex items-center justify-between my-4">
+          <span className="font-bold md:text-3xl text-xl whitespace-nowrap mx-2 mb-2">
+            Bitcoin To USD Chart
+          </span>
+          <div className="relative mr-2 px-4 py-2 bg-white rounded-lg overflow-auto">
+            <div className="flex">
+              {Object.values(TimeRange).map((timeRange) => (
+                <button
+                  key={timeRange}
+                  data-time-range={timeRange}
+                  // disabled if it's 3m or 1y
+                  disabled={
+                    timeRange === TimeRange.MONTH_3 ||
+                    timeRange === TimeRange.YEAR_1
+                  }
+                  className={`px-5 mx-2 z-20 font-bold transition-colors duration-300 rounded time-range-button ${
+                    timeRange === TimeRange.MONTH_3 ||
+                    timeRange === TimeRange.YEAR_1
+                      ? 'cursor-not-allowed bg-gray-300 text-gray-500'
+                      : ''
+                  }`}
+                  onClick={() => setSelectedTimeRange(timeRange as TimeRange)}
+                >
+                  {timeRange.toUpperCase()}
+                </button>
+              ))}
+
+              <CSSTransition in={true} timeout={200} classNames="slider" appear>
+                <div
+                  ref={underlineRef}
+                  className="absolute bottom-2 rounded left-0 z-10 h-6 bg-yellow-400 transition-all ease-in-out duration-200 slider"
+                />
+              </CSSTransition>
+            </div>
+          </div>
+        </div>
+        <div>
+          <ChartComponent
+            data={convertTimeStampAndSetData(chartData[selectedTimeRange])}
+          />
+        </div>
+      </>
+    );
+  }
 }
 
 export default ChartWidget;
