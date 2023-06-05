@@ -111,15 +111,28 @@ export function TokenTable(props: TokenTableProps) {
                     <span className="text-gray-400 ml-2">{entity.coin}</span>
                   </td>
                   <td className="px-6 py-4">{entity.price.toLocaleString()}</td>
-                  <td className="px-6 py-4 text-green-500">
+                  <td
+                    className={`px-6 py-4 ${
+                      entity['1h'] < 0 ? 'text-red-500' : 'text-green-500'
+                    }`}
+                  >
                     {entity['1h'].toFixed(4)}%
                   </td>
-                  <td className="px-6 py-4 text-green-500">
+                  <td
+                    className={`px-6 py-4 ${
+                      entity['24h'] < 0 ? 'text-red-500' : 'text-green-500'
+                    }`}
+                  >
                     {entity['24h'].toFixed(4)}%
                   </td>
-                  <td className="px-6 py-4 text-green-500">
+                  <td
+                    className={`px-6 py-4 ${
+                      entity['7d'] < 0 ? 'text-red-500' : 'text-green-500'
+                    }`}
+                  >
                     {entity['7d'].toFixed(4)}%
                   </td>
+
                   <td className="px-6 py-4">
                     ${entity.marketCap.toLocaleString()}
                   </td>
