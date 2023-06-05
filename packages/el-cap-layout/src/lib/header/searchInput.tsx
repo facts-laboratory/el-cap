@@ -1,4 +1,4 @@
-import { useState, ChangeEvent, useEffect } from 'react';
+import { useState, ChangeEvent, useEffect, useRef } from 'react';
 import { Tooltip } from 'flowbite-react';
 import SearchBarItem from '../components/searchBarItem';
 import RecentSearchItem from '../components/recentSearchItem';
@@ -38,6 +38,8 @@ export default function SearchInput(props: SearchInputProps) {
   const [openSearch, setOpenSearch] = useState<boolean>(false);
   const [inputValue, setInputValue] = useState('');
   const [inSearch, setInSearch] = useState(false);
+  const overlaySearch = useRef<HTMLInputElement>(null);
+  const backgroundSearch = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (loadingStatus === LoadingStatus.NOT_LOADED) {
@@ -48,6 +50,9 @@ export default function SearchInput(props: SearchInputProps) {
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     const query = e.target.value;
     setInputValue(query);
+    if (backgroundSearch.current) {
+      backgroundSearch.current.value = query;
+    }
     if (query.length > 0) {
       fetchSearch(query);
       setInSearch(true);
@@ -58,6 +63,18 @@ export default function SearchInput(props: SearchInputProps) {
 
   const handleOpenSearch = () => {
     setOpenSearch(!openSearch);
+    const handleClick = (event: InputEvent) => {
+      if (
+        overlaySearch.current &&
+        !overlaySearch.current.contains(event.target as Node) &&
+        !backgroundSearch.current?.contains(event.target as Node)
+      ) {
+        setOpenSearch(false);
+        document.removeEventListener('click', handleClick);
+      }
+    };
+
+    document.addEventListener('click', handleClick);
 
     if (!openSearch) {
       setInSearch(false);
@@ -132,6 +149,7 @@ export default function SearchInput(props: SearchInputProps) {
             </div>
             <input
               type="search"
+              ref={overlaySearch}
               value={inputValue}
               onChange={handleInputChange}
               className="outline-none block w-full p-2 pl-10 text-sm text-gray-900 border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500"
@@ -195,7 +213,11 @@ export default function SearchInput(props: SearchInputProps) {
           </svg>
         </div>
         <input
+          onFocus={setTimeout(() => {
+            overlaySearch.current?.focus();
+          }, 200)}
           type="search"
+          ref={backgroundSearch}
           className="outline-none block w-full p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500"
           placeholder="Search"
           required
