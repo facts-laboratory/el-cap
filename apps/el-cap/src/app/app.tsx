@@ -1,4 +1,8 @@
-import { ContentContainer, Header, Footer } from '@el-cap/el-cap-layout';
+import {
+  ContentContainer,
+  ConnectedHeader,
+  Footer,
+} from '@el-cap/el-cap-layout';
 import {
   fetchCoinChart,
   selectChartData,
@@ -45,7 +49,8 @@ export function App(props: AppProps) {
     fetchCoin: (input: string) => dispatch(fetchCoin(input)),
     fetchedEntity: useAppSelector(selectAllCoin),
     coinChartProps: {
-      fetch: (input) => dispatch(fetchCoinChart(input)),
+      fetch: (input: { symbol: string; interval: string }) =>
+        dispatch(fetchCoinChart(input)),
       chartData: useAppSelector(selectChartData),
       loadingStatus: useAppSelector((state) => state.coinChart.loadingStatus),
     },
@@ -53,7 +58,7 @@ export function App(props: AppProps) {
   const Page = components[(page as keyof ObjectKeys) || 'Feed'];
   return (
     <div className="flex flex-col h-screen">
-      <Header />
+      <ConnectedHeader />
       <ContentContainer
         children={<Page coinPage={coinPage} feedPage={feedPage} />}
       />

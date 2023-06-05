@@ -54,7 +54,7 @@ export function Feed(props: FeedProps) {
   console.log('props', props);
 
   useEffect(() => {
-    if (loadingStatus !== 'loaded' ) {
+    if (loadingStatus !== 'loaded') {
       fetchFeed();
     }
   }, [entities]);
@@ -115,7 +115,7 @@ export function Feed(props: FeedProps) {
           <TabComponent />
           <DropDownAllTypes />
         </div>
-    {entities && <TokenTable data={entities} goToCoin={goToCoin} />}
+        {entities && <TokenTable data={entities} goToCoin={goToCoin} />}
       </div>
     </div>
   );
