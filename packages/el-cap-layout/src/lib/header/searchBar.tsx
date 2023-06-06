@@ -179,8 +179,10 @@ const SearchBar: React.FC = () => {
         },
       ];
 
-      const regex = new RegExp(query, "i");
-      const filteredItems = searchResults.filter(item => item.name.match(regex));
+      const regex = new RegExp(query, 'i');
+      const filteredItems = searchResults.filter((item) =>
+        item.name.match(regex)
+      );
 
       setSearchResults(filteredItems);
     } catch (err) {
@@ -189,7 +191,7 @@ const SearchBar: React.FC = () => {
   };
 
   return (
-    <div className="flex items-center justify-between py-2 px-10 border-b-2 h-16">
+    <div className="flex items-center justify-between py-2 px-10 border-b-2 h-16 flex-row-reverse md:flex-row">
       <div className="hidden md:block">
         <div className="flex text-2xl items-center">
           <CapitionIcon className="mr-2 w-10 h-10" />
@@ -350,7 +352,7 @@ const SearchBar: React.FC = () => {
           </span>
         </div>
       </div>
-      <div className="hidden xl:block">
+      <div>
         <SearchInput
           fetchTrending={fetchTrending}
           trending={trending}

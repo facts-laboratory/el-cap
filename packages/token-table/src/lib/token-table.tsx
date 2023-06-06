@@ -1,59 +1,85 @@
-import { useEffect, useState } from 'react';
 import styles from './token-table.module.css';
 import BitcoinSVG from '../assets/svg/bitcoin.svg';
 import { WatchlistIcon } from '../assets/icons';
-import { ProcessedTokenData, TokenData } from '@el-cap/interfaces';
 
 /* eslint-disable-next-line */
 export interface TokenTableProps {}
 
-export const orderByMarketCap = (data: ProcessedTokenData[]) => {
-  return data.sort((a, b) => b.marketCap - a.marketCap);
-};
-
-export const getTokenData = (data: TokenData[]): ProcessedTokenData[] => {
-  console.log('data', data);
-  return data.map((token, index) => {
-    const {
-      symbol,
-      value,
-      name,
-      image,
-      price_change_percentage_1h_in_currency,
-      price_change_percentage_24h_in_currency,
-      price_change_percentage_7d_in_currency,
-      current_price,
-      market_cap,
-      total_volume,
-      circulating_supply,
-      ...rest
-    } = token;
-
-    return {
-      name: name || '',
-      image: image || '',
-      coin: symbol || '',
-      price: current_price || 0,
-      marketCap: market_cap || 0,
-      volume: total_volume || 0,
-      circulatingSupply: circulating_supply || 0,
-      '1h': price_change_percentage_1h_in_currency || 0,
-      '24h': price_change_percentage_24h_in_currency || 0,
-      '7d': price_change_percentage_7d_in_currency || 0,
-    };
-  });
-};
-
+const data = [
+  {
+    coin: 'BTC',
+    price: 2801346,
+    '1h': 0.01,
+    '24h': 0.02,
+    '7d': 13.51,
+    marketCap: 541335905352,
+    volume: 36421460548,
+    circulatingSupply: 19324137,
+    graphSrc:
+      'https://s3.coinmarketcap.com/generated/sparklines/web/7d/2781/1.svg',
+  },
+  {
+    coin: 'BTC',
+    price: 2801346,
+    '1h': 0.01,
+    '24h': 0.02,
+    '7d': 13.51,
+    marketCap: 541335905352,
+    volume: 36421460548,
+    circulatingSupply: 19324137,
+    graphSrc:
+      'https://s3.coinmarketcap.com/generated/sparklines/web/7d/2781/1.svg',
+  },
+  {
+    coin: 'BTC',
+    price: 2801346,
+    '1h': 0.01,
+    '24h': 0.02,
+    '7d': 13.51,
+    marketCap: 541335905352,
+    volume: 36421460548,
+    circulatingSupply: 19324137,
+    graphSrc:
+      'https://s3.coinmarketcap.com/generated/sparklines/web/7d/2781/1.svg',
+  },
+  {
+    coin: 'BTC',
+    price: 2801346,
+    '1h': 0.01,
+    '24h': 0.02,
+    '7d': 13.51,
+    marketCap: 541335905352,
+    volume: 36421460548,
+    circulatingSupply: 19324137,
+    graphSrc:
+      'https://s3.coinmarketcap.com/generated/sparklines/web/7d/2781/1.svg',
+  },
+  {
+    coin: 'BTC',
+    price: 2801346,
+    '1h': 0.01,
+    '24h': 0.02,
+    '7d': 13.51,
+    marketCap: 541335905352,
+    volume: 36421460548,
+    circulatingSupply: 19324137,
+    graphSrc:
+      'https://s3.coinmarketcap.com/generated/sparklines/web/7d/2781/1.svg',
+  },
+  {
+    coin: 'BTC',
+    price: 2801346,
+    '1h': 0.01,
+    '24h': 0.02,
+    '7d': 13.51,
+    marketCap: 541335905352,
+    volume: 36421460548,
+    circulatingSupply: 19324137,
+    graphSrc:
+      'https://s3.coinmarketcap.com/generated/sparklines/web/7d/2781/1.svg',
+  },
+];
 export function TokenTable(props: TokenTableProps) {
-  const { data, goToCoin } = props;
-  const [tokenData, setTokenData] = useState<ProcessedTokenData[]>([]);
-
-  useEffect(() => {
-    console.log('data', data);
-    if (data) {
-      setTokenData(orderByMarketCap(getTokenData(data)));
-    }
-  }, [data]);
   return (
     <div className="mt-4 relative overflow-x-auto shadow-md sm:rounded-lg">
       <table className="w-full text-sm text-left text-gray-500">
