@@ -39,11 +39,25 @@ const data = [
 
 export interface FeedProps {
   goToCoin: (ticker: string) => void;
+  feedPage: {
+    entities: any;
+    loadingStatus: string;
+    fetchFeed: () => void;
+  };
 }
 
 export function Feed(props: FeedProps) {
+  const { fetchFeed, entities, loadingStatus } = props.feedPage;
   const { goToCoin } = props;
   const [showCase, setShowCase] = useState<boolean>(true);
+
+  console.log('props', props);
+
+  useEffect(() => {
+    if (loadingStatus !== 'loaded' ) {
+      fetchFeed();
+    }
+  }, [entities]);
 
   return (
     <div className="min-h-[calc(100vh-217px)]">
@@ -88,6 +102,7 @@ export function Feed(props: FeedProps) {
                     title={val.title}
                     type={val.type}
                     data={val.data}
+                    goToCoin={goToCoin}
                   />
                 </div>
               );
@@ -100,7 +115,7 @@ export function Feed(props: FeedProps) {
           <TabComponent />
           <DropDownAllTypes />
         </div>
-        <TokenTable />
+    {entities && <TokenTable data={entities} goToCoin={goToCoin} />}
       </div>
     </div>
   );
@@ -109,5 +124,6 @@ export function Feed(props: FeedProps) {
 export default Feed;
 
 export const ConnectedFeed = connect(mapStateToProps, (dispatch) => ({
-  goToCoin: (ticker: string) => dispatch({ type: 'COIN', payload: { ticker } }),
+  goToCoin: (ticker: string, entity: any) =>
+    dispatch({ type: 'COIN', payload: { ticker, entity } }),
 }))(Feed);
