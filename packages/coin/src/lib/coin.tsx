@@ -14,7 +14,8 @@ interface CoinProps {
   ticker: string;
   coinPage: {
     coinChartProps: {
-      fetch: ({ symbol: string, interval: string }) => void;
+      fetch: (input: { symbol: string; interval: string }) => void;
+      fetchRemaining: (input: { symbol: string; interval: string }) => void;
       chart24hourData: PriceData | undefined;
     };
   };
@@ -38,12 +39,7 @@ export function Coin(props: CoinProps) {
   const { goToFeed, entity, ticker, coinPage } = props;
   const { coinChartProps } = coinPage;
 
-  const { fetch, chart24hourData } = coinChartProps;
   const [error, setError] = useState<string | undefined>();
-
-  useEffect(() => {
-    fetch({ symbol: ticker, interval: '24h' });
-  }, []);
 
   const coinChart = {
     [TimeRange.DAY_1]: [
@@ -249,7 +245,7 @@ export function Coin(props: CoinProps) {
         </div>
       </div>
       <div>
-        <ChartWidget coinChart={coinChart} {...coinChartProps} />
+        <ChartWidget {...coinChartProps} ticker={ticker} />
       </div>
     </div>
   );
