@@ -136,10 +136,7 @@ export function TokenTable(props: TokenTableProps) {
                 <td className="px-6 py-4">
                   ${val.circulatingSupply.toLocaleString()}
                 </td>
-                <td
-                  className="px-6 py-4 cursor-pointer"
-                  onClick={() => console.log('asdf')}
-                >
+                <td className="px-6 py-4 cursor-pointer">
                   <img
                     className="text-teal-400"
                     style={{

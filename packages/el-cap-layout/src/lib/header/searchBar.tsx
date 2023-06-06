@@ -179,7 +179,10 @@ const SearchBar: React.FC = () => {
         },
       ];
 
-      setSearchResults(searchResults);
+      const regex = new RegExp(query, "i");
+      const filteredItems = searchResults.filter(item => item.name.match(regex));
+
+      setSearchResults(filteredItems);
     } catch (err) {
       setError('Failed to fetch search results');
     }

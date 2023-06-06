@@ -38,8 +38,9 @@ export default function SearchInput(props: SearchInputProps) {
   const [openSearch, setOpenSearch] = useState<boolean>(false);
   const [inputValue, setInputValue] = useState('');
   const [inSearch, setInSearch] = useState(false);
-  const overlaySearch = useRef<HTMLInputElement>(null);
+  const overlaySearch = useRef<HTMLDivElement>(null);
   const backgroundSearch = useRef<HTMLInputElement>(null);
+  const overlayInput = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (loadingStatus === LoadingStatus.NOT_LOADED) {
@@ -59,6 +60,12 @@ export default function SearchInput(props: SearchInputProps) {
     } else {
       setInSearch(false);
     }
+  };
+
+  const goToCoin = (ticker: string) => {
+    // Navigate to the specific coin's page
+    // This depends on how you're handling routing in your application
+    window.location.href = `/coins/${ticker}`;
   };
 
   const handleOpenSearch = () => {
@@ -127,6 +134,7 @@ export default function SearchInput(props: SearchInputProps) {
       <div
         className="absolute top-0 pt-0 p-4 bg-white z-50 min-w-[27rem] -left-[10rem] rounded-lg shadow-lg"
         style={openSearch ? {} : { display: 'none' }}
+        ref={overlaySearch}
       >
         <div className="block space-y-3">
           <div className="relative">
@@ -140,16 +148,16 @@ export default function SearchInput(props: SearchInputProps) {
                 xmlns="http://www.w3.org/2000/svg"
               >
                 <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
                   d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
                 ></path>
               </svg>
             </div>
             <input
               type="search"
-              ref={overlaySearch}
+              ref={overlayInput}
               value={inputValue}
               onChange={handleInputChange}
               className="outline-none block w-full p-2 pl-10 text-sm text-gray-900 border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500"
@@ -205,17 +213,20 @@ export default function SearchInput(props: SearchInputProps) {
             xmlns="http://www.w3.org/2000/svg"
           >
             <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
               d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
             ></path>
           </svg>
         </div>
         <input
-          onFocus={setTimeout(() => {
-            overlaySearch.current?.focus();
-          }, 200)}
+          onFocus={
+            () => {
+              setTimeout(() => {
+                overlayInput.current?.focus();
+              }, 200)}
+            }
           type="search"
           ref={backgroundSearch}
           className="outline-none block w-full p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500"
