@@ -1,1 +1,1 @@
-export * from './lib/widget-coin-card';
+export { default as WidgetCoinCard } from './lib/widget-coin-card';

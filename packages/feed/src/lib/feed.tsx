@@ -7,33 +7,30 @@ import { TokenTable } from '@el-cap/token-table';
 import TabComponent from './components/TabComponent';
 import DropDownFeedOptions from './components/DropDownFeed';
 
-const data = [
+const TrendingdummyData = [
   {
-    title: 'Trending',
-    type: 'trending',
-    data: [
-      { text: 'Shiba Inu', icon: 'SHIB', value: '-4.28' },
-      { text: 'Shiba Inu', icon: 'SHIB', value: '4.28' },
-      { text: 'Shiba Inu', icon: 'SHIB', value: '-4.28' },
-    ],
+    name: 'Bitcoin',
+    symbol: 'BTC',
+    metric: -4.28,
+    image: 'https://s2.coinmarketcap.com/static/img/coins/64x64/1.png',
   },
   {
-    title: 'Biggest Gainer',
-    type: 'price',
-    data: [
-      { text: 'Timeseries AI', icon: 'TIMESERIES', value: '0.000251' },
-      { text: 'Timeseries AI', icon: 'TIMESERIES', value: '0.000251' },
-      { text: 'Timeseries AI', icon: 'TIMESERIES', value: '0.000251' },
-    ],
+    name: 'Ethereum',
+    symbol: 'ETH',
+    metric: 4000,
+    image: 'https://s2.coinmarketcap.com/static/img/coins/64x64/1027.png',
   },
   {
-    title: 'Recently Updated Socials',
-    type: 'price',
-    data: [
-      { text: 'Timeseries AI', icon: 'TIMESERIES', value: '0.000251' },
-      { text: 'Shiba Inu', icon: 'SHIB', value: '0.000251' },
-      { text: 'Timeseries AI', icon: 'TIMESERIES', value: '0.000251' },
-    ],
+    name: 'Cardano',
+    symbol: 'ADA',
+    metric: 2.12,
+    image: 'https://s2.coinmarketcap.com/static/img/coins/64x64/2010.png',
+  },
+  {
+    name: 'Dogecoin',
+    symbol: 'DOGE',
+    metric: 0.24,
+    image: 'https://s2.coinmarketcap.com/static/img/coins/64x64/74.png',
   },
 ];
 
@@ -51,10 +48,8 @@ export function Feed(props: FeedProps) {
   const { goToCoin } = props;
   const [showCase, setShowCase] = useState<boolean>(true);
 
-  console.log('props', props);
-
   useEffect(() => {
-    if (loadingStatus !== 'loaded' ) {
+    if (loadingStatus !== 'loaded') {
       fetchFeed();
     }
   }, [entities]);
@@ -66,7 +61,7 @@ export function Feed(props: FeedProps) {
     { title: 'Pos', key: 'feed3' },
     { title: 'Ethereum Ecosystem', key: 'feed4' },
     { title: 'Layer 1', key: 'feed5' },
-    { title: 'Layer 2', key: 'feed6' }
+    { title: 'Layer 2', key: 'feed6' },
   ];
   const goToFeed = useCallback((key: string) => {
     console.log(`Navigating to feed with key: ${key}`);
@@ -108,18 +103,27 @@ export function Feed(props: FeedProps) {
         </div>
         {showCase ? (
           <div className="flex flex-wrap gap-5 my-6">
-            {data.map((val, key) => {
-              return (
-                <div className="flex-1" key={key}>
-                  <WidgetCoinCard
-                    title={val.title}
-                    type={val.type}
-                    data={val.data}
-                    goToCoin={goToCoin}
-                  />
-                </div>
-              );
-            })}
+            <WidgetCoinCard
+              title="Trending Coins"
+              type="Trending"
+              data={TrendingdummyData}
+              goToCoin={goToCoin}
+              goToFeed={goToFeed}
+            />
+            <WidgetCoinCard
+              title="Biggest Gainers"
+              type="Biggest"
+              data={TrendingdummyData}
+              goToCoin={goToCoin}
+              goToFeed={goToFeed}
+            />
+            <WidgetCoinCard
+              title="Recently updated Socials"
+              type="Recently"
+              data={TrendingdummyData}
+              goToCoin={goToCoin}
+              goToFeed={goToFeed}
+            />
           </div>
         ) : (
           <></>
@@ -128,7 +132,7 @@ export function Feed(props: FeedProps) {
           <TabComponent />
           <DropDownFeedOptions feedOptions={feedOptions} goToFeed={goToFeed} />
         </div>
-          {entities && <TokenTable data={entities} goToCoin={goToCoin} />}
+        {entities && <TokenTable data={entities} goToCoin={goToCoin} />}
       </div>
     </div>
   );
