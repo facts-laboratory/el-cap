@@ -1,11 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { connect } from 'react-redux';
 
 import { mapStateToProps } from '@el-cap/store';
 import { WidgetCoinCard } from '@el-cap/widget-coin-card';
 import { TokenTable } from '@el-cap/token-table';
 import TabComponent from './components/TabComponent';
-import DropDownAllTypes from './components/DropDownAllTypes';
+import DropDownFeedOptions from './components/DropDownFeed';
 
 const data = [
   {
@@ -58,6 +58,19 @@ export function Feed(props: FeedProps) {
       fetchFeed();
     }
   }, [entities]);
+
+  const feedOptions = [
+    { title: 'All', key: 'feed0' },
+    { title: 'Algorand Ecosystem', key: 'feed1' },
+    { title: 'Pow', key: 'feed2' },
+    { title: 'Pos', key: 'feed3' },
+    { title: 'Ethereum Ecosystem', key: 'feed4' },
+    { title: 'Layer 1', key: 'feed5' },
+    { title: 'Layer 2', key: 'feed6' }
+  ];
+  const goToFeed = useCallback((key: string) => {
+    console.log(`Navigating to feed with key: ${key}`);
+  }, []);
 
   return (
     <div className="min-h-[calc(100vh-217px)]">
@@ -113,9 +126,9 @@ export function Feed(props: FeedProps) {
         )}
         <div className="flex justify-between items-center">
           <TabComponent />
-          <DropDownAllTypes />
+          <DropDownFeedOptions feedOptions={feedOptions} goToFeed={goToFeed} />
         </div>
-    {entities && <TokenTable data={entities} goToCoin={goToCoin} />}
+          {entities && <TokenTable data={entities} goToCoin={goToCoin} />}
       </div>
     </div>
   );
