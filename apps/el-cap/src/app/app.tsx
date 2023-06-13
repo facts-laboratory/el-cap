@@ -1,4 +1,8 @@
-import { ContentContainer, Header, Footer } from '@el-cap/el-cap-layout';
+import {
+  ContentContainer,
+  ConnectedHeader,
+  Footer,
+} from '@el-cap/el-cap-layout';
 import {
   fetch24PriceData,
   selectChartData,
@@ -60,7 +64,7 @@ export function App(props: AppProps) {
   const Page = components[(page as keyof ObjectKeys) || 'Feed'];
   return (
     <div className="flex flex-col h-screen">
-      <Header />
+      <ConnectedHeader />
       <ContentContainer
         children={<Page coinPage={coinPage} feedPage={feedPage} />}
       />

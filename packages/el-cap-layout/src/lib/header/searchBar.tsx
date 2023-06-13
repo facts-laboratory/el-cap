@@ -35,8 +35,13 @@ enum LoadingStatus {
   NOT_LOADED = 'not loaded',
 }
 
-const SearchBar: React.FC = () => {
+export interface SearchBarProps {
+  goToFeed: () => void;
+}
+
+const SearchBar = (props: SearchBarProps) => {
   const [menuStatus, setMenuStatus] = useState<boolean>(true);
+  const { goToFeed } = props;
 
   const groupedOptions = [
     {
@@ -157,7 +162,7 @@ const SearchBar: React.FC = () => {
   return (
     <div className="flex items-center justify-between py-2 px-10 border-b-2 h-16 flex-row-reverse md:flex-row">
       <div className="hidden md:block">
-        <div className="flex text-2xl items-center">
+        <div onClick={() => goToFeed()} className="flex text-2xl items-center">
           <CapitionIcon className="mr-2 w-10 h-10" />
           <span className="font-bold mr-10 hover:text-blue-500 hover:cursor-pointer">
             El Capitan
