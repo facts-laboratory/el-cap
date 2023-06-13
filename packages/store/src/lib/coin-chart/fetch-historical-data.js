@@ -1,9 +1,13 @@
 import redstone from 'redstone-api';
 
 export const fetchHistoricalPrice = async (input) => {
-  const { symbol } = input;
+  console.log(
+    'input start of fetchHistoricalPrice',
+    JSON.parse(JSON.stringify(input))
+  );
+
+  const { symbol, interval = '24h' } = input;
   let { coinChart } = input;
-  let interval = coinChart?.interval ? coinChart.interval : '24h';
   coinChart = coinChart || {};
   const timePeriods = ['24h', '7d', '1m', '3m', '1y'];
 
@@ -26,9 +30,6 @@ export const fetchHistoricalPrice = async (input) => {
     }
   }
 
-  coinChart.symbol = symbol;
-  coinChart.interval = interval;
-
   const endDate = new Date();
   const startDate = new Date(
     endDate.getTime() - timeValues[interval] * 60 * 60 * 1000
@@ -50,7 +51,7 @@ export const fetchHistoricalPrice = async (input) => {
 
     coinChart[interval] = trimmedPrices;
 
-    return coinChart;
+    return { ...coinChart };
   } catch (err) {
     console.error(`Failed to get historical price data: ${err}`);
     throw err;
@@ -65,8 +66,7 @@ function trimData(inputArray) {
   const index = findIndexOfTimestamp(inputArray, targetTimestamp);
   let outputArray = inputArray.map((item) => {
     let timestamp = item.timestamp;
-    const filtered = inputArray.splice(index, 1);
-    let date = timestamp ? new Date(timestamp) : null;
+    inputArray.splice(index, 1);
     return {
       value: item.value,
       timestamp,
