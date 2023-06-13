@@ -6,7 +6,7 @@ export const fetchHistoricalPrice = async (input) => {
     JSON.parse(JSON.stringify(input))
   );
 
-  const { symbol, interval = '24h' } = input;
+  let { symbol, interval = '24h' } = input;
   let { coinChart } = input;
   coinChart = coinChart || {};
   const timePeriods = ['24h', '7d', '1m', '3m', '1y'];
@@ -58,15 +58,9 @@ export const fetchHistoricalPrice = async (input) => {
   }
 };
 function trimData(inputArray) {
-  function findIndexOfTimestamp(inputArray, targetTimestamp) {
-    return inputArray.findIndex((item) => item.timestamp === targetTimestamp);
-  }
-
-  const targetTimestamp = 1684537140000;
-  const index = findIndexOfTimestamp(inputArray, targetTimestamp);
-  let outputArray = inputArray.map((item) => {
+  const reduced = removeDuplicatesByTimestamp(inputArray);
+  let outputArray = reduced.map((item) => {
     let timestamp = item.timestamp;
-    inputArray.splice(index, 1);
     return {
       value: item.value,
       timestamp,
@@ -79,6 +73,7 @@ function trimData(inputArray) {
 function removeDuplicatesByTimestamp(data) {
   return data.reduce((acc, current) => {
     const exists = acc.find((item) => item.timestamp === current.timestamp);
+    console.log('exists', exists);
     if (!exists) {
       return acc.concat([current]);
     } else {

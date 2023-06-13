@@ -7,10 +7,12 @@ import { PriceData } from 'redstone-api/lib/types';
 import { ArrowUpIcon, WatchlistIcon } from '../assets/icons';
 import BitcoinSVG from '../assets/svg/bitcoin.svg';
 import GrayButton from '../assets/component/GrayButton';
+import { ProcessedTokenData, TokenData } from '@el-cap/interfaces';
+import { ArrowDownIcon } from 'packages/widget-coin-card/src/icons';
 
 interface CoinProps {
   goToFeed: () => void;
-  entity?: PriceData;
+  entity?: ProcessedTokenData;
   ticker: string;
   coinPage: {
     coinChartProps: {
@@ -41,93 +43,6 @@ export function Coin(props: CoinProps) {
 
   const [error, setError] = useState<string | undefined>();
 
-  const coinChart = {
-    [TimeRange.DAY_1]: [
-      { timestamp: 1653153600, value: 4500 },
-      { timestamp: 1653164400, value: 4600 },
-      { timestamp: 1653175200, value: 4700 },
-      { timestamp: 1653186000, value: 4800 },
-      { timestamp: 1653196800, value: 4900 },
-      { timestamp: 1653207600, value: 5000 },
-      { timestamp: 1653218400, value: 4900 },
-      { timestamp: 1653229200, value: 4800 },
-      { timestamp: 1653240000, value: 4700 },
-      { timestamp: 1653250800, value: 4600 },
-      { timestamp: 1653261600, value: 4500 },
-    ],
-    [TimeRange.DAY_7]: [
-      { timestamp: 1652668800, value: 4000 },
-      { timestamp: 1652755200, value: 4100 },
-      { timestamp: 1652841600, value: 4200 },
-      { timestamp: 1652928000, value: 4300 },
-      { timestamp: 1653014400, value: 4400 },
-      { timestamp: 1653100800, value: 4500 },
-      { timestamp: 1653187200, value: 4600 },
-    ],
-    [TimeRange.MONTH_1]: [
-      { timestamp: 1650739200, value: 3500 },
-      { timestamp: 1650825600, value: 3600 },
-      { timestamp: 1650912000, value: 3700 },
-      { timestamp: 1650998400, value: 3800 },
-      { timestamp: 1651084800, value: 3900 },
-      { timestamp: 1651171200, value: 4000 },
-      { timestamp: 1651257600, value: 4100 },
-      { timestamp: 1651344000, value: 4200 },
-      { timestamp: 1651430400, value: 4300 },
-      { timestamp: 1651516800, value: 4400 },
-      { timestamp: 1651603200, value: 4500 },
-      { timestamp: 1651689600, value: 4600 },
-    ],
-    [TimeRange.MONTH_3]: [
-      { timestamp: 1648416000, value: 3000 },
-      { timestamp: 1648502400, value: 3100 },
-      { timestamp: 1648588800, value: 3200 },
-      { timestamp: 1648675200, value: 3300 },
-      { timestamp: 1648761600, value: 3400 },
-      { timestamp: 1648848000, value: 3500 },
-      { timestamp: 1648934400, value: 3600 },
-      { timestamp: 1649020800, value: 3700 },
-      { timestamp: 1649107200, value: 3800 },
-      { timestamp: 1649193600, value: 3900 },
-      { timestamp: 1649280000, value: 4000 },
-      { timestamp: 1649366400, value: 4100 },
-    ],
-    [TimeRange.YEAR_1]: [
-      { timestamp: 1621699200, value: 2000 },
-      { timestamp: 1621785600, value: 2100 },
-      { timestamp: 1621872000, value: 2200 },
-      { timestamp: 1621958400, value: 2300 },
-      { timestamp: 1622044800, value: 2400 },
-      { timestamp: 1622131200, value: 2500 },
-      { timestamp: 1622217600, value: 2600 },
-      { timestamp: 1622304000, value: 2700 },
-      { timestamp: 1622390400, value: 2800 },
-      { timestamp: 1622476800, value: 2900 },
-      { timestamp: 1622563200, value: 3000 },
-      { timestamp: 1622649600, value: 3100 },
-      { timestamp: 1622736000, value: 3200 },
-      { timestamp: 1622822400, value: 3300 },
-      { timestamp: 1622908800, value: 3400 },
-      { timestamp: 1622995200, value: 3500 },
-      { timestamp: 1623081600, value: 3600 },
-      { timestamp: 1623168000, value: 3700 },
-      { timestamp: 1623254400, value: 3800 },
-      { timestamp: 1623340800, value: 3900 },
-      { timestamp: 1623427200, value: 4000 },
-      { timestamp: 1623513600, value: 4100 },
-      { timestamp: 1623600000, value: 4200 },
-      { timestamp: 1623686400, value: 4300 },
-      { timestamp: 1623772800, value: 4400 },
-      { timestamp: 1623859200, value: 4500 },
-      { timestamp: 1623945600, value: 4600 },
-      { timestamp: 1624032000, value: 4700 },
-      { timestamp: 1624118400, value: 4800 },
-      { timestamp: 1624204800, value: 4900 },
-      { timestamp: 1624291200, value: 5000 },
-    ],
-    // more time ranges...
-  };
-
   if (error) return <p>{error}</p>;
 
   return (
@@ -139,15 +54,19 @@ export function Coin(props: CoinProps) {
         <div className="text-gray-400 hover:text-gray-600 cursor-pointer font-medium text-sm py-2 inline-flex mr-2">
           Coins &gt;
         </div>
-        <div className="text-black hover:text-gray-600 cursor-pointer font-medium text-sm py-2 inline-flex mr-2">
-          Bitcoin
-        </div>
+        <div className="text-black hover:text-gray-600 cursor-pointer font-medium text-sm py-2 inline-flex mr-2"></div>
       </div>
       <div className="grid md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-x-8 gap-y-4">
         <div className="col-span-1">
           <div className="flex items-center my-4">
-            <img className="w-10 mr-2" src={BitcoinSVG} alt="bitcoin" />
-            <span className="font-bold text-lg mr-2">Bitcoin</span>
+            <img
+              className="w-10 mr-2"
+              src={entity?.image || BitcoinSVG}
+              alt="bitcoin"
+            />
+            <span className="font-bold text-lg mr-2">
+              {entity?.name || 'Bitcoin'}
+            </span>
             <GrayButton text="BTC" />
             <WatchlistIcon className="ml-2" width={18} height={18} />
           </div>
@@ -171,22 +90,39 @@ export function Coin(props: CoinProps) {
         </div>
         <div className="md:col-span-2 col-span-1">
           <div className="font-bold flex items-center mb-8">
-            <span className="md:text-[60px] text-3xl mr-2 p-2">$28,013.46</span>
-            <span className="p-2 text-white bg-green-500 rounded-2xl flex items-center md:text-2xl text-md">
-              <ArrowUpIcon
-                className="mt-2"
-                color="white"
-                width={15}
-                height={15}
-              />
-              0.02%
+            <span className="md:text-[60px] text-3xl mr-2 p-2">
+              ${entity?.price || '28,013.46'}
             </span>
+            {entity &&
+              (entity['24h'] < 0 ? (
+                <span className="p-2 text-white bg-red-500 rounded-2xl flex items-center md:text-2xl text-md">
+                  <ArrowDownIcon
+                    className="mt-2"
+                    color="white"
+                    width={15}
+                    height={15}
+                  />
+                  {(entity && (entity['24h'] * -1).toFixed(4)) || '0.02%'}
+                </span>
+              ) : (
+                <span className="p-2 text-white bg-green-500 rounded-2xl flex items-center md:text-2xl text-md">
+                  <ArrowUpIcon
+                    className="mt-2"
+                    color="white"
+                    width={15}
+                    height={15}
+                  />
+                  {(entity && entity['24h'].toFixed(4)) || '0.02%'}
+                </span>
+              ))}
           </div>
           <div className="grid lg:grid-cols-4 grid-cols-2 gap-2">
             <div className="flex-col">
               <span className="text-[#7D7D7D]">Market Cap</span>
               <br />
-              <span className="font-bold">$535,170,972,845</span>
+              <span className="font-bold">
+                {entity?.marketCap || '$535,170,972,845'}
+              </span>
               <span className="flex items-center text-green-500">
                 <ArrowUpIcon
                   className="mt-2 mr-1"
@@ -214,7 +150,9 @@ export function Coin(props: CoinProps) {
             <div className="flex-col">
               <span className="text-[#7D7D7D]">Volume</span>
               <br />
-              <span className="font-bold">$25,170,972,845</span>
+              <span className="font-bold">
+                {entity?.volume || '$25,170,972,845'}
+              </span>
               <span className="flex items-center text-green-500">
                 <ArrowUpIcon
                   className="mt-2 mr-1"
@@ -229,7 +167,10 @@ export function Coin(props: CoinProps) {
               <span className="text-[#7D7D7D]">Circulating Supply</span>
               <br />
               <div className="flex justify-between">
-                <span className="font-bold">19,327,200 BTC</span>
+                <span className="font-bold">
+                  {entity?.circulatingSupply || '19,327,200'}{' '}
+                  {entity?.coin || 'BTC'}
+                </span>
                 <span className="font-bold">92%</span>
               </div>
               <span className="flex items-center text-green-500">

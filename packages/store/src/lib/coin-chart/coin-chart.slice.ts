@@ -121,7 +121,7 @@ export const coinChartSlice = createSlice({
       })
       .addCase(
         fetchRemainingPriceData.fulfilled,
-        (state: CoinChartState, action: PayloadAction<remainingData[]>) => {
+        (state: CoinChartState, action: PayloadAction<RemainingData[]>) => {
           console.log('action', action.payload);
           state.chartData = action.payload;
           state.remainingLoadingStatus = 'loaded';
