@@ -22,7 +22,7 @@ type TopCoin = {
   image: string;
 };
 
-const WidgetCoinCard: React.FC<TopCoinsCardProps> = ({
+const TopCoinsCard: React.FC<TopCoinsCardProps> = ({
   title,
   type,
   data,
@@ -30,14 +30,14 @@ const WidgetCoinCard: React.FC<TopCoinsCardProps> = ({
   goToFeed,
 }) => {
   const icon = () => {
-    switch (type) {
-      case 'Trending':
+    switch (title) {
+      case 'Trending Coins':
         return <TrendingIcon width={32} height={32} />;
 
-      case 'Biggest':
+      case 'Biggest Gainers':
         return <LightningIcon width={32} height={32} />;
 
-      case 'Recently':
+      case 'Recently Updated Socials':
         return <StarIcon width={32} height={32} />;
 
       default:
@@ -46,8 +46,8 @@ const WidgetCoinCard: React.FC<TopCoinsCardProps> = ({
   };
 
   const metrics = (metric: number) => {
-    switch (title) {
-      case 'Trending Coins':
+    switch (type) {
+      case 'Percentage':
         if (metric < 0) {
           return (
             <span className="text-red-600 font-bold flex">
@@ -61,7 +61,6 @@ const WidgetCoinCard: React.FC<TopCoinsCardProps> = ({
             </span>
           );
         }
-
         return (
           <span className="text-green-600 font-bold flex">
             <ArrowUpIcon
@@ -75,17 +74,7 @@ const WidgetCoinCard: React.FC<TopCoinsCardProps> = ({
         );
 
       default:
-        return (
-          <span className="text-green-600 font-bold flex">
-            <ArrowUpIcon
-              className="mr-1 mt-1"
-              width={20}
-              height={20}
-              color="#00ff00"
-            />
-            {Math.abs(metric)}%
-          </span>
-        );
+        return <span className="font-bold">${metric}</span>;
     }
   };
 
@@ -127,4 +116,4 @@ const WidgetCoinCard: React.FC<TopCoinsCardProps> = ({
   );
 };
 
-export default WidgetCoinCard;
+export default TopCoinsCard;

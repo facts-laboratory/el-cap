@@ -2,30 +2,36 @@ import { useState, useEffect } from 'react';
 import ArrowDown from '../icons/arrowDown';
 
 type DropDownFeedOptionsProps = {
-    feedOptions: FeedOption[],
-    goToFeed: (key: string) => void,
+  feedOptions: FeedOption[];
+  goToFeed: (key: string) => void;
 };
 type FeedOption = {
-  title: string,
-  key: string,
+  title: string;
+  key: string;
 };
 
-const DropDownFeedOptions: React.FC<DropDownFeedOptionsProps> = ({feedOptions, goToFeed}) => {
+const DropDownFeedOptions: React.FC<DropDownFeedOptionsProps> = ({
+  feedOptions,
+  goToFeed,
+}) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [selected, setSelected] = useState<number>(0);
-  const [search, setSearch] = useState<string>("");
+  const [search, setSearch] = useState<string>('');
 
   const selectFeed = (index: number) => {
     setSelected(index);
     goToFeed(feedOptions[index].key);
     setIsOpen(false);
-  }
+  };
+
   useEffect(() => {
     setSelected(0);
   }, [search]);
 
   // Filter the options based on the search string
-  const filteredOptions = feedOptions.filter(option => option.title.toLowerCase().includes(search.toLowerCase()));
+  const filteredOptions = feedOptions.filter((option) =>
+    option.title.toLowerCase().includes(search.toLowerCase())
+  );
 
   return (
     <div className="relative inline-block group">
@@ -35,7 +41,9 @@ const DropDownFeedOptions: React.FC<DropDownFeedOptionsProps> = ({feedOptions, g
           isOpen ? 'outline outline-yellow-400 outline-1' : 'outline-none'
         }`}
       >
-        <span className="hidden sm:block">{filteredOptions.length > 0 ? filteredOptions[selected].title : ""}</span>
+        <span className="hidden sm:block">
+          {filteredOptions.length > 0 ? filteredOptions[selected].title : ''}
+        </span>
         <ArrowDown className="w-5 h-5" width={32} height={32} />
       </button>
       <div
@@ -57,19 +65,19 @@ const DropDownFeedOptions: React.FC<DropDownFeedOptionsProps> = ({feedOptions, g
         </div>
         <div className="grid sm:grid-cols-3 grid-cols-2 gap-2 text-sm">
           {filteredOptions.map((val, key) => {
-              return (
-                <div className="p-1 cursor-pointer" key={key}>
-                  <span
-                    onClick={() => selectFeed(key)}
-                    className={`${
-                      selected === key ? 'bg-yellow-300' : ''
-                    } rounded-lg px-4 py-2 font-bold whitespace-nowrap`}
-                  >
-                    {val.title}
-                  </span>
-                </div>
-              );
-            })}
+            return (
+              <div className="p-1 cursor-pointer" key={key}>
+                <span
+                  onClick={() => selectFeed(key)}
+                  className={`${
+                    selected === key ? 'bg-yellow-300' : ''
+                  } rounded-lg px-4 py-2 font-bold whitespace-nowrap`}
+                >
+                  {val.title}
+                </span>
+              </div>
+            );
+          })}
         </div>
       </div>
     </div>

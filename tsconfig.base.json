@@ -24,7 +24,7 @@
       "@el-cap/layout": ["packages/layout/src/index.ts"],
       "@el-cap/store": ["packages/store/src/index.ts"],
       "@el-cap/token-table": ["packages/token-table/src/index.ts"],
-      "@el-cap/widget-coin-card": ["packages/widget-coin-card/src/index.ts"]
+      "@el-cap/top-coins-card": ["packages/top-coins-card/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

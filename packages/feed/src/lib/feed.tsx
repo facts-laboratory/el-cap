@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { connect } from 'react-redux';
 
 import { mapStateToProps } from '@el-cap/store';
-import { WidgetCoinCard } from '@el-cap/widget-coin-card';
+import { TopCoinsCard } from '@el-cap/top-coins-card';
 import { TokenTable } from '@el-cap/token-table';
 import TabComponent from './components/TabComponent';
 import DropDownFeedOptions from './components/DropDownFeed';
@@ -103,23 +103,23 @@ export function Feed(props: FeedProps) {
         </div>
         {showCase ? (
           <div className="flex flex-wrap gap-5 my-6">
-            <WidgetCoinCard
+            <TopCoinsCard
               title="Trending Coins"
-              type="Trending"
+              type="Percentage"
               data={TrendingdummyData}
               goToCoin={goToCoin}
               goToFeed={goToFeed}
             />
-            <WidgetCoinCard
+            <TopCoinsCard
               title="Biggest Gainers"
-              type="Biggest"
+              type="Price"
               data={TrendingdummyData}
               goToCoin={goToCoin}
               goToFeed={goToFeed}
             />
-            <WidgetCoinCard
-              title="Recently updated Socials"
-              type="Recently"
+            <TopCoinsCard
+              title="Recently Updated Socials"
+              type="Price"
               data={TrendingdummyData}
               goToCoin={goToCoin}
               goToFeed={goToFeed}
