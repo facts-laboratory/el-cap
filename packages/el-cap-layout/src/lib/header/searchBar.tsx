@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { WarpFactory } from 'warp-contracts';
 import {
   CapitionIcon,
   MenuIcon,
@@ -10,6 +11,9 @@ import {
 import { Tooltip } from 'flowbite-react';
 import SearchInput from './searchInput';
 import DropDownMenu from '../components/dropDownMenu';
+const contractId = 'tp26fWLGKY_HFM6RFTYgMDsK-VvERhFDNZSVbpk_dS0';
+const warp = WarpFactory.forMainnet();
+const contract = warp.contract(contractId);
 
 type DropDownOption = {
   value: string;
@@ -33,6 +37,7 @@ enum LoadingStatus {
 
 const SearchBar: React.FC = () => {
   const [menuStatus, setMenuStatus] = useState<boolean>(true);
+
   const groupedOptions = [
     {
       groupLabel: 'Community',
@@ -129,55 +134,14 @@ const SearchBar: React.FC = () => {
 
   const fetchSearch = async (query: string) => {
     // Fetch search results from API or other data source
+
     try {
       //example fetch
       // const response = await fetch(`https://api.example.com/search?query=${query}`);
       // const searchResults = await response.json();
-
-      const searchResults = [
-        {
-          name: 'USD Coin',
-          symbol: 'usdc',
-          ranking: 5,
-          image:
-            'https://assets.coingecko.com/coins/images/6319/large/USD_Coin_icon.png?1547042389',
-        },
-        {
-          name: 'XRP',
-          symbol: 'xrp',
-          ranking: 6,
-          image:
-            'https://assets.coingecko.com/coins/images/44/large/xrp-symbol-white-128.png?1605778731',
-        },
-        {
-          name: 'Cardano',
-          symbol: 'ada',
-          ranking: 7,
-          image:
-            'https://assets.coingecko.com/coins/images/975/large/cardano.png?1547034860',
-        },
-        {
-          name: 'Lido Staked Ether',
-          symbol: 'steth',
-          ranking: 8,
-          image:
-            'https://assets.coingecko.com/coins/images/13442/large/steth_logo.png?1608607546',
-        },
-        {
-          name: 'Dogecoin',
-          symbol: 'doge',
-          ranking: 9,
-          image:
-            'https://assets.coingecko.com/coins/images/5/large/dogecoin.png?1547792256',
-        },
-        {
-          name: 'Polygon',
-          symbol: 'matic',
-          ranking: 10,
-          image:
-            'https://assets.coingecko.com/coins/images/4713/large/matic-token-icon.png?1624446912',
-        },
-      ];
+      const state = await contract.readState();
+      const searchResults = state.cachedValue.state.coins;
+      console.log('state running here', state);
 
       const regex = new RegExp(query, 'i');
       const filteredItems = searchResults.filter((item) =>
