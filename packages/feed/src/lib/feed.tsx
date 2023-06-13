@@ -63,8 +63,9 @@ export function Feed(props: FeedProps) {
     { title: 'Layer 1', key: 'feed5' },
     { title: 'Layer 2', key: 'feed6' },
   ];
+
   const goToFeed = useCallback((key: string) => {
-    console.log(`Navigating to feed with key: ${key}`);
+    window.location.href = key;
   }, []);
 
   return (

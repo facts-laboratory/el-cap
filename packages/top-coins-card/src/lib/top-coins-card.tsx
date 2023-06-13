@@ -78,6 +78,11 @@ const TopCoinsCard: React.FC<TopCoinsCardProps> = ({
     }
   };
 
+  const convertString = (str: string) => {
+    const temp = str.toLowerCase();
+    return temp.replace(/\s/g, '-');
+  };
+
   return (
     <div className="flex-1">
       <div className="rounded-3xl sm:p-6 p-2 bg-white">
@@ -88,7 +93,7 @@ const TopCoinsCard: React.FC<TopCoinsCardProps> = ({
           </div>
           <span
             className="text-gray-500 hover:cursor-pointer hover:text-gray-600"
-            onClick={() => goToFeed(title)}
+            onClick={() => goToFeed(convertString(title))}
           >
             More &gt;
           </span>
