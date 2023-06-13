@@ -21,8 +21,8 @@ enum TimeRange {
 }
 
 interface ChartData {
-  time: number;
-  value: number;
+  time: number,
+  value: number
 }
 
 enum LoadingStatus {
@@ -32,16 +32,32 @@ enum LoadingStatus {
 }
 interface CoinChartProps {
   chartData: CoinChart;
-  fetch: (symbol: string) => void;
+  fetch: (input: { symbol: string; interval: string }) => void;
   loadingStatus: LoadingStatus;
   error?: string | null;
+  remainingLoadingStatus: LoadingStatus;
+  ticker: string;
+  fetchRemaining: (input: { symbol: string; interval: string }) => void;
 }
 
 export function ChartWidget(props: CoinChartProps) {
-  const { chartData, fetch, loadingStatus, error } = props;
+  const { chartData, fetch, loadingStatus, error, ticker, fetchRemaining } =
+    props;
   const [selectedTimeRange, setSelectedTimeRange] = useState(TimeRange.DAY_1);
   const underlineRef = useRef(null);
   const buttonRefs = useRef(new Map()).current;
+
+  useEffect(() => {
+    fetch({ symbol: ticker, interval: '24h' });
+  }, []);
+
+  useEffect(() => {
+    console.log('chartData in effect', chartData);
+    if (chartData['24h'] && !chartData['7d']) {
+      console.log('fetching', ticker);
+      fetchRemaining({ symbol: ticker, interval: '7d' });
+    }
+  }, [chartData['24h']]);
 
   useEffect(() => {
     if (loadingStatus === LoadingStatus.NOT_LOADED) {
@@ -80,7 +96,7 @@ export function ChartWidget(props: CoinChartProps) {
     return <p>Error: {error}</p>;
   }
 
-  if (loadingStatus === LoadingStatus.LOADED && chartData['1m']) {
+  if (loadingStatus === LoadingStatus.LOADED && chartData['24h']) {
     return (
       <>
         <div className="sm:flex items-center justify-between my-4">

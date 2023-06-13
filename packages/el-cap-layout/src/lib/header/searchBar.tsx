@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { WarpFactory } from 'warp-contracts';
 import {
   CapitionIcon,
   MenuIcon,
@@ -7,6 +8,32 @@ import {
   WatchlistIcon,
   WalletIcon,
 } from '../icons';
+import { Tooltip } from 'flowbite-react';
+import SearchInput from './searchInput';
+import DropDownMenu from '../components/dropDownMenu';
+const contractId = 'tp26fWLGKY_HFM6RFTYgMDsK-VvERhFDNZSVbpk_dS0';
+const warp = WarpFactory.forMainnet();
+const contract = warp.contract(contractId);
+
+type DropDownOption = {
+  value: string;
+  label: string;
+  destination: string;
+  image: string;
+};
+
+type SearchCoin = {
+  name: string;
+  symbol: string;
+  ranking: number;
+  image: string;
+};
+
+enum LoadingStatus {
+  LOADED = 'loaded',
+  LOADING = 'loading',
+  NOT_LOADED = 'not loaded',
+}
 
 export interface SearchBarProps {
   goToFeed: () => void;
@@ -16,46 +43,293 @@ const SearchBar = (props: SearchBarProps) => {
   const [menuStatus, setMenuStatus] = useState<boolean>(true);
   const { goToFeed } = props;
 
+  const groupedOptions = [
+    {
+      groupLabel: 'Community',
+      options: [
+        {
+          value: '1',
+          label: 'Feeds',
+          destination: '/Feeds',
+          image: '/feed.svg',
+        },
+        {
+          value: '2',
+          label: 'Articles',
+          destination: '/articles',
+          image: '/articles.svg',
+        },
+      ],
+    },
+  ];
+
+  const goToPage = (option: DropDownOption) => {
+    window.location.href = option.destination;
+  };
+
+  // search
+  const [trending, setTrending] = useState<SearchCoin[]>([]);
+  const [loadingStatus, setLoadingStatus] = useState<LoadingStatus>(
+    LoadingStatus.NOT_LOADED
+  );
+  const [searchResults, setSearchResults] = useState<SearchCoin[]>([]);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchTrending = async () => {
+    setLoadingStatus(LoadingStatus.LOADING);
+
+    // Fetch trending coins from API or other data source
+    try {
+      // example fetch
+      // const response = await fetch('https://api.example.com/trending-coins');
+      // const trendingCoins = await response.json();
+
+      const trendingCoins = [
+        {
+          name: 'USD Coin',
+          symbol: 'usdc',
+          ranking: 5,
+          image:
+            'https://assets.coingecko.com/coins/images/6319/large/USD_Coin_icon.png?1547042389',
+        },
+        {
+          name: 'XRP',
+          symbol: 'xrp',
+          ranking: 6,
+          image:
+            'https://assets.coingecko.com/coins/images/44/large/xrp-symbol-white-128.png?1605778731',
+        },
+        {
+          name: 'Cardano',
+          symbol: 'ada',
+          ranking: 7,
+          image:
+            'https://assets.coingecko.com/coins/images/975/large/cardano.png?1547034860',
+        },
+        {
+          name: 'Lido Staked Ether',
+          symbol: 'steth',
+          ranking: 8,
+          image:
+            'https://assets.coingecko.com/coins/images/13442/large/steth_logo.png?1608607546',
+        },
+        {
+          name: 'Dogecoin',
+          symbol: 'doge',
+          ranking: 9,
+          image:
+            'https://assets.coingecko.com/coins/images/5/large/dogecoin.png?1547792256',
+        },
+        {
+          name: 'Polygon',
+          symbol: 'matic',
+          ranking: 10,
+          image:
+            'https://assets.coingecko.com/coins/images/4713/large/matic-token-icon.png?1624446912',
+        },
+      ];
+
+      setTrending(trendingCoins);
+      setLoadingStatus(LoadingStatus.LOADED);
+    } catch (err) {
+      setError('Failed to fetch trending coins');
+      setLoadingStatus(LoadingStatus.NOT_LOADED);
+    }
+  };
+
+  const fetchSearch = async (query: string) => {
+    // Fetch search results from API or other data source
+
+    try {
+      //example fetch
+      // const response = await fetch(`https://api.example.com/search?query=${query}`);
+      // const searchResults = await response.json();
+      const state = await contract.readState();
+      const searchResults = state.cachedValue.state.coins;
+      console.log('state running here', state);
+
+      const regex = new RegExp(query, 'i');
+      const filteredItems = searchResults.filter((item) =>
+        item.name.match(regex)
+      );
+
+      setSearchResults(filteredItems);
+    } catch (err) {
+      setError('Failed to fetch search results');
+    }
+  };
+
   return (
-    <div className="flex items-center justify-between py-2 px-10 border-b-2 h-16">
+    <div className="flex items-center justify-between py-2 px-10 border-b-2 h-16 flex-row-reverse md:flex-row">
       <div className="hidden md:block">
         <div onClick={() => goToFeed()} className="flex text-2xl items-center">
           <CapitionIcon className="mr-2 w-10 h-10" />
           <span className="font-bold mr-10 hover:text-blue-500 hover:cursor-pointer">
             El Capitan
           </span>
-          <span className="font-bold mr-10 hover:text-blue-500 hover:cursor-pointer">
-            Cryptocurrencies
-          </span>
+          <Tooltip
+            content={
+              <div className="grid grid-cols-2 min-w-[30rem] gap-10 bg-white p-8 rounded-lg shadow-lg">
+                <div className="space-y-3">
+                  <h3 className="uppercase text-gray-400">Cryptocurrencies</h3>
+                  <div className="flex flex-col space-y-3 font-bold text-lg">
+                    <span className="inline-flex space-x-3 items-center">
+                      <img
+                        src="/ranking.svg"
+                        className="w-8 object-contain h-8"
+                      />
+                      <span>Ranking</span>
+                    </span>
+                    <span className="inline-flex space-x-3 items-center">
+                      <img
+                        src="/recently_added.svg"
+                        className="w-8 object-contain h-8"
+                      />
+                      <span>Recently Added</span>
+                    </span>
+                    <span className="inline-flex space-x-3 items-center">
+                      <img
+                        src="/categories.svg"
+                        className="w-8 object-contain h-8"
+                      />
+                      <span>Categories</span>
+                    </span>
+                    <span className="inline-flex space-x-3 items-center">
+                      <img
+                        src="/spotlight.svg"
+                        className="w-8 object-contain h-8"
+                      />
+                      <span>Spotlight</span>
+                    </span>
+                    <span className="inline-flex space-x-3 items-center">
+                      <img
+                        src="/gainers_losers.svg"
+                        className="w-8 object-contain h-8"
+                      />
+                      <span>Gainers & Losers</span>
+                    </span>
+                    <span className="inline-flex space-x-3 items-center">
+                      <img
+                        src="/global_charts.svg"
+                        className="w-8 object-contain h-8"
+                      />
+                      <span>Global Charts</span>
+                    </span>
+                    <span className="inline-flex space-x-3 items-center">
+                      <img
+                        src="/historical_snapshots.svg"
+                        className="w-8 object-contain h-8"
+                      />
+                      <span>Historical Snapshots</span>
+                    </span>
+                  </div>
+
+                  <div className="h-px w-full bg-gray-200 border-0"></div>
+
+                  <div className="flex flex-col space-y-3 font-bold text-lg">
+                    <span className="inline-flex space-x-3 items-center">
+                      <img
+                        src="/price_estimates.svg"
+                        className="w-8 object-contain h-8"
+                      />
+                      <span>Price Estimates</span>
+                    </span>
+                    <span className="inline-flex space-x-3 items-center">
+                      <img
+                        src="/polkadot_parachains.svg"
+                        className="w-8 object-contain h-8"
+                      />
+                      <span>Polkadot Parachains</span>
+                    </span>
+                    <span className="inline-flex space-x-3 items-center">
+                      <img
+                        src="/legal_tender_currencies.svg"
+                        className="w-8 object-contain h-8"
+                      />
+                      <span>Legal Tender Currencies</span>
+                    </span>
+                    <span className="inline-flex space-x-3 items-center">
+                      <img
+                        src="/fiats_company_rankings.svg"
+                        className="w-8 object-contain h-8"
+                      />
+                      <span>Fiats / Companies Rankings</span>
+                    </span>
+                  </div>
+                </div>
+
+                <div className="space-y-3">
+                  <h3 className="uppercase text-gray-400">NFT</h3>
+                  <div className="flex flex-col space-y-3 font-bold text-lg">
+                    <span className="inline-flex space-x-3 items-center">
+                      <img
+                        src="/overall_status.svg"
+                        className="w-8 object-contain h-8"
+                      />
+                      <span>Overall NFT Status</span>
+                    </span>
+                    <span className="inline-flex space-x-3 items-center">
+                      <img
+                        src="/overall_collections.svg"
+                        className="w-8 object-contain h-8"
+                      />
+                      <span>Top Collections</span>
+                    </span>
+                    <span className="inline-flex space-x-3 items-center">
+                      <img
+                        src="/upcoming_sales.svg"
+                        className="w-8 object-contain h-8"
+                      />
+                      <span>Upcoming Sales</span>
+                    </span>
+                  </div>
+
+                  <h3 className="text-gray-400">On Chain Data</h3>
+                  <div className="flex flex-col space-y-3 font-bold text-lg">
+                    <span className="inline-flex space-x-3 items-center">
+                      <img
+                        src="/dex_pairs.svg"
+                        className="w-8 object-contain h-8"
+                      />
+                      <span>Dex Pairs</span>
+                    </span>
+                    <span className="inline-flex space-x-3 items-center">
+                      <img
+                        src="/chain_ranking.svg"
+                        className="w-8 object-contain h-8"
+                      />
+                      <span>Chain Ranking</span>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            }
+            arrow={false}
+            /* @ts-ignore */
+            style={{ background: 'white' }}
+            className="p-0 shadow-none z-50"
+          >
+            <span className="font-bold mr-10 hover:text-blue-500 hover:cursor-pointer">
+              Cryptocurrencies
+            </span>
+          </Tooltip>
+
+          <DropDownMenu groupedOptions={groupedOptions} goToPage={goToPage} />
+
           <span className="font-bold mr-10 hover:text-blue-500 hover:cursor-pointer">
             FAQ
           </span>
-          <span className="font-bold mr-10 hover:text-blue-500 hover:cursor-pointer">
-            Community
-          </span>
         </div>
       </div>
-      <div className="hidden xl:block">
-        <div className="flex items-center p-1 px-4 bg-gray-300 placeholder-gray-400 border-none rounded-full">
-          <input
-            placeholder="Search..."
-            required={true}
-            className="m-1 text-black focus:outline-none focus:placeholder-transparent focus:ring-0 bg-gray-300"
-          />{' '}
-          <svg
-            className="h-6 w-6"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-            />
-          </svg>
-        </div>
+      <div>
+        <SearchInput
+          fetchTrending={fetchTrending}
+          trending={trending}
+          fetchSearch={fetchSearch}
+          loadingStatus={loadingStatus}
+          searchResults={searchResults}
+          error={error}
+        />
       </div>
       <div className="block xl:hidden">
         <button className="p-2" onClick={() => setMenuStatus(!menuStatus)}>

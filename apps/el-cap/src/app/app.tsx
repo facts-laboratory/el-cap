@@ -4,7 +4,7 @@ import {
   Footer,
 } from '@el-cap/el-cap-layout';
 import {
-  fetchCoinChart,
+  fetch24PriceData,
   selectChartData,
   mapStateToProps,
   useAppDispatch,
@@ -14,6 +14,7 @@ import {
   selectAllCoin,
   fetchFeed,
   fetchCoin,
+  fetchRemainingPriceData,
 } from '@el-cap/store';
 import { connect } from 'react-redux';
 import loadable from '@loadable/component';
@@ -50,9 +51,14 @@ export function App(props: AppProps) {
     fetchedEntity: useAppSelector(selectAllCoin),
     coinChartProps: {
       fetch: (input: { symbol: string; interval: string }) =>
-        dispatch(fetchCoinChart(input)),
+        dispatch(fetch24PriceData(input)),
+      fetchRemaining: (input: { symbol: string; interval: string }) =>
+        dispatch(fetchRemainingPriceData(input)),
       chartData: useAppSelector(selectChartData),
       loadingStatus: useAppSelector((state) => state.coinChart.loadingStatus),
+      remainingLoadingStatus: useAppSelector(
+        (state) => state.coinChart.remainingLoadingStatus
+      ),
     },
   };
   const Page = components[(page as keyof ObjectKeys) || 'Feed'];

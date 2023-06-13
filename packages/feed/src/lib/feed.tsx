@@ -57,7 +57,7 @@ export function Feed(props: FeedProps) {
     if (loadingStatus !== 'loaded') {
       fetchFeed();
     }
-  }, [entities]);
+  }, [fetchFeed, entities, loadingStatus]);
 
   return (
     <div className="min-h-[calc(100vh-217px)]">
