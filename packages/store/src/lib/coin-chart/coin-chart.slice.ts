@@ -6,7 +6,7 @@ import {
   EntityState,
   PayloadAction,
 } from '@reduxjs/toolkit';
-import { get24hPrice, getRemainingPriceHistory } from './el-cap-kit.js';
+import { getRemainingPriceHistory, get24hPrice } from '../feed/el-cap-kit.js';
 import { RootState } from '../store.js';
 
 export const COIN_CHART_FEATURE_KEY = 'coinChart';

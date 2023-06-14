@@ -1,13 +1,9 @@
-import {
-  fetchCoinChart,
-  coinChartAdapter,
-  coinChartReducer,
-} from './coin-chart.slice';
+import { coinChartAdapter, coinChartReducer } from './coin-chart.slice';
 
 describe('coinChart reducer', () => {
   it('should handle initial state', () => {
     const expected = coinChartAdapter.getInitialState({
-      loadingStatus: 'not loaded',
+      loadingstatus: 'not loaded',
       error: null,
     });
 

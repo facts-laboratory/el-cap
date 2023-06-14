@@ -47,7 +47,8 @@ export function App(props: AppProps) {
   };
   const coinPage = {
     loadingStatus: useAppSelector(selectFeedLoadingStatus),
-    fetchCoin: (input: string) => dispatch(fetchCoin(input)),
+    fetchCoin: (input: { symbol: string; name: string }) =>
+      dispatch(fetchCoin(input)),
     fetchedEntity: useAppSelector(selectAllCoin),
     coinChartProps: {
       fetch: (input: { symbol: string; interval: string }) =>

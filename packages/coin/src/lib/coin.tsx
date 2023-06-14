@@ -16,8 +16,8 @@ interface CoinProps {
   ticker: string;
   coinPage: {
     coinChartProps: {
-      fetch: (input: { symbol: string; interval: string }) => void;
       fetchRemaining: (input: { symbol: string; interval: string }) => void;
+      fetchCoin: (input: { symbol: string; name: string }) => void;
       chart24hourData: PriceData | undefined;
     };
   };
@@ -39,9 +39,14 @@ enum LoadingStatus {
 
 export function Coin(props: CoinProps) {
   const { goToFeed, entity, ticker, coinPage } = props;
-  const { coinChartProps } = coinPage;
+  const { coinChartProps, fetchCoin, loadingStatus } = coinPage;
 
   const [error, setError] = useState<string | undefined>();
+
+  useEffect(() => {
+    if (loadingStatus !== 'loaded' && ticker !== entity?.coin)
+      fetchCoin({ symbol: 'ar', name: 'arweave' });
+  }, [fetchCoin, loadingStatus]);
 
   if (error) return <p>{error}</p>;
 
