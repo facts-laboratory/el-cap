@@ -1,7 +1,27 @@
+import { useState } from 'react';
 import StatusInfo from '../components/statusInfo';
 import { PortfolioIcon, WatchlistIcon, WalletIcon } from '../icons';
+import { LogInReturnProps } from 'othent/src/types';
+import { Othent } from 'othent';
 
 const StatusBar: React.FC = () => {
+  const [user, setUser] = useState<LogInReturnProps | null>(null);
+
+  const handleLogin = async () => {
+    console.log('user', user);
+    const othent = await Othent({
+      API_ID: '2384f84424a36b36ede2873be3e0c7e9',
+      callbackURLs: [
+        'https://el-capitan.arweave.dev/',
+        'http://127.0.0.1:4202',
+        'http://127.0.0.1:4200',
+        'http://127.0.0.1:4201',
+      ],
+    });
+    const wallet = await othent.logIn();
+    setUser(wallet);
+    console.log('wallet', wallet);
+  };
   return (
     <div className="flex justify-between items-center py-2 px-10 border-b-2 h-16 overflow-auto">
       <div className="flex">
@@ -29,10 +49,24 @@ const StatusBar: React.FC = () => {
             <PortfolioIcon className="mr-1" width={24} height={24} />
             Portfolio
           </span>
-          <button className="bg-gray-300 hover:bg-gray-400 text-black font-bold py-2 px-4 inline-flex items-center rounded-full">
-            <WalletIcon className="mr-2" width={24} height={24} />
-            <span>Connect Wallet</span>
-          </button>
+          {!user ? (
+            <button
+              onClick={handleLogin}
+              className="bg-gray-300 hover:bg-gray-400 text-black font-bold py-2 px-4 inline-flex items-center rounded-full"
+            >
+              <WalletIcon className="mr-2" width={24} height={24} />
+              <span>Connect Wallet</span>
+            </button>
+          ) : (
+            <span className="cursor-pointer font-bold mr-4 flex items-center">
+              <img
+                alt="profile"
+                src={user.picture}
+                className="w-8 h-8 rounded-full mr-2"
+              />
+              {user.name}
+            </span>
+          )}
         </div>
       </div>
     </div>
