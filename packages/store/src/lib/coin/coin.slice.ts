@@ -35,10 +35,26 @@ export const fetchCoin = createAsyncThunk(
     try {
       const coinData = await getCoin({ symbol, name });
       console.log('coindata', coinData);
-      const combinedCoin = { ...
-      const processedCoin = processTokenData(combine)coinData.redstone, ...coinData.remaining };;
-      console.log('coindata2', combinedCoin);
-      return [combinedCoin];
+      const processedCoin = {
+        name: coinData.remaining.name || '',
+        image: coinData.remaining.image?.large || '',
+        coin: coinData.redstone.symbol || '',
+        price: coinData.redstone.value || 0,
+        marketCap: coinData.remaining.market_data.market_cap.usd || 0,
+        volume: coinData.remaining.market_data.total_volume.usd || 0,
+        circulatingSupply:
+          coinData.remaining.market_data.circulating_supply || 0,
+        '1h':
+          coinData.remaining.market_data.price_change_percentage_1h_in_currency
+            .usd || 0,
+        '24h':
+          coinData.remaining.market_data.price_change_percentage_24h_in_currency
+            .usd || 0,
+        '7d':
+          coinData.remaining.market_data.price_change_percentage_7d_in_currency
+            .usd || 0,
+      };
+      return [processedCoin];
     } catch (error) {
       console.log('fetching error', error);
       return [];
