@@ -52,7 +52,7 @@ export function Feed(props: FeedProps) {
     if (loadingStatus !== 'loaded') {
       fetchFeed();
     }
-  }, [entities]);
+  }, [fetchFeed, entities, loadingStatus]);
 
   const feedOptions = [
     { title: 'All', key: 'feed0' },

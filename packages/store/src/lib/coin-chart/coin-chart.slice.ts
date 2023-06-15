@@ -6,7 +6,7 @@ import {
   EntityState,
   PayloadAction,
 } from '@reduxjs/toolkit';
-import { get24hPrice, getRemainingPriceHistory } from './el-cap-kit.js';
+import { getRemainingPriceHistory, get24hPrice } from '../feed/el-cap-kit.js';
 import { RootState } from '../store.js';
 
 export const COIN_CHART_FEATURE_KEY = 'coinChart';
@@ -21,7 +21,10 @@ export interface CoinChartEntity {
 export interface CoinChartState extends EntityState<CoinChartEntity> {
   loadingStatus: 'not loaded' | 'loading' | 'loaded' | 'error';
   error?: string | null;
+  // @todo update types
   chartData: any;
+  remainingChartData: any;
+  remainingLoadingStatus: 'not loaded' | 'loading' | 'loaded' | 'error';
 }
 
 export const coinChartAdapter = createEntityAdapter<CoinChartEntity>();
@@ -43,14 +46,34 @@ export const coinChartAdapter = createEntityAdapter<CoinChartEntity>();
  * }, [dispatch]);
  * ```
  */
-export const fetchCoinChart = createAsyncThunk(
+export const fetch24PriceData = createAsyncThunk(
   'coinChart/fetchStatus',
   async (input: { symbol: string; interval: string }, thunkAPI) => {
+    console.log('fetching 24h data', input);
     const { symbol, interval } = input;
     const coinChart = await get24hPrice({ symbol, interval });
+    /**
+     * Replace this with your custom fetch call.
+     * For example, `return myApi.getCoinCharts()`;
+     * Right now we just return an empty array.
+     */
+    return coinChart;
+  }
+);
+
+export const fetchRemainingPriceData = createAsyncThunk(
+  'coinChart/fetchRemaining',
+  async (input: { symbol: string; interval: string }, thunkAPI) => {
+    console.log('fetching remaining data');
+    const state = thunkAPI.getState() as RootState;
+    console.log('state', state);
+    const coinChart = state.coinChart.chartData;
+    console.log('coinChart in fetchRemainingPriceData', coinChart);
     const remaining = await getRemainingPriceHistory({
       ...coinChart,
+      symbol: input.symbol,
     });
+    console.log('remaining', remaining);
     /**
      * Replace this with your custom fetch call.
      * For example, `return myApi.getCoinCharts()`;
@@ -65,6 +88,7 @@ export const initialCoinChartState: CoinChartState =
     loadingStatus: 'not loaded',
     error: null,
     chartData: {},
+    remainingChartData: {},
   });
 
 export const coinChartSlice = createSlice({
@@ -77,21 +101,39 @@ export const coinChartSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchCoinChart.pending, (state: CoinChartState) => {
+      .addCase(fetch24PriceData.pending, (state: CoinChartState) => {
         state.loadingStatus = 'loading';
       })
       .addCase(
-        fetchCoinChart.fulfilled,
+        fetch24PriceData.fulfilled,
         (state: CoinChartState, action: PayloadAction<CoinChartEntity[]>) => {
           console.log('action', action.payload);
           state.chartData = action.payload;
           state.loadingStatus = 'loaded';
         }
       )
-      .addCase(fetchCoinChart.rejected, (state: CoinChartState, action) => {
+      .addCase(fetch24PriceData.rejected, (state: CoinChartState, action) => {
         state.loadingStatus = 'error';
         state.error = action.error.message;
-      });
+      })
+      .addCase(fetchRemainingPriceData.pending, (state: CoinChartState) => {
+        state.remainingLoadingStatus = 'loading';
+      })
+      .addCase(
+        fetchRemainingPriceData.fulfilled,
+        (state: CoinChartState, action: PayloadAction<RemainingData[]>) => {
+          console.log('action', action.payload);
+          state.chartData = action.payload;
+          state.remainingLoadingStatus = 'loaded';
+        }
+      )
+      .addCase(
+        fetchRemainingPriceData.rejected,
+        (state: CoinChartState, action) => {
+          state.remainingLoadingStatus = 'error';
+          state.error = action.error.message;
+        }
+      );
   },
 });
 
@@ -144,6 +186,11 @@ export const selectAllCoinChart = createSelector(getCoinChartState, selectAll);
 export const selectChartData = createSelector(
   getCoinChartState,
   (state) => state.chartData
+);
+
+export const selectRemainingLoadingStatus = createSelector(
+  getCoinChartState,
+  (state) => state.remainingLoadingStatus
 );
 
 export const selectCoinChartEntities = createSelector(

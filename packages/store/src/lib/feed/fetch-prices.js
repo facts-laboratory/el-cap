@@ -18,33 +18,56 @@ export async function fetchRedstonePrices() {
   }
 }
 
-export async function fetchRemainingData(prices) {
-  const firstPriceItem = extractFirstThreeItems(prices || {});
-
+export async function fetchRemainingPrices(prices) {
   const url =
-    'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=1&sparkline=true&price_change_percentage=1h%2C24h%2C7d&locale=en';
+    'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=30&page=1&sparkline=true&price_change_percentage=1h%2C24h%2C7d&locale=en';
 
   try {
     const response = await fetchData(url);
     const data = await response.json();
     const combinedResult = {
-      redstone: firstPriceItem,
+      redstone: prices,
       remaining: data,
     };
     return combinedResult;
   } catch (error) {
-    return { redstone: firstPriceItem, remaining: {} }; // if fetch fails, return the data from fetchRedstonePrices
+    return { redstone: prices, remaining: {} }; // if fetch fails, return the data from fetchRedstonePrices
   }
 }
 
-function extractFirstThreeItems(obj) {
-  const keys = Object.keys(obj);
-  const result = {};
+export async function fetchRedstonePrice(input) {
+  console.log('fetching Coin input', input);
+  const { symbol, name } = input;
+  console.log('redstone symbol', symbol);
+  const url = `https://api.redstone.finance/prices?symbol=${symbol.toUpperCase()}&provider=redstone&limit=1`;
+  try {
+    const response = await fetchData(url);
+    if (!response.ok) {
+      return null;
+    }
 
-  for (let i = 0; i < 3 && i < keys.length; i++) {
-    const key = keys[i];
-    result[key] = obj[key];
+    const redstone = await response.json();
+
+    console.log('redstone state', redstone);
+
+    return { redstone, symbol, name };
+  } catch (error) {
+    console.error(error);
+    return null;
   }
+}
+export async function fetchRemainingPrice({ symbol, name, redstone }) {
+  const url = `https://api.coingecko.com/api/v3/coins/${name}?localization=false&tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=false`;
 
-  return result;
+  try {
+    const response = await fetchData(url);
+    const data = await response.json();
+    const combinedResult = {
+      redstone: redstone[0],
+      remaining: data,
+    };
+    return combinedResult;
+  } catch (error) {
+    return { redstone, remaining: {} }; // if fetch fails, return the data from fetchRedstonePrices
+  }
 }

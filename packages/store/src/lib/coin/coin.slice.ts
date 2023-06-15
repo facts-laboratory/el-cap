@@ -7,9 +7,11 @@ import {
   PayloadAction,
 } from '@reduxjs/toolkit';
 import { TokenData } from '@el-cap/interfaces';
-import redstone from 'redstone-api';
+import { processTokenData } from '@el-cap/utilities';
+import { getCoin } from '../feed/el-cap-kit.js';
 
-import { RootState } from "../store";
+import { RootState } from '../store';
+import { mergeSingleCoinObjects } from '../feed/feed.slice';
 
 export const COIN_FEATURE_KEY = 'coin';
 
@@ -26,13 +28,19 @@ export const coinAdapter = createEntityAdapter<TokenData>();
 
 export const fetchCoin = createAsyncThunk(
   'coin/fetchStatus',
-  async (input: string, thunkAPI) => {
+  async (input: { symbol: string; name: string }, thunkAPI) => {
+    const { symbol, name } = input;
+
+    console.log('fetching Coin', symbol, name);
     try {
-      const coinData = await redstone.getPrice(input);
-      console.log('coindata',coinData);
-      return [coinData];
+      const coinData = await getCoin({ symbol, name });
+      console.log('coindata', coinData);
+      const combinedCoin = { ...
+      const processedCoin = processTokenData(combine)coinData.redstone, ...coinData.remaining };;
+      console.log('coindata2', combinedCoin);
+      return [combinedCoin];
     } catch (error) {
-      console.log('fetching error',error);
+      console.log('fetching error', error);
       return [];
     }
   }
@@ -59,7 +67,7 @@ export const coinSlice = createSlice({
       .addCase(
         fetchCoin.fulfilled,
         (state: CoinState, action: PayloadAction<any>) => {
-          console.log('action',action);
+          console.log('coin action', action);
           coinAdapter.setAll(state, action.payload);
           state.loadingStatus = 'loaded';
         }
