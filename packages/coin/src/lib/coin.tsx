@@ -5,7 +5,13 @@ import { ChartWidget } from '@el-cap/chart-widget';
 import { connect } from 'react-redux';
 import { PriceData } from 'redstone-api/lib/types';
 import { ArrowUpIcon, WatchlistIcon } from '../assets/icons';
-import BitcoinSVG from '../assets/svg/bitcoin.svg';
+import {
+  BitcoinSVG,
+  SearchSVG,
+  UserSVG,
+  CodeSVG,
+  PaperSVG,
+} from '../assets/svg/index';
 import GrayButton from '../assets/component/GrayButton';
 import { ProcessedTokenData, TokenData } from '@el-cap/interfaces';
 import { ArrowDownIcon } from 'packages/top-coins-card/src/icons';
@@ -46,9 +52,27 @@ const coinAttributeButtonData = [
     type: 'link',
   },
   {
-    icon: 'https://assets.coingecko.com/coins/images/13442/large/steth_logo.png?1608607546',
-    title: 'bitcoin.org',
+    icon: SearchSVG,
+    title: 'Explorer',
     url: 'bitcoin.org',
+    type: 'dropdown',
+    dropdownOptions: [
+      {
+        title: '1',
+        url: 'bitcoin.org',
+        icon: 'https://assets.coingecko.com/coins/images/13442/large/steth_logo.png?1608607546',
+      },
+      {
+        title: '2',
+        url: 'bitcoin.org',
+        icon: 'https://assets.coingecko.com/coins/images/13442/large/steth_logo.png?1608607546',
+      },
+    ],
+  },
+  {
+    icon: UserSVG,
+    title: 'Community',
+    url: '',
     type: 'dropdown',
     dropdownOptions: [
       {
@@ -74,13 +98,13 @@ const coinAttributeButtonData = [
     ],
   },
   {
-    icon: BitcoinSVG,
+    icon: CodeSVG,
     title: 'Source code',
     url: 'bitcoin.org',
     type: 'link',
   },
   {
-    icon: BitcoinSVG,
+    icon: PaperSVG,
     title: 'Whitepaper',
     url: 'bitcoin.org',
     type: 'link',
