@@ -1,33 +1,37 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import ArrowDown from '../icons/arrowDown';
 
-const typeData = [
-  'All',
-  'All',
-  'All',
-  'Algorand Ecosystem',
-  'Algorand Ecosystem',
-  'Algorand Ecosystem',
-  'Pow',
-  'Pow',
-  'Pow',
-  'Pos',
-  'Pos',
-  'Pos',
-  'Ethereum Ecosystem',
-  'Ethereum Ecosystem',
-  'Ethereum Ecosystem',
-  'Layer 1',
-  'Layer 1',
-  'Layer 1',
-  'Layer 2',
-  'Layer 2',
-  'Layer 2',
-];
+type DropDownFeedOptionsProps = {
+  feedOptions: FeedOption[];
+  goToFeed: (key: string) => void;
+};
+type FeedOption = {
+  title: string;
+  key: string;
+};
 
-const DropDownAllTypes: React.FC = () => {
+const DropDownFeedOptions: React.FC<DropDownFeedOptionsProps> = ({
+  feedOptions,
+  goToFeed,
+}) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [selected, setSelected] = useState<number>(0);
+  const [search, setSearch] = useState<string>('');
+
+  const selectFeed = (index: number) => {
+    setSelected(index);
+    goToFeed(feedOptions[index].key);
+    setIsOpen(false);
+  };
+
+  useEffect(() => {
+    setSelected(0);
+  }, [search]);
+
+  // Filter the options based on the search string
+  const filteredOptions = feedOptions.filter((option) =>
+    option.title.toLowerCase().includes(search.toLowerCase())
+  );
 
   return (
     <div className="relative inline-block group">
@@ -37,7 +41,9 @@ const DropDownAllTypes: React.FC = () => {
           isOpen ? 'outline outline-yellow-400 outline-1' : 'outline-none'
         }`}
       >
-        <span className="hidden sm:block">All Types</span>
+        <span className="hidden sm:block">
+          {filteredOptions.length > 0 ? filteredOptions[selected].title : ''}
+        </span>
         <ArrowDown className="w-5 h-5" width={32} height={32} />
       </button>
       <div
@@ -50,35 +56,24 @@ const DropDownAllTypes: React.FC = () => {
             <input
               placeholder="Search..."
               required={true}
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
               className="m-1 w-40 text-black focus:outline-none focus:placeholder-transparent focus:ring-0 bg-gray-300"
             />{' '}
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-              />
-            </svg>
+            {/*...*/}
           </div>
         </div>
         <div className="grid sm:grid-cols-3 grid-cols-2 gap-2 text-sm">
-          {typeData.map((val, key) => {
+          {filteredOptions.map((val, key) => {
             return (
               <div className="p-1 cursor-pointer" key={key}>
                 <span
-                  onClick={() => setSelected(key)}
+                  onClick={() => selectFeed(key)}
                   className={`${
                     selected === key ? 'bg-yellow-300' : ''
                   } rounded-lg px-4 py-2 font-bold whitespace-nowrap`}
                 >
-                  {val}
+                  {val.title}
                 </span>
               </div>
             );
@@ -89,4 +84,4 @@ const DropDownAllTypes: React.FC = () => {
   );
 };
 
-export default DropDownAllTypes;
+export default DropDownFeedOptions;

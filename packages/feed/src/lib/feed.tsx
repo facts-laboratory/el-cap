@@ -1,39 +1,36 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { connect } from 'react-redux';
 
 import { mapStateToProps } from '@el-cap/store';
-import { WidgetCoinCard } from '@el-cap/widget-coin-card';
+import { TopCoinsCard } from '@el-cap/top-coins-card';
 import { TokenTable } from '@el-cap/token-table';
 import TabComponent from './components/TabComponent';
-import DropDownAllTypes from './components/DropDownAllTypes';
+import DropDownFeedOptions from './components/DropDownFeed';
 
-const data = [
+const TrendingdummyData = [
   {
-    title: 'Trending',
-    type: 'trending',
-    data: [
-      { text: 'Shiba Inu', icon: 'SHIB', value: '-4.28' },
-      { text: 'Shiba Inu', icon: 'SHIB', value: '4.28' },
-      { text: 'Shiba Inu', icon: 'SHIB', value: '-4.28' },
-    ],
+    name: 'Bitcoin',
+    symbol: 'BTC',
+    metric: -4.28,
+    image: 'https://s2.coinmarketcap.com/static/img/coins/64x64/1.png',
   },
   {
-    title: 'Biggest Gainer',
-    type: 'price',
-    data: [
-      { text: 'Timeseries AI', icon: 'TIMESERIES', value: '0.000251' },
-      { text: 'Timeseries AI', icon: 'TIMESERIES', value: '0.000251' },
-      { text: 'Timeseries AI', icon: 'TIMESERIES', value: '0.000251' },
-    ],
+    name: 'Ethereum',
+    symbol: 'ETH',
+    metric: 4000,
+    image: 'https://s2.coinmarketcap.com/static/img/coins/64x64/1027.png',
   },
   {
-    title: 'Recently Updated Socials',
-    type: 'price',
-    data: [
-      { text: 'Timeseries AI', icon: 'TIMESERIES', value: '0.000251' },
-      { text: 'Shiba Inu', icon: 'SHIB', value: '0.000251' },
-      { text: 'Timeseries AI', icon: 'TIMESERIES', value: '0.000251' },
-    ],
+    name: 'Cardano',
+    symbol: 'ADA',
+    metric: 2.12,
+    image: 'https://s2.coinmarketcap.com/static/img/coins/64x64/2010.png',
+  },
+  {
+    name: 'Dogecoin',
+    symbol: 'DOGE',
+    metric: 0.24,
+    image: 'https://s2.coinmarketcap.com/static/img/coins/64x64/74.png',
   },
 ];
 
@@ -51,13 +48,25 @@ export function Feed(props: FeedProps) {
   const { goToCoin } = props;
   const [showCase, setShowCase] = useState<boolean>(true);
 
-  console.log('props', props);
-
   useEffect(() => {
     if (loadingStatus !== 'loaded') {
       fetchFeed();
     }
   }, [fetchFeed, entities, loadingStatus]);
+
+  const feedOptions = [
+    { title: 'All', key: 'feed0' },
+    { title: 'Algorand Ecosystem', key: 'feed1' },
+    { title: 'Pow', key: 'feed2' },
+    { title: 'Pos', key: 'feed3' },
+    { title: 'Ethereum Ecosystem', key: 'feed4' },
+    { title: 'Layer 1', key: 'feed5' },
+    { title: 'Layer 2', key: 'feed6' },
+  ];
+
+  const goToFeed = useCallback((key: string) => {
+    window.location.href = key;
+  }, []);
 
   return (
     <div className="min-h-[calc(100vh-217px)]">
@@ -95,25 +104,34 @@ export function Feed(props: FeedProps) {
         </div>
         {showCase ? (
           <div className="flex flex-wrap gap-5 my-6">
-            {data.map((val, key) => {
-              return (
-                <div className="flex-1" key={key}>
-                  <WidgetCoinCard
-                    title={val.title}
-                    type={val.type}
-                    data={val.data}
-                    goToCoin={goToCoin}
-                  />
-                </div>
-              );
-            })}
+            <TopCoinsCard
+              title="Trending Coins"
+              type="Percentage"
+              data={TrendingdummyData}
+              goToCoin={goToCoin}
+              goToFeed={goToFeed}
+            />
+            <TopCoinsCard
+              title="Biggest Gainers"
+              type="Price"
+              data={TrendingdummyData}
+              goToCoin={goToCoin}
+              goToFeed={goToFeed}
+            />
+            <TopCoinsCard
+              title="Recently Updated Socials"
+              type="Price"
+              data={TrendingdummyData}
+              goToCoin={goToCoin}
+              goToFeed={goToFeed}
+            />
           </div>
         ) : (
           <></>
         )}
         <div className="flex justify-between items-center">
           <TabComponent />
-          <DropDownAllTypes />
+          <DropDownFeedOptions feedOptions={feedOptions} goToFeed={goToFeed} />
         </div>
         {entities && <TokenTable data={entities} goToCoin={goToCoin} />}
       </div>
