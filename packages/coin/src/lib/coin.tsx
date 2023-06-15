@@ -9,6 +9,7 @@ import BitcoinSVG from '../assets/svg/bitcoin.svg';
 import GrayButton from '../assets/component/GrayButton';
 import { ProcessedTokenData, TokenData } from '@el-cap/interfaces';
 import { ArrowDownIcon } from 'packages/top-coins-card/src/icons';
+import CoinAttributeLinkButton from '../assets/component/CoinAttributeLinkButton';
 
 interface CoinProps {
   goToFeed: () => void;
@@ -36,6 +37,55 @@ enum LoadingStatus {
   LOADING = 'loading',
   NOT_LOADED = 'not loaded',
 }
+
+const coinAttributeButtonData = [
+  {
+    icon: 'https://assets.coingecko.com/coins/images/13442/large/steth_logo.png?1608607546',
+    title: 'bitcoin.org',
+    url: 'bitcoin.org',
+    type: 'link',
+  },
+  {
+    icon: 'https://assets.coingecko.com/coins/images/13442/large/steth_logo.png?1608607546',
+    title: 'bitcoin.org',
+    url: 'bitcoin.org',
+    type: 'dropdown',
+    dropdownOptions: [
+      {
+        title: 'BTC on CMC Community',
+        url: 'bitcoin.org',
+        icon: 'https://assets.coingecko.com/coins/images/13442/large/steth_logo.png?1608607546',
+      },
+      {
+        title: 'BTC discussions',
+        url: 'bitcoin.org',
+        icon: 'https://assets.coingecko.com/coins/images/13442/large/steth_logo.png?1608607546',
+      },
+      {
+        title: 'bitcointalk.org',
+        url: 'bitcointalk.org',
+        icon: 'https://assets.coingecko.com/coins/images/13442/large/steth_logo.png?1608607546',
+      },
+      {
+        title: 'Reddit',
+        url: 'bitcoin.org',
+        icon: 'https://assets.coingecko.com/coins/images/13442/large/steth_logo.png?1608607546',
+      },
+    ],
+  },
+  {
+    icon: BitcoinSVG,
+    title: 'Source code',
+    url: 'bitcoin.org',
+    type: 'link',
+  },
+  {
+    icon: BitcoinSVG,
+    title: 'Whitepaper',
+    url: 'bitcoin.org',
+    type: 'link',
+  },
+];
 
 export function Coin(props: CoinProps) {
   const { goToFeed, entity, ticker, coinPage } = props;
@@ -76,13 +126,20 @@ export function Coin(props: CoinProps) {
             <WatchlistIcon className="ml-2" width={18} height={18} />
           </div>
           <div className="flex flex-wrap gap-4">
-            <GrayButton text="Rank #1" active={true} />
-            <GrayButton text="Coin" />
-            <GrayButton text="Been Favorited +4.2 Million Times" />
-            <GrayButton text="Website" />
-            <GrayButton text="Explorers" />
-            <GrayButton text="White Paper" />
-            <GrayButton text="Source Code" />
+            {coinAttributeButtonData.map((item, key) => {
+              return (
+                <CoinAttributeLinkButton
+                  key={key}
+                  icon={item.icon}
+                  title={item.title}
+                  type={item.type === 'link' ? 'link' : 'dropdown'}
+                  url={item.url}
+                  dropdownOptions={
+                    item.dropdownOptions ? item.dropdownOptions : []
+                  }
+                />
+              );
+            })}
           </div>
           <p className="my-2">Tags</p>
           <div className="flex gap-4 flex-wrap">
