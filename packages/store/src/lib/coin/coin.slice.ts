@@ -35,10 +35,11 @@ export const fetchCoin = createAsyncThunk(
     try {
       const coinData = await getCoin({ symbol, name });
       console.log('coindata', coinData);
-      const combinedCoin = { ...
-      const processedCoin = processTokenData(combine)coinData.redstone, ...coinData.remaining };;
-      console.log('coindata2', combinedCoin);
-      return [combinedCoin];
+      const processedCoin = processTokenData({
+        ...coinData.redstone,
+        ...coinData.remaining,
+      });
+      return [processedCoin];
     } catch (error) {
       console.log('fetching error', error);
       return [];
