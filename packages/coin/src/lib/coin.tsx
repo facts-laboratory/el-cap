@@ -8,7 +8,7 @@ import { ArrowUpIcon, WatchlistIcon } from '../assets/icons';
 import BitcoinSVG from '../assets/svg/bitcoin.svg';
 import GrayButton from '../assets/component/GrayButton';
 import { ProcessedTokenData, TokenData } from '@el-cap/interfaces';
-import { ArrowDownIcon } from 'packages/widget-coin-card/src/icons';
+import { ArrowDownIcon } from 'packages/top-coins-card/src/icons';
 
 interface CoinProps {
   goToFeed: () => void;
