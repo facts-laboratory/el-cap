@@ -53,7 +53,7 @@ const CoinAttributeLinkButton: React.FC<CoinAttributeLinkProps> = (props) => {
         </div>
       ) : (
         <div className="relative inline-block text-left" ref={ref}>
-          <div>
+          <div className="realtive">
             <div
               className={`cursor-pointer inline-flex justify-center items-center rounded-xl shadow-sm px-2 py-1 text-sm font-semibold focus:outline-none ${
                 isOpen
@@ -63,28 +63,31 @@ const CoinAttributeLinkButton: React.FC<CoinAttributeLinkProps> = (props) => {
               onClick={() => setIsOpen(!isOpen)}
             >
               <img className="w-6 mr-2" src={props.icon} alt="icon" />
-              <span className="mr-2">Options</span>
+              <span className="mr-2">{props.title}</span>
               <ArrowDropDown width={16} height={16} />
             </div>
+            {isOpen && (
+              <div className="border-[20px] border-transparent border-b-white absolute -bottom-5 left-[50%] transform -translate-x-1/2"></div>
+            )}
           </div>
 
           {isOpen ? (
-            <div className="origin-top-right absolute mt-2 w-72 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50">
+            <div className="origin-top-right absolute mt-4 rounded-md shadow-lg bg-white  ring-opacity-5 z-50">
               <div
                 className="p-4"
                 role="menu"
                 aria-orientation="vertical"
-                aria-labelledby="options-menu"
+                aria-labelledby="options-menu relative"
               >
                 {props.dropdownOptions?.map((item, key) => {
                   return (
                     <div
                       key={key}
-                      className="px-4 py-2 cursor-pointer text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 flex justify-start items-center"
+                      className="px-2 py-2 cursor-pointer text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 flex justify-start items-center w-[max-content]"
                       onClick={() => goToPage(item.url)}
                     >
                       <img className="w-6 mr-2" src={item.icon} alt="icon" />
-                      <span className="mr-2">{item.title}</span>
+                      <div className="whitespace-nowrap mr-2">{item.title}</div>
                       {item.type === 'link' ? (
                         <Link width={12} height={16} />
                       ) : (
