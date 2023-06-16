@@ -11,6 +11,9 @@ import {
   UserSVG,
   CodeSVG,
   PaperSVG,
+  LinkSVG,
+  RedditSVG,
+  Broadcast,
 } from '../assets/svg/index';
 import GrayButton from '../assets/component/GrayButton';
 import { ProcessedTokenData, TokenData } from '@el-cap/interfaces';
@@ -46,7 +49,7 @@ enum LoadingStatus {
 
 const coinAttributeButtonData = [
   {
-    icon: 'https://assets.coingecko.com/coins/images/13442/large/steth_logo.png?1608607546',
+    icon: LinkSVG,
     title: 'bitcoin.org',
     url: 'bitcoin.org',
     type: 'link',
@@ -78,22 +81,22 @@ const coinAttributeButtonData = [
       {
         title: 'BTC on CMC Community',
         url: 'bitcoin.org',
-        icon: 'https://assets.coingecko.com/coins/images/13442/large/steth_logo.png?1608607546',
+        icon: Broadcast,
       },
       {
         title: 'BTC discussions',
         url: 'bitcoin.org',
-        icon: 'https://assets.coingecko.com/coins/images/13442/large/steth_logo.png?1608607546',
+        icon: Broadcast,
       },
       {
         title: 'bitcointalk.org',
         url: 'bitcointalk.org',
-        icon: 'https://assets.coingecko.com/coins/images/13442/large/steth_logo.png?1608607546',
+        icon: UserSVG,
       },
       {
         title: 'Reddit',
         url: 'bitcoin.org',
-        icon: 'https://assets.coingecko.com/coins/images/13442/large/steth_logo.png?1608607546',
+        icon: RedditSVG,
       },
     ],
   },

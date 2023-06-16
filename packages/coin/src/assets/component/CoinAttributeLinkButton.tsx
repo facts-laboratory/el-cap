@@ -75,17 +75,15 @@ const CoinAttributeLinkButton: React.FC<CoinAttributeLinkProps> = (props) => {
                 aria-orientation="vertical"
                 aria-labelledby="options-menu"
               >
-                {props.dropdownOptions?.map((val, key) => {
+                {props.dropdownOptions?.map((item, key) => {
                   return (
-                    <div>
-                      <a
-                        href={val.url}
-                        className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 flex justify-start items-center"
-                        role="menuitem"
-                      >
-                        <img className="w-6 mr-2" src={val.icon} alt="icon" />
-                        {val.title}
-                      </a>
+                    <div
+                      key={key}
+                      className="px-4 py-2 cursor-pointer text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 flex justify-start items-center"
+                      onClick={() => goToPage(item.url)}
+                    >
+                      <img className="w-6 mr-2" src={item.icon} alt="icon" />
+                      {item.title}
                     </div>
                   );
                 })}
