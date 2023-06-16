@@ -61,14 +61,16 @@ const coinAttributeButtonData = [
     type: 'dropdown',
     dropdownOptions: [
       {
-        title: '1',
+        title: 'BTC on CMC Community',
         url: 'bitcoin.org',
-        icon: 'https://assets.coingecko.com/coins/images/13442/large/steth_logo.png?1608607546',
+        type: 'link',
+        icon: Broadcast,
       },
       {
-        title: '2',
+        title: 'BTC discussions',
         url: 'bitcoin.org',
-        icon: 'https://assets.coingecko.com/coins/images/13442/large/steth_logo.png?1608607546',
+        type: 'normal',
+        icon: Broadcast,
       },
     ],
   },
@@ -81,21 +83,25 @@ const coinAttributeButtonData = [
       {
         title: 'BTC on CMC Community',
         url: 'bitcoin.org',
+        type: 'normal',
         icon: Broadcast,
       },
       {
         title: 'BTC discussions',
         url: 'bitcoin.org',
+        type: 'normal',
         icon: Broadcast,
       },
       {
         title: 'bitcointalk.org',
         url: 'bitcointalk.org',
+        type: 'link',
         icon: UserSVG,
       },
       {
         title: 'Reddit',
         url: 'bitcoin.org',
+        type: 'link',
         icon: RedditSVG,
       },
     ],

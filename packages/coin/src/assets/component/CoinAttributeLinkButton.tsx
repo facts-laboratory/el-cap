@@ -14,6 +14,7 @@ type DropdownOption = {
   title: string;
   icon: string;
   url: string;
+  type: 'link' | 'normal';
 };
 
 const CoinAttributeLinkButton: React.FC<CoinAttributeLinkProps> = (props) => {
@@ -40,14 +41,14 @@ const CoinAttributeLinkButton: React.FC<CoinAttributeLinkProps> = (props) => {
   }, []);
 
   return (
-    <div>
+    <div className="font-semibold">
       {props.type === 'link' ? (
         <div
-          className={`cursor-pointer text-sm font-semibold flex items-center justify-center bg-[#D9D9D9] hover:bg-gray-300 rounded-xl py-1 px-2`}
+          className={`cursor-pointer text-sm flex items-center justify-center bg-[#D9D9D9] hover:bg-gray-300 rounded-xl py-1 px-2`}
           onClick={() => goToPage(props.url ? props.url : '')}
         >
-          <img className="w-6 mr-2" src={props.icon} alt="svg" />
-          <span>{props.title}</span>
+          <img className="w-6" src={props.icon} alt="svg" />
+          <span className="mx-1">{props.title}</span>
           <Link className="ml-1" width={12} height={16} />
         </div>
       ) : (
@@ -83,7 +84,12 @@ const CoinAttributeLinkButton: React.FC<CoinAttributeLinkProps> = (props) => {
                       onClick={() => goToPage(item.url)}
                     >
                       <img className="w-6 mr-2" src={item.icon} alt="icon" />
-                      {item.title}
+                      <span className="mr-2">{item.title}</span>
+                      {item.type === 'link' ? (
+                        <Link width={12} height={16} />
+                      ) : (
+                        ''
+                      )}
                     </div>
                   );
                 })}
