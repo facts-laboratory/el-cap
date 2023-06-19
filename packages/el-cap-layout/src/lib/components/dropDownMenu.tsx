@@ -2,6 +2,7 @@ import { Component, ReactNode } from 'react';
 import { Tooltip } from 'flowbite-react';
 
 type DropDownMenuProps = {
+  label: string;
   groupedOptions: DropDownGroup[];
   goToPage: (option: DropDownOption) => void;
 };
@@ -20,31 +21,50 @@ type DropDownOption = {
 
 class DropDownMenu extends Component<DropDownMenuProps> {
   render(): ReactNode {
-    const { groupedOptions, goToPage } = this.props;
+    const { groupedOptions, goToPage, label } = this.props;
+
+    const groupMenu = (groupOption: DropDownGroup[]) => {
+      return groupOption.map((group: DropDownGroup, key) => {
+        return (
+          <div
+            key={key}
+            className="flex flex-col space-y-3 font-bold text-lg mb-4"
+          >
+            {group.groupLabel ? (
+              <h3 className="text-gray-400">{group.groupLabel}</h3>
+            ) : groupOption.length > 1 ? (
+              <div className="h-px w-full bg-gray-200 border-0 mb-2"></div>
+            ) : (
+              ''
+            )}
+            {group.options.map((option: DropDownOption, key) => (
+              <div
+                // href={option.destination}
+                className="inline-flex space-x-3 items-center cursor-pointer"
+                key={key}
+                onClick={() => goToPage(option)}
+              >
+                <img
+                  src={option.image}
+                  className="w-8 object-contain h-8"
+                  alt={option.label}
+                />
+                <span>{option.label}</span>
+              </div>
+            ))}
+          </div>
+        );
+      });
+    };
 
     return (
       <div className="group">
-        {groupedOptions.map((group: DropDownGroup, key) => (
+        {groupedOptions.length > 1 ? (
           <Tooltip
-            key={key}
             content={
-              <div className="min-w-[10rem] gap-10 bg-white py-8 px-6 rounded-lg shadow-lg">
-                <div className="flex flex-col space-y-3 font-bold text-lg">
-                  {group.options.map((option: DropDownOption, key) => (
-                    <a
-                      href={option.destination}
-                      className="inline-flex space-x-3 items-center"
-                      key={key}
-                    >
-                      <img
-                        src={option.image}
-                        className="w-8 object-contain h-8"
-                        alt={option.label}
-                      />
-                      <span>{option.label}</span>
-                    </a>
-                  ))}
-                </div>
+              <div className="grid grid-cols-2 min-w-[30rem] gap-10 bg-white p-6 rounded-lg shadow-lg">
+                <div>{groupMenu(groupedOptions.slice(0, 2))}</div>
+                <div>{groupMenu(groupedOptions.slice(2, 4))}</div>
               </div>
             }
             arrow={false}
@@ -52,10 +72,25 @@ class DropDownMenu extends Component<DropDownMenuProps> {
             className="p-0 shadow-none"
           >
             <span className="font-bold mr-10 hover:text-blue-500 hover:cursor-pointer">
-              {group.groupLabel}
+              {label}
             </span>
           </Tooltip>
-        ))}
+        ) : (
+          <Tooltip
+            content={
+              <div className="min-w-[10rem] gap-10 bg-white p-6 rounded-lg shadow-lg">
+                {groupMenu(groupedOptions)}
+              </div>
+            }
+            arrow={false}
+            style="light"
+            className="p-0 shadow-none"
+          >
+            <span className="font-bold mr-10 hover:text-blue-500 hover:cursor-pointer">
+              {label}
+            </span>
+          </Tooltip>
+        )}
       </div>
     );
   }

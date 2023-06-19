@@ -8,7 +8,6 @@ import {
   WatchlistIcon,
   WalletIcon,
 } from '../icons';
-import { Tooltip } from 'flowbite-react';
 import SearchInput from './searchInput';
 import DropDownMenu from '../components/dropDownMenu';
 const contractId = 'MH-w8Sq6uw3Jwc_stPqyJT8fEcIhx4VrrE10NFgv-KY';
@@ -43,21 +42,122 @@ const SearchBar = (props: SearchBarProps) => {
   const [menuStatus, setMenuStatus] = useState<boolean>(true);
   const { goToFeed } = props;
 
-  const groupedOptions = [
+  const groupedOptionsCommunity = [
     {
-      groupLabel: 'Community',
+      groupLabel: '',
       options: [
         {
-          value: '1',
           label: 'Feeds',
           destination: '/Feeds',
           image: '/feed.svg',
         },
         {
-          value: '2',
           label: 'Articles',
           destination: '/articles',
           image: '/articles.svg',
+        },
+      ],
+    },
+  ];
+
+  const groupedOptionsCryptocurrencies = [
+    {
+      groupLabel: 'CRYPTOCURRENCIES',
+      options: [
+        {
+          label: 'Ranking',
+          destination: '/ranking',
+          image: '/ranking.svg',
+        },
+        {
+          label: 'Recently Added',
+          destination: '/recently-added',
+          image: '/recently_added.svg',
+        },
+        {
+          label: 'Categories',
+          destination: '/categories',
+          image: '/categories.svg',
+        },
+        {
+          label: 'Spotlight',
+          destination: '/spotlight',
+          image: '/spotlight.svg',
+        },
+        {
+          label: 'Gainer & Losers',
+          destination: '/gainers',
+          image: '/gainers_losers.svg',
+        },
+        {
+          label: 'Global Charts',
+          destination: '/global-charts',
+          image: '/global_charts.svg',
+        },
+        {
+          label: 'Historical Snapshots',
+          destination: '/historical-snapshots',
+          image: '/historical_snapshots.svg',
+        },
+      ],
+    },
+    {
+      groupLabel: '',
+      options: [
+        {
+          label: 'Price Estimates',
+          destination: '/price-estimates',
+          image: '/price_estimates.svg',
+        },
+        {
+          label: 'Polkadot Parachains',
+          destination: '/polkadot-parachains',
+          image: '/polkadot_parachains.svg',
+        },
+        {
+          label: 'Legal Tender Currencies',
+          destination: '/legal-tender-currencies',
+          image: '/legal_tender_currencies.svg',
+        },
+        {
+          label: 'Fiats / Companies Rankings',
+          destination: '/fiats-companies-rankings',
+          image: '/fiats_company_rankings.svg',
+        },
+      ],
+    },
+    {
+      groupLabel: 'NFT',
+      options: [
+        {
+          label: 'Overall NFT Status',
+          destination: '/overall-nft',
+          image: '/overall_status.svg',
+        },
+        {
+          label: 'Top Collections',
+          destination: '/top-collections',
+          image: '/overall_collections.svg',
+        },
+        {
+          label: 'Upcoming Sales',
+          destination: '/upcoming-sales',
+          image: '/upcoming_sales.svg',
+        },
+      ],
+    },
+    {
+      groupLabel: 'On Chain Data',
+      options: [
+        {
+          label: 'Dex Pairs',
+          destination: '/dex-pairs',
+          image: '/dex_pairs.svg',
+        },
+        {
+          label: 'Chain Ranking',
+          destination: '/chain-ranking',
+          image: '/chain_ranking.svg',
         },
       ],
     },
@@ -175,158 +275,18 @@ const SearchBar = (props: SearchBarProps) => {
           <span className="font-bold mr-10 hover:text-blue-500 hover:cursor-pointer">
             El Capitan
           </span>
-          <div className="group">
-            <Tooltip
-              content={
-                <div className="grid grid-cols-2 min-w-[30rem] gap-10 bg-white p-8 rounded-lg shadow-lg">
-                  <div className="space-y-3">
-                    <h3 className="uppercase text-gray-400">
-                      Cryptocurrencies
-                    </h3>
-                    <div className="flex flex-col space-y-3 font-bold text-lg">
-                      <span className="inline-flex space-x-3 items-center">
-                        <img
-                          src="/ranking.svg"
-                          className="w-8 object-contain h-8"
-                        />
-                        <span>Ranking</span>
-                      </span>
-                      <span className="inline-flex space-x-3 items-center">
-                        <img
-                          src="/recently_added.svg"
-                          className="w-8 object-contain h-8"
-                        />
-                        <span>Recently Added</span>
-                      </span>
-                      <span className="inline-flex space-x-3 items-center">
-                        <img
-                          src="/categories.svg"
-                          className="w-8 object-contain h-8"
-                        />
-                        <span>Categories</span>
-                      </span>
-                      <span className="inline-flex space-x-3 items-center">
-                        <img
-                          src="/spotlight.svg"
-                          className="w-8 object-contain h-8"
-                        />
-                        <span>Spotlight</span>
-                      </span>
-                      <span className="inline-flex space-x-3 items-center">
-                        <img
-                          src="/gainers_losers.svg"
-                          className="w-8 object-contain h-8"
-                        />
-                        <span>Gainers & Losers</span>
-                      </span>
-                      <span className="inline-flex space-x-3 items-center">
-                        <img
-                          src="/global_charts.svg"
-                          className="w-8 object-contain h-8"
-                        />
-                        <span>Global Charts</span>
-                      </span>
-                      <span className="inline-flex space-x-3 items-center">
-                        <img
-                          src="/historical_snapshots.svg"
-                          className="w-8 object-contain h-8"
-                        />
-                        <span>Historical Snapshots</span>
-                      </span>
-                    </div>
 
-                    <div className="h-px w-full bg-gray-200 border-0"></div>
+          <DropDownMenu
+            label="Cryptocurrencies"
+            groupedOptions={groupedOptionsCryptocurrencies}
+            goToPage={goToPage}
+          />
 
-                    <div className="flex flex-col space-y-3 font-bold text-lg">
-                      <span className="inline-flex space-x-3 items-center">
-                        <img
-                          src="/price_estimates.svg"
-                          className="w-8 object-contain h-8"
-                        />
-                        <span>Price Estimates</span>
-                      </span>
-                      <span className="inline-flex space-x-3 items-center">
-                        <img
-                          src="/polkadot_parachains.svg"
-                          className="w-8 object-contain h-8"
-                        />
-                        <span>Polkadot Parachains</span>
-                      </span>
-                      <span className="inline-flex space-x-3 items-center">
-                        <img
-                          src="/legal_tender_currencies.svg"
-                          className="w-8 object-contain h-8"
-                        />
-                        <span>Legal Tender Currencies</span>
-                      </span>
-                      <span className="inline-flex space-x-3 items-center">
-                        <img
-                          src="/fiats_company_rankings.svg"
-                          className="w-8 object-contain h-8"
-                        />
-                        <span>Fiats / Companies Rankings</span>
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="space-y-3">
-                    <h3 className="uppercase text-gray-400">NFT</h3>
-                    <div className="flex flex-col space-y-3 font-bold text-lg">
-                      <span className="inline-flex space-x-3 items-center">
-                        <img
-                          src="/overall_status.svg"
-                          className="w-8 object-contain h-8"
-                        />
-                        <span>Overall NFT Status</span>
-                      </span>
-                      <span className="inline-flex space-x-3 items-center">
-                        <img
-                          src="/overall_collections.svg"
-                          className="w-8 object-contain h-8"
-                        />
-                        <span>Top Collections</span>
-                      </span>
-                      <span className="inline-flex space-x-3 items-center">
-                        <img
-                          src="/upcoming_sales.svg"
-                          className="w-8 object-contain h-8"
-                        />
-                        <span>Upcoming Sales</span>
-                      </span>
-                    </div>
-
-                    <h3 className="text-gray-400">On Chain Data</h3>
-                    <div className="flex flex-col space-y-3 font-bold text-lg">
-                      <span className="inline-flex space-x-3 items-center">
-                        <img
-                          src="/dex_pairs.svg"
-                          className="w-8 object-contain h-8"
-                        />
-                        <span>Dex Pairs</span>
-                      </span>
-                      <span className="inline-flex space-x-3 items-center">
-                        <img
-                          src="/chain_ranking.svg"
-                          className="w-8 object-contain h-8"
-                        />
-                        <span>Chain Ranking</span>
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              }
-              arrow={false}
-              /* @ts-ignore */
-              style="light"
-              className="p-0 shadow-none -z-20 group-hover:z-50"
-            >
-              <span className="font-bold mr-10 hover:text-blue-500 hover:cursor-pointer">
-                Cryptocurrencies
-              </span>
-            </Tooltip>
-          </div>
-
-          <DropDownMenu groupedOptions={groupedOptions} goToPage={goToPage} />
+          <DropDownMenu
+            label="Community"
+            groupedOptions={groupedOptionsCommunity}
+            goToPage={goToPage}
+          />
 
           <span className="font-bold mr-10 hover:text-blue-500 hover:cursor-pointer">
             FAQ
