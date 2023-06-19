@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import StatusInfo from '../components/statusInfo';
 import { PortfolioIcon, WatchlistIcon, WalletIcon } from '../icons';
 import { LogInReturnProps } from 'othent/src/types';
@@ -6,22 +6,33 @@ import { Othent } from 'othent';
 
 const StatusBar: React.FC = () => {
   const [user, setUser] = useState<LogInReturnProps | null>(null);
+  const [othent, setOthent] = useState(null);
+
+  useEffect(() => {
+    console.log('running');
+    const initOthent = async () => {
+      const instance = await Othent({
+        API_ID: '2384f84424a36b36ede2873be3e0c7e9',
+        callbackURLs: ['http://localhost:4200'],
+      });
+      console.log('instance', instance);
+      setOthent(instance);
+    };
+
+    initOthent();
+  }, []);
 
   const handleLogin = async () => {
-    console.log('user', user);
-    const othent = await Othent({
-      API_ID: '2384f84424a36b36ede2873be3e0c7e9',
-      callbackURLs: [
-        'https://el-capitan.arweave.dev/',
-        'http://127.0.0.1:4202',
-        'http://127.0.0.1:4200',
-        'http://127.0.0.1:4201',
-      ],
-    });
-    const wallet = await othent.logIn();
-    setUser(wallet);
-    console.log('wallet', wallet);
+    console.log('user', user, 'othent', othent);
+    if (othent) {
+      const wallet = await othent.logIn();
+      setUser(wallet);
+      console.log('wallet', wallet);
+    } else {
+      console.error('Othent is not initialized');
+    }
   };
+
   return (
     <div className="flex justify-between items-center py-2 px-10 border-b-2 h-16 overflow-auto">
       <div className="flex">

@@ -15,6 +15,7 @@ import {
   fetchFeed,
   fetchCoin,
   fetchRemainingPriceData,
+  selectCoinLoadingStatus,
 } from '@el-cap/store';
 import { connect } from 'react-redux';
 import loadable from '@loadable/component';
@@ -43,10 +44,10 @@ export function App(props: AppProps) {
   const feedPage = {
     entities: useAppSelector(selectAllFeed),
     loadingStatus: useAppSelector(selectFeedLoadingStatus),
-    fetchFeed: () => dispatch(fetchFeed()),
+    fetchFeed: (key: string) => dispatch(fetchFeed(key)),
   };
   const coinPage = {
-    loadingStatus: useAppSelector(selectFeedLoadingStatus),
+    loadingStatus: useAppSelector(selectCoinLoadingStatus),
     fetchCoin: (input: { symbol: string; name: string }) =>
       dispatch(fetchCoin(input)),
     fetchedEntity: useAppSelector(selectAllCoin),

@@ -6,12 +6,11 @@ import {
   EntityState,
   PayloadAction,
 } from '@reduxjs/toolkit';
-import { TokenData } from '@el-cap/interfaces';
+import { ProcessedTokenData } from '@el-cap/interfaces';
 import { processTokenData } from '@el-cap/utilities';
 import { getCoin } from '../feed/el-cap-kit.js';
 
 import { RootState } from '../store';
-import { mergeSingleCoinObjects } from '../feed/feed.slice';
 
 export const COIN_FEATURE_KEY = 'coin';
 
@@ -19,12 +18,12 @@ export const COIN_FEATURE_KEY = 'coin';
  * Update these interfaces according to your requirements.
  */
 
-export interface CoinState extends EntityState<TokenData> {
+export interface CoinState extends EntityState<ProcessedTokenData> {
   loadingStatus: 'not loaded' | 'loading' | 'loaded' | 'error';
   error?: string | null;
 }
 
-export const coinAdapter = createEntityAdapter<TokenData>();
+export const coinAdapter = createEntityAdapter<ProcessedTokenData>();
 
 export const fetchCoin = createAsyncThunk(
   'coin/fetchStatus',
@@ -82,7 +81,7 @@ export const coinSlice = createSlice({
       })
       .addCase(
         fetchCoin.fulfilled,
-        (state: CoinState, action: PayloadAction<any>) => {
+        (state: CoinState, action: PayloadAction<ProcessedTokenData[]>) => {
           console.log('coin action', action);
           coinAdapter.setAll(state, action.payload);
           state.loadingStatus = 'loaded';

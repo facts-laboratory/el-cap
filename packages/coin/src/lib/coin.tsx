@@ -16,7 +16,7 @@ import {
   Broadcast,
 } from '../assets/svg/index';
 import GrayButton from '../assets/component/GrayButton';
-import { ProcessedTokenData, TokenData } from '@el-cap/interfaces';
+import { ProcessedTokenData } from '@el-cap/interfaces';
 import { ArrowDownIcon } from 'packages/top-coins-card/src/icons';
 import CoinAttributeLinkButton from '../assets/component/CoinAttributeLinkButton';
 
