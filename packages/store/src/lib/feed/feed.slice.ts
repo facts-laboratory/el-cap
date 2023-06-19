@@ -43,7 +43,6 @@ export const fetchFeed = createAsyncThunk(
       console.log('Sorted Prices: ', sortedPrices); // Logging sortedPrices
 
       return sortedPrices;
-      return sortedPrices;
     } catch (error) {
       console.log(error);
       return [];
