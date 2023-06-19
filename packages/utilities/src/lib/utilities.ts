@@ -13,7 +13,7 @@ export function processTokenData(
 
     return {
       name: combinedTokenItem.name || '',
-      image: combinedTokenItem.image?.large || '',
+      image: combinedTokenItem.image || '',
       coin: combinedTokenItem.symbol || '',
       price: combinedTokenItem.value || 0,
       marketCap: combinedTokenItem.market_cap || 0,

@@ -25,7 +25,9 @@ export interface FeedState extends EntityState<FeedEntity> {
   error?: string | null;
 }
 
-export const feedAdapter = createEntityAdapter<FeedEntity>();
+export const feedAdapter = createEntityAdapter<FeedEntity>({
+  selectId: (entity) => entity.coin,
+});
 
 export const fetchFeed = createAsyncThunk(
   'feed/fetchFeed',
