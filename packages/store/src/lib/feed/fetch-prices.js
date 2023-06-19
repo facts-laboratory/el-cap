@@ -61,7 +61,7 @@ export async function fetchRedstonePrice(input) {
   }
 }
 export async function fetchRemainingPrice({ symbol, name, redstone }) {
-  const url = `https://api.coingecko.com/api/v3/coins/${name}?localization=false&tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=false`;
+  const url = `https://api.coingecko.com/api/v3/coins/${name.toLowerCase()}?localization=false&tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=false`;
 
   try {
     const response = await fetchData(url);
