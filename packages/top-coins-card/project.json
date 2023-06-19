@@ -1,7 +1,7 @@
 {
-  "name": "widget-coin-card",
+  "name": "top-coins-card",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "packages/widget-coin-card/src",
+  "sourceRoot": "packages/top-coins-card/src",
   "projectType": "library",
   "tags": [],
   "targets": {
@@ -9,7 +9,7 @@
       "executor": "@nrwl/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["packages/widget-coin-card/**/*.{ts,tsx,js,jsx}"]
+        "lintFilePatterns": ["packages/top-coins-card/**/*.{ts,tsx,js,jsx}"]
       }
     },
     "build": {
@@ -17,7 +17,7 @@
       "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
       "options": {
-        "outputPath": "dist/packages/widget-coin-card"
+        "outputPath": "dist/packages/top-coins-card"
       },
       "configurations": {
         "development": {
@@ -30,17 +30,17 @@
     },
     "test": {
       "executor": "@nrwl/vite:test",
-      "outputs": ["coverage/packages/widget-coin-card"],
+      "outputs": ["coverage/packages/top-coins-card"],
       "options": {
         "passWithNoTests": true,
-        "reportsDirectory": "../../coverage/packages/widget-coin-card"
+        "reportsDirectory": "../../coverage/packages/top-coins-card"
       }
     },
     "storybook": {
       "executor": "@nrwl/storybook:storybook",
       "options": {
         "port": 4400,
-        "configDir": "packages/widget-coin-card/.storybook",
+        "configDir": "packages/top-coins-card/.storybook",
         "uiFramework": "@storybook/react"
       },
       "configurations": {
@@ -53,8 +53,8 @@
       "executor": "@nrwl/storybook:build",
       "outputs": ["{options.outputDir}"],
       "options": {
-        "outputDir": "dist/storybook/widget-coin-card",
-        "configDir": "packages/widget-coin-card/.storybook",
+        "outputDir": "dist/storybook/top-coins-card",
+        "configDir": "packages/top-coins-card/.storybook",
         "uiFramework": "@storybook/react"
       },
       "configurations": {

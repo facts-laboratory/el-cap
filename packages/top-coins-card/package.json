@@ -1,5 +1,5 @@
 {
-  "name": "@el-cap/widget-coin-card",
+  "name": "@el-cap/top-coins-card",
   "version": "0.0.1",
   "main": "./index.js",
   "types": "./index.d.ts",

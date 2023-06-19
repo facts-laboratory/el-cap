@@ -6,7 +6,7 @@ import dts from 'vite-plugin-dts';
 import { join } from 'path';
 
 export default defineConfig({
-  cacheDir: '../../node_modules/.vite/widget-coin-card',
+  cacheDir: '../../node_modules/.vite/top-coins-card',
 
   plugins: [
     dts({
@@ -35,7 +35,7 @@ export default defineConfig({
     lib: {
       // Could also be a dictionary or array of multiple entry points.
       entry: 'src/index.ts',
-      name: 'widget-coin-card',
+      name: 'top-coins-card',
       fileName: 'index',
       // Change this to the formats you want to support.
       // Don't forgot to update your package.json as well.

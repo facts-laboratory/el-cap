@@ -5,10 +5,20 @@ import { ChartWidget } from '@el-cap/chart-widget';
 import { connect } from 'react-redux';
 import { PriceData } from 'redstone-api/lib/types';
 import { ArrowUpIcon, WatchlistIcon } from '../assets/icons';
-import BitcoinSVG from '../assets/svg/bitcoin.svg';
+import {
+  BitcoinSVG,
+  SearchSVG,
+  UserSVG,
+  CodeSVG,
+  PaperSVG,
+  LinkSVG,
+  RedditSVG,
+  Broadcast,
+} from '../assets/svg/index';
 import GrayButton from '../assets/component/GrayButton';
-import { ProcessedTokenData } from '@el-cap/interfaces';
-import { ArrowDownIcon } from 'packages/widget-coin-card/src/icons';
+import { ProcessedTokenData, TokenData } from '@el-cap/interfaces';
+import { ArrowDownIcon } from 'packages/top-coins-card/src/icons';
+import CoinAttributeLinkButton from '../assets/component/CoinAttributeLinkButton';
 
 interface CoinProps {
   goToFeed: () => void;
@@ -25,6 +35,93 @@ interface CoinProps {
     };
   };
 }
+
+enum TimeRange {
+  DAY_1 = '24h',
+  DAY_7 = '7d',
+  MONTH_1 = '1m',
+  MONTH_3 = '3m',
+  YEAR_1 = '1y',
+}
+
+enum LoadingStatus {
+  LOADED = 'loaded',
+  LOADING = 'loading',
+  NOT_LOADED = 'not loaded',
+}
+
+const coinAttributeButtonData = [
+  {
+    icon: LinkSVG,
+    title: 'bitcoin.org',
+    url: 'bitcoin.org',
+    type: 'link',
+  },
+  {
+    icon: SearchSVG,
+    title: 'Explorer',
+    url: 'bitcoin.org',
+    type: 'dropdown',
+    dropdownOptions: [
+      {
+        title: 'BTC on CMC Community',
+        url: 'bitcoin.org',
+        type: 'link',
+        icon: Broadcast,
+      },
+      {
+        title: 'BTC discussions',
+        url: 'bitcoin.org',
+        type: 'normal',
+        icon: Broadcast,
+      },
+    ],
+  },
+  {
+    icon: UserSVG,
+    title: 'Community',
+    url: '',
+    type: 'dropdown',
+    dropdownOptions: [
+      {
+        title: 'BTC on CMC Community',
+        url: 'bitcoin.org',
+        type: 'normal',
+        icon: Broadcast,
+      },
+      {
+        title: 'BTC discussions',
+        url: 'bitcoin.org',
+        type: 'normal',
+        icon: Broadcast,
+      },
+      {
+        title: 'bitcointalk.org',
+        url: 'bitcointalk.org',
+        type: 'link',
+        icon: UserSVG,
+      },
+      {
+        title: 'Reddit',
+        url: 'bitcoin.org',
+        type: 'link',
+        icon: RedditSVG,
+      },
+    ],
+  },
+  {
+    icon: CodeSVG,
+    title: 'Source code',
+    url: 'bitcoin.org',
+    type: 'link',
+  },
+  {
+    icon: PaperSVG,
+    title: 'Whitepaper',
+    url: 'bitcoin.org',
+    type: 'link',
+  },
+];
 
 export function Coin(props: CoinProps) {
   const { goToFeed, entity, ticker, coinPage } = props;
@@ -102,13 +199,20 @@ export function Coin(props: CoinProps) {
             <WatchlistIcon className="ml-2" width={18} height={18} />
           </div>
           <div className="flex flex-wrap gap-4">
-            <GrayButton text="Rank #1" active={true} />
-            <GrayButton text="Coin" />
-            <GrayButton text="Been Favorited +4.2 Million Times" />
-            <GrayButton text="Website" />
-            <GrayButton text="Explorers" />
-            <GrayButton text="White Paper" />
-            <GrayButton text="Source Code" />
+            {coinAttributeButtonData.map((item, key) => {
+              return (
+                <CoinAttributeLinkButton
+                  key={key}
+                  icon={item.icon}
+                  title={item.title}
+                  type={item.type === 'link' ? 'link' : 'dropdown'}
+                  url={item.url}
+                  dropdownOptions={
+                    item.dropdownOptions ? item.dropdownOptions : []
+                  }
+                />
+              );
+            })}
           </div>
           <p className="my-2">Tags</p>
           <div className="flex gap-4 flex-wrap">

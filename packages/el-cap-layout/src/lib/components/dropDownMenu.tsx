@@ -23,7 +23,7 @@ class DropDownMenu extends Component<DropDownMenuProps> {
     const { groupedOptions, goToPage } = this.props;
 
     return (
-      <>
+      <div className="group">
         {groupedOptions.map((group: DropDownGroup, key) => (
           <Tooltip
             key={key}
@@ -49,14 +49,14 @@ class DropDownMenu extends Component<DropDownMenuProps> {
             }
             arrow={false}
             style="light"
-            className="p-0 shadow-none z-50"
+            className="p-0 shadow-none"
           >
             <span className="font-bold mr-10 hover:text-blue-500 hover:cursor-pointer">
               {group.groupLabel}
             </span>
           </Tooltip>
         ))}
-      </>
+      </div>
     );
   }
 }

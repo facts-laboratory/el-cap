@@ -62,12 +62,6 @@ export default function SearchInput(props: SearchInputProps) {
     }
   };
 
-  const goToCoin = (ticker: string) => {
-    // Navigate to the specific coin's page
-    // This depends on how you're handling routing in your application
-    window.location.href = `/coins/${ticker}`;
-  };
-
   const handleOpenSearch = () => {
     setOpenSearch(!openSearch);
     const handleClick = (event: InputEvent) => {
