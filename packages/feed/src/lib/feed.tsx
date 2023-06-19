@@ -1,11 +1,14 @@
 import { useState, useEffect, useCallback } from 'react';
+import { useSelector } from 'react-redux';
+
 import { connect } from 'react-redux';
 
-import { mapStateToProps } from '@el-cap/store';
+import { RootState, mapStateToProps } from '@el-cap/store';
 import { TopCoinsCard } from '@el-cap/top-coins-card';
 import { TokenTable } from '@el-cap/token-table';
 import TabComponent from './components/TabComponent';
 import DropDownFeedOptions from './components/DropDownFeed';
+import { SortKey } from '@el-cap/interfaces';
 
 const TrendingdummyData = [
   {
@@ -36,24 +39,42 @@ const TrendingdummyData = [
 
 export interface FeedProps {
   goToCoin: (ticker: string) => void;
+  goToFeed: (key: string) => void;
   feedPage: {
     entities: any;
     loadingStatus: string;
-    fetchFeed: () => void;
+    fetchFeed: (key: string) => void;
   };
 }
 
 export function Feed(props: FeedProps) {
   const { fetchFeed, entities, loadingStatus } = props.feedPage;
-  const { goToCoin } = props;
+  const { goToCoin, goToFeed } = props;
+  console.log('props', props);
   const [showCase, setShowCase] = useState<boolean>(true);
 
+  const path = useSelector((state: RootState) => state.location.pathname);
   useEffect(() => {
-    if (loadingStatus !== 'loaded') {
-      fetchFeed();
-    }
-  }, [fetchFeed, entities, loadingStatus]);
+    const sortKeyMap: { [key: string]: SortKey } = {
+      name: SortKey.NAME,
+      image: SortKey.IMAGE,
+      coin: SortKey.COIN,
+      price: SortKey.PRICE,
+      marketcap: SortKey.MARKET_CAP,
+      volume: SortKey.VOLUME,
+      circulatingsupply: SortKey.CIRCULATING_SUPPLY,
+      '1h': SortKey.ONE_HOUR,
+      '24h': SortKey.TWENTY_FOUR_HOURS,
+      '7d': SortKey.SEVEN_DAYS,
+    };
 
+    const sortKey = sortKeyMap[path.slice(1).toLowerCase()];
+
+    if (loadingStatus !== 'loaded') {
+      console.log('Path parameter: ', path);
+      fetchFeed(sortKey);
+    }
+  }, [fetchFeed, entities, loadingStatus, path]);
   const feedOptions = [
     { title: 'All', key: 'feed0' },
     { title: 'Algorand Ecosystem', key: 'feed1' },
@@ -63,10 +84,6 @@ export function Feed(props: FeedProps) {
     { title: 'Layer 1', key: 'feed5' },
     { title: 'Layer 2', key: 'feed6' },
   ];
-
-  const goToFeed = useCallback((key: string) => {
-    window.location.href = key;
-  }, []);
 
   return (
     <div className="min-h-[calc(100vh-217px)]">
@@ -144,4 +161,5 @@ export default Feed;
 export const ConnectedFeed = connect(mapStateToProps, (dispatch) => ({
   goToCoin: (ticker: string, entity: any) =>
     dispatch({ type: 'COIN', payload: { ticker, entity } }),
+  goToFeed: (key: string) => dispatch({ type: 'FEED', payload: { key } }),
 }))(Feed);

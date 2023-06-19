@@ -40,12 +40,15 @@ enum LoadingStatus {
 export function Coin(props: CoinProps) {
   const { goToFeed, entity, ticker, coinPage } = props;
   const { coinChartProps, fetchCoin, loadingStatus } = coinPage;
+  console.log('props', props);
 
   const [error, setError] = useState<string | undefined>();
 
   useEffect(() => {
-    if (loadingStatus !== 'loaded' && ticker !== entity?.coin)
+    if (loadingStatus === 'not loaded' && ticker !== entity?.coin) {
+      console.log('fetching coin', ticker, entity, loadingStatus);
       fetchCoin({ symbol: 'ar', name: 'arweave' });
+    }
   }, [fetchCoin, loadingStatus]);
 
   if (error) return <p>{error}</p>;

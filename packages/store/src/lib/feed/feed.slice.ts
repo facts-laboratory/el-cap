@@ -6,7 +6,7 @@ import {
   EntityState,
   PayloadAction,
 } from '@reduxjs/toolkit';
-import redstone from 'redstone-api';
+import { mergeObjects, sortPrices, processTokenData } from '@el-cap/utilities';
 import { getPrices } from './el-cap-kit.js';
 
 import { RootState } from '../store';
@@ -17,91 +17,33 @@ export const FEED_FEATURE_KEY = 'feed';
  * Update these interfaces according to your requirements.
  */
 export interface FeedEntity {
-  id: number;
+  [index: string]: { symbol: string } & Record<string, unknown>;
 }
 
 export interface FeedState extends EntityState<FeedEntity> {
   loadingStatus: 'not loaded' | 'loading' | 'loaded' | 'error';
-  error: string | null;
-}
-
-type RedstoneObject = { [ticker: string]: unknown };
-type RemainingObject = {
-  [index: string]: { symbol: string } & Record<string, unknown>;
-};
-
-export function mergeObjects(
-  redstone: RedstoneObject,
-  remaining: RemainingObject
-): Array<unknown> {
-  const redstoneLowered: Record<string, unknown> = Object.keys(redstone).reduce<
-    Record<string, unknown>
-  >((c, k) => {
-    c[k.toLowerCase()] = redstone[k];
-    return c;
-  }, {});
-
-  return Object.keys(remaining).map((key) => {
-    const symbolLower = remaining[key].symbol.toLowerCase();
-    if (Object.prototype.hasOwnProperty.call(redstoneLowered, symbolLower)) {
-      return { ...remaining[key], ...(redstoneLowered[symbolLower] as object) };
-    } else {
-      return remaining[key];
-    }
-  });
-}
-
-export function mergeSingleCoinObjects(
-  redstone: RedstoneObject,
-  remaining: RemainingObject
-): Array<unknown> {
-  console.log('redstone', redstone, 'remaining', remaining);
-  const redstoneLowered: Record<string, unknown> = Object.keys(redstone).reduce<
-    Record<string, unknown>
-  >((c, k) => {
-    c[k.toLowerCase()] = redstone[k];
-    return c;
-  }, {});
-
-  return Object.keys(remaining).map((key) => {
-    const symbolLower = remaining[key].symbol.toLowerCase();
-    if (Object.prototype.hasOwnProperty.call(redstoneLowered, symbolLower)) {
-      return { ...remaining[key], ...(redstoneLowered[symbolLower] as object) };
-    } else {
-      return remaining[key];
-    }
-  });
+  error?: string | null;
 }
 
 export const feedAdapter = createEntityAdapter<FeedEntity>();
 
-/**
- * Export an effect using createAsyncThunk from
- * the Redux Toolkit: https://redux-toolkit.js.org/api/createAsyncThunk
- *
- * e.g.
- * ```
- * import React, { useEffect } from 'react';
- * import { useDispatch } from 'react-redux';
- *
- * // ...
- *
- * const dispatch = useDispatch();
- * useEffect(() => {
- *   dispatch(fetchFeed())
- * }, [dispatch]);
- * ```
- */
-
 export const fetchFeed = createAsyncThunk(
   'feed/fetchFeed',
-  async (_, thunkAPI) => {
+  async (key: string, thunkAPI) => {
     try {
       console.log('fetching feed');
       const prices = await getPrices();
+      console.log('Prices: ', prices); // Logging prices
       const combinedPrices = mergeObjects(prices.redstone, prices.remaining);
-      console.log('prices', prices, 'combined', combinedPrices);
-      return combinedPrices;
+
+      const processedPrices = processTokenData(combinedPrices);
+      console.log('Processed Prices: ', processedPrices); // Logging processedPrices
+
+      const sortedPrices = sortPrices(processedPrices, key);
+      console.log('Sorted Prices: ', sortedPrices); // Logging sortedPrices
+
+      return sortedPrices;
+      return sortedPrices;
     } catch (error) {
       console.log(error);
       return [];
