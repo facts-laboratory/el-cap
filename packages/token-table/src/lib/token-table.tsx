@@ -11,39 +11,6 @@ export const orderByMarketCap = (data: ProcessedTokenData[]) => {
   return data.sort((a, b) => b.marketCap - a.marketCap);
 };
 
-export const getTokenData = (data: TokenData[]): ProcessedTokenData[] => {
-  console.log('data', data);
-  return data.map((token, index) => {
-    const {
-      symbol,
-      value,
-      name,
-      image,
-      price_change_percentage_1h_in_currency,
-      price_change_percentage_24h_in_currency,
-      price_change_percentage_7d_in_currency,
-      current_price,
-      market_cap,
-      total_volume,
-      circulating_supply,
-      ...rest
-    } = token;
-
-    return {
-      name: name || '',
-      image: image || '',
-      coin: symbol || '',
-      price: current_price || 0,
-      marketCap: market_cap || 0,
-      volume: total_volume || 0,
-      circulatingSupply: circulating_supply || 0,
-      '1h': price_change_percentage_1h_in_currency || 0,
-      '24h': price_change_percentage_24h_in_currency || 0,
-      '7d': price_change_percentage_7d_in_currency || 0,
-    };
-  });
-};
-
 export function TokenTable(props: TokenTableProps) {
   const { data, goToCoin } = props;
   const [tokenData, setTokenData] = useState<ProcessedTokenData[]>([]);
@@ -51,7 +18,7 @@ export function TokenTable(props: TokenTableProps) {
   useEffect(() => {
     console.log('data', data);
     if (data) {
-      setTokenData(orderByMarketCap(getTokenData(data)));
+      setTokenData(data);
     }
   }, [data]);
   return (

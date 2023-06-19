@@ -6,12 +6,11 @@ import {
   EntityState,
   PayloadAction,
 } from '@reduxjs/toolkit';
-import { TokenData } from '@el-cap/interfaces';
+import { ProcessedTokenData } from '@el-cap/interfaces';
 import { processTokenData } from '@el-cap/utilities';
 import { getCoin } from '../feed/el-cap-kit.js';
 
 import { RootState } from '../store';
-import { mergeSingleCoinObjects } from '../feed/feed.slice';
 
 export const COIN_FEATURE_KEY = 'coin';
 
@@ -19,12 +18,12 @@ export const COIN_FEATURE_KEY = 'coin';
  * Update these interfaces according to your requirements.
  */
 
-export interface CoinState extends EntityState<TokenData> {
+export interface CoinState extends EntityState<ProcessedTokenData> {
   loadingStatus: 'not loaded' | 'loading' | 'loaded' | 'error';
   error?: string | null;
 }
 
-export const coinAdapter = createEntityAdapter<TokenData>();
+export const coinAdapter = createEntityAdapter<ProcessedTokenData>();
 
 export const fetchCoin = createAsyncThunk(
   'coin/fetchStatus',
@@ -35,10 +34,25 @@ export const fetchCoin = createAsyncThunk(
     try {
       const coinData = await getCoin({ symbol, name });
       console.log('coindata', coinData);
-      const processedCoin = processTokenData({
-        ...coinData.redstone,
-        ...coinData.remaining,
-      });
+      const processedCoin = {
+        name: coinData.remaining.name || '',
+        image: coinData.remaining.image?.large || '',
+        coin: coinData.redstone.symbol || '',
+        price: coinData.redstone.value || 0,
+        marketCap: coinData.remaining.market_data.market_cap.usd || 0,
+        volume: coinData.remaining.market_data.total_volume.usd || 0,
+        circulatingSupply:
+          coinData.remaining.market_data.circulating_supply || 0,
+        '1h':
+          coinData.remaining.market_data.price_change_percentage_1h_in_currency
+            .usd || 0,
+        '24h':
+          coinData.remaining.market_data.price_change_percentage_24h_in_currency
+            .usd || 0,
+        '7d':
+          coinData.remaining.market_data.price_change_percentage_7d_in_currency
+            .usd || 0,
+      };
       return [processedCoin];
     } catch (error) {
       console.log('fetching error', error);
@@ -67,7 +81,7 @@ export const coinSlice = createSlice({
       })
       .addCase(
         fetchCoin.fulfilled,
-        (state: CoinState, action: PayloadAction<any>) => {
+        (state: CoinState, action: PayloadAction<ProcessedTokenData[]>) => {
           console.log('coin action', action);
           coinAdapter.setAll(state, action.payload);
           state.loadingStatus = 'loaded';
