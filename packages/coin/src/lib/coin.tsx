@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-
+import { WarpFactory } from 'warp-contracts';
 import { mapStateToProps } from '@el-cap/store';
 import { ChartWidget } from '@el-cap/chart-widget';
 import { connect } from 'react-redux';
@@ -25,6 +25,9 @@ interface CoinProps {
   entity?: ProcessedTokenData;
   ticker: string;
   coinPage: {
+    fetchCoin: (input: { symbol: string; name: string }) => void;
+    loadingStatus: string;
+    fetchedEntity: ProcessedTokenData[];
     coinChartProps: {
       fetchRemaining: (input: { symbol: string; interval: string }) => void;
       fetchCoin: (input: { symbol: string; name: string }) => void;
@@ -122,14 +125,45 @@ const coinAttributeButtonData = [
 
 export function Coin(props: CoinProps) {
   const { goToFeed, entity, ticker, coinPage } = props;
-  const { coinChartProps, fetchCoin, loadingStatus } = coinPage;
-
+  const { coinChartProps, fetchCoin, loadingStatus, fetchedEntity } = coinPage;
+  const [coins, setCoins] = useState<ProcessedTokenData[]>([]);
+  const [shouldLoad, setShouldLoad] = useState(true);
   const [error, setError] = useState<string | undefined>();
 
+  const fetchState = async () => {
+    const contractId = 'MH-w8Sq6uw3Jwc_stPqyJT8fEcIhx4VrrE10NFgv-KY';
+    const warp = WarpFactory.forMainnet();
+    const contract = warp.contract(contractId);
+    const state = await contract.readState();
+    const coins = state.cachedValue.state.coins;
+    console.log('state running here', state);
+    setCoins(coins);
+  };
   useEffect(() => {
-    if (loadingStatus !== 'loaded' && ticker !== entity?.coin)
-      fetchCoin({ symbol: 'ar', name: 'arweave' });
-  }, [fetchCoin, loadingStatus]);
+    fetchState();
+  }, []);
+
+  function findNameByTicker(ticker: string, coins: ProcessedTokenData[]) {
+    console.log('ticker', ticker, 'coins', coins);
+    const coin = coins.find(
+      (c) => c.symbol.toLowerCase() === ticker.toLowerCase()
+    );
+    return coin ? coin.name : 'Ticker not found';
+  }
+
+  useEffect(() => {
+    if (
+      shouldLoad &&
+      loadingStatus !== 'loaded' &&
+      ticker !== entity?.coin &&
+      coins.length > 0
+    ) {
+      const name = findNameByTicker(ticker, coins);
+      console.log('name', name);
+      fetchCoin({ symbol: ticker, name });
+      setShouldLoad(false);
+    }
+  }, [fetchCoin, loadingStatus, ticker, entity, coins]);
 
   if (error) return <p>{error}</p>;
 
@@ -149,11 +183,17 @@ export function Coin(props: CoinProps) {
           <div className="flex items-center my-4">
             <img
               className="w-10 mr-2"
-              src={entity?.image || BitcoinSVG}
+              src={
+                (entity && entity.image) ||
+                (fetchedEntity[0] && fetchedEntity[0].image) ||
+                BitcoinSVG
+              }
               alt="bitcoin"
             />
             <span className="font-bold text-lg mr-2">
-              {entity?.name || 'Bitcoin'}
+              {(entity && entity.name) ||
+                (fetchedEntity[0] && fetchedEntity[0].name) ||
+                'Bitcoin'}
             </span>
             <GrayButton text="BTC" />
             <WatchlistIcon className="ml-2" width={18} height={18} />
@@ -186,7 +226,10 @@ export function Coin(props: CoinProps) {
         <div className="md:col-span-2 col-span-1">
           <div className="font-bold flex items-center mb-8">
             <span className="md:text-[60px] text-3xl mr-2 p-2">
-              ${entity?.price || '28,013.46'}
+              $
+              {(entity && entity.price) ||
+                (fetchedEntity[0] && fetchedEntity[0].price) ||
+                '34,000'}
             </span>
             {entity &&
               (entity['24h'] < 0 ? (
@@ -197,7 +240,9 @@ export function Coin(props: CoinProps) {
                     width={15}
                     height={15}
                   />
-                  {(entity && (entity['24h'] * -1).toFixed(4)) || '0.02%'}
+                  {(entity && (entity['24h'] * -1).toFixed(4)) ||
+                    (fetchedEntity[0] && fetchedEntity[0]['24h'].toFixed(4)) ||
+                    '0.02%'}
                 </span>
               ) : (
                 <span className="p-2 text-white bg-green-500 rounded-2xl flex items-center md:text-2xl text-md">
@@ -207,7 +252,9 @@ export function Coin(props: CoinProps) {
                     width={15}
                     height={15}
                   />
-                  {(entity && entity['24h'].toFixed(4)) || '0.02%'}
+                  {(entity && entity['24h'].toFixed(4)) ||
+                    (fetchedEntity[0] && fetchedEntity[0]['24h'].toFixed(4)) ||
+                    '0.02%'}
                 </span>
               ))}
           </div>
@@ -216,7 +263,9 @@ export function Coin(props: CoinProps) {
               <span className="text-[#7D7D7D]">Market Cap</span>
               <br />
               <span className="font-bold">
-                {entity?.marketCap || '$535,170,972,845'}
+                {(entity && entity.marketCap) ||
+                  (fetchedEntity[0] && fetchedEntity[0].marketCap) ||
+                  '$535,170,972,845'}
               </span>
               <span className="flex items-center text-green-500">
                 <ArrowUpIcon
@@ -231,7 +280,12 @@ export function Coin(props: CoinProps) {
             <div className="flex-col">
               <span className="text-[#7D7D7D]">Fully Diluted Market Cap</span>
               <br />
-              <span className="font-bold">$535,170,972,845</span>
+              <span className="font-bold">
+                $
+                {(entity && entity.marketCap) ||
+                  (fetchedEntity[0] && fetchedEntity[0].marketCap) ||
+                  '535,170,972,845'}
+              </span>
               <span className="flex items-center text-green-500">
                 <ArrowUpIcon
                   className="mt-2 mr-1"
@@ -246,7 +300,9 @@ export function Coin(props: CoinProps) {
               <span className="text-[#7D7D7D]">Volume</span>
               <br />
               <span className="font-bold">
-                {entity?.volume || '$25,170,972,845'}
+                {(entity && entity.volume) ||
+                  (fetchedEntity[0] && fetchedEntity[0].volume) ||
+                  '$535,170,972,845'}
               </span>
               <span className="flex items-center text-green-500">
                 <ArrowUpIcon
@@ -263,8 +319,12 @@ export function Coin(props: CoinProps) {
               <br />
               <div className="flex justify-between">
                 <span className="font-bold">
-                  {entity?.circulatingSupply || '19,327,200'}{' '}
-                  {entity?.coin || 'BTC'}
+                  {(entity && entity.circulatingSupply) ||
+                    (fetchedEntity[0] && fetchedEntity[0].circulatingSupply) ||
+                    '18,618,806.00'}
+                  {(entity && entity.coin) ||
+                    (fetchedEntity[0] && fetchedEntity[0].coin) ||
+                    'BTC'}
                 </span>
                 <span className="font-bold">92%</span>
               </div>
