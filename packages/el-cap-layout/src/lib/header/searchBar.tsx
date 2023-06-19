@@ -141,7 +141,7 @@ const SearchBar = (props: SearchBarProps) => {
         },
         {
           label: 'Upcoming Sales',
-          destination: '/upcoming-sales',
+          destination: '/trending',
           image: '/upcoming_sales.svg',
         },
       ],

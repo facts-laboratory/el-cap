@@ -33,18 +33,30 @@ export const fetchFeed = createAsyncThunk(
   'feed/fetchFeed',
   async (key: string, thunkAPI) => {
     try {
-      console.log('fetching feed');
-      const prices = await getPrices();
-      console.log('Prices: ', prices); // Logging prices
-      const combinedPrices = mergeObjects(prices.redstone, prices.remaining);
+      console.log('fetching feed', key);
+      const { feed } = thunkAPI.getState() as RootState;
+      const { entities } = feed;
+      console.log('feedPage', feed, key);
 
-      const processedPrices = processTokenData(combinedPrices);
-      console.log('Processed Prices: ', processedPrices); // Logging processedPrices
+      if (Object.keys(entities).length === 0) {
+        // Run this if there are no entities
+        const prices = await getPrices();
+        console.log('Prices: ', prices); // Logging prices
+        const combinedPrices = mergeObjects(prices.redstone, prices.remaining);
 
-      const sortedPrices = sortPrices(processedPrices, key);
-      console.log('Sorted Prices: ', sortedPrices); // Logging sortedPrices
+        const processedPrices = processTokenData(combinedPrices);
+        console.log('Processed Prices: ', processedPrices); // Logging processedPrices
 
-      return sortedPrices;
+        const sortedPrices = sortPrices(processedPrices, key);
+        console.log('Sorted Prices: ', sortedPrices); // Logging sortedPrices
+
+        return sortedPrices;
+      } else {
+        const sortedPrices = sortPrices(entities, key);
+        console.log('Sorted Prices: ', sortedPrices); // Logging sortedPrices
+
+        return sortedPrices;
+      }
     } catch (error) {
       console.log(error);
       return [];
@@ -73,6 +85,7 @@ export const feedSlice = createSlice({
       .addCase(
         fetchFeed.fulfilled,
         (state: FeedState, action: PayloadAction<FeedEntity[]>) => {
+          console.log('loaded feed', action.payload);
           feedAdapter.setAll(state, action.payload);
           state.loadingStatus = 'loaded';
         }

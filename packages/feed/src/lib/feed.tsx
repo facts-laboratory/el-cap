@@ -50,7 +50,6 @@ export interface FeedProps {
 export function Feed(props: FeedProps) {
   const { fetchFeed, entities, loadingStatus } = props.feedPage;
   const { goToCoin, goToFeed } = props;
-  console.log('props', props);
   const [showCase, setShowCase] = useState<boolean>(true);
   const [sortKey, setSortKey] = useState<string | undefined>();
 
@@ -63,7 +62,10 @@ export function Feed(props: FeedProps) {
       price: SortKey.PRICE,
       marketcap: SortKey.MARKET_CAP,
       volume: SortKey.VOLUME,
+      lossers: SortKey.LOSERS,
       circulatingsupply: SortKey.CIRCULATING_SUPPLY,
+      trending: SortKey.SEVEN_DAYS,
+      gainers: SortKey.SEVEN_DAYS,
       '1h': SortKey.ONE_HOUR,
       '24h': SortKey.TWENTY_FOUR_HOURS,
       '7d': SortKey.SEVEN_DAYS,
@@ -72,7 +74,8 @@ export function Feed(props: FeedProps) {
     const key = sortKeyMap[path.slice(1).toLowerCase()];
     setSortKey(key);
 
-    if (loadingStatus !== 'loaded') {
+    if (loadingStatus !== 'loaded' && loadingStatus !== 'loading') {
+      console.log('loadingStatus', loadingStatus);
       console.log('Path parameter: ', path);
       fetchFeed(key);
     }
@@ -149,7 +152,7 @@ export function Feed(props: FeedProps) {
           </div>
         )}
         <div className="flex justify-between items-center">
-          <TabComponent />
+          <TabComponent fetchFeed={fetchFeed} />
           <DropDownFeedOptions feedOptions={feedOptions} goToFeed={goToFeed} />
         </div>
         {entities && <TokenTable data={entities} goToCoin={goToCoin} />}
