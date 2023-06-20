@@ -40,8 +40,8 @@ export interface SearchBarProps {
 
 const SearchBar = (props: SearchBarProps) => {
   const [menuStatus, setMenuStatus] = useState<boolean>(true);
+  console.log('searchbar props', props);
   const { goToFeed } = props;
-
   const groupedOptionsCommunity = [
     {
       groupLabel: '',
@@ -50,11 +50,13 @@ const SearchBar = (props: SearchBarProps) => {
           label: 'Feeds',
           destination: '/Feeds',
           image: '/feed.svg',
+          available: false,
         },
         {
           label: 'Articles',
           destination: '/articles',
           image: '/articles.svg',
+          available: false,
         },
       ],
     },
@@ -68,36 +70,43 @@ const SearchBar = (props: SearchBarProps) => {
           label: 'Ranking',
           destination: '/ranking',
           image: '/ranking.svg',
+          available: true,
         },
         {
           label: 'Recently Added',
           destination: '/recently-added',
           image: '/recently_added.svg',
+          available: false,
         },
         {
           label: 'Categories',
           destination: '/categories',
           image: '/categories.svg',
+          available: false,
         },
         {
           label: 'Spotlight',
           destination: '/spotlight',
           image: '/spotlight.svg',
+          available: false,
         },
         {
           label: 'Gainer & Losers',
-          destination: '/gainers',
+          destination: 'gainers',
           image: '/gainers_losers.svg',
+          available: true,
         },
         {
           label: 'Global Charts',
           destination: '/global-charts',
           image: '/global_charts.svg',
+          available: false,
         },
         {
           label: 'Historical Snapshots',
           destination: '/historical-snapshots',
           image: '/historical_snapshots.svg',
+          available: false,
         },
       ],
     },
@@ -108,21 +117,25 @@ const SearchBar = (props: SearchBarProps) => {
           label: 'Price Estimates',
           destination: '/price-estimates',
           image: '/price_estimates.svg',
+          available: false,
         },
         {
           label: 'Polkadot Parachains',
           destination: '/polkadot-parachains',
           image: '/polkadot_parachains.svg',
+          available: false,
         },
         {
           label: 'Legal Tender Currencies',
           destination: '/legal-tender-currencies',
           image: '/legal_tender_currencies.svg',
+          available: false,
         },
         {
           label: 'Fiats / Companies Rankings',
           destination: '/fiats-companies-rankings',
           image: '/fiats_company_rankings.svg',
+          available: false,
         },
       ],
     },
@@ -133,16 +146,19 @@ const SearchBar = (props: SearchBarProps) => {
           label: 'Overall NFT Status',
           destination: '/overall-nft',
           image: '/overall_status.svg',
+          available: false,
         },
         {
           label: 'Top Collections',
           destination: '/top-collections',
           image: '/overall_collections.svg',
+          available: false,
         },
         {
           label: 'Upcoming Sales',
           destination: '/trending',
           image: '/upcoming_sales.svg',
+          available: false,
         },
       ],
     },
@@ -153,19 +169,17 @@ const SearchBar = (props: SearchBarProps) => {
           label: 'Dex Pairs',
           destination: '/dex-pairs',
           image: '/dex_pairs.svg',
+          available: false,
         },
         {
           label: 'Chain Ranking',
           destination: '/chain-ranking',
           image: '/chain_ranking.svg',
+          available: false,
         },
       ],
     },
   ];
-
-  const goToPage = (option: DropDownOption) => {
-    window.location.href = option.destination;
-  };
 
   // search
   const [trending, setTrending] = useState<SearchCoin[]>([]);
@@ -270,24 +284,27 @@ const SearchBar = (props: SearchBarProps) => {
   return (
     <div className="flex items-center justify-between py-2 px-10 border-b-2 h-16 flex-row-reverse md:flex-row">
       <div className="hidden md:block">
-        <div onClick={() => goToFeed()} className="flex text-2xl items-center">
-          <CapitionIcon className="mr-2 w-10 h-10" />
-          <span className="font-bold mr-10 hover:text-blue-500 hover:cursor-pointer">
-            El Capitan
-          </span>
+        <div className="flex text-2xl items-center">
+          <div
+            onClick={() => goToFeed()}
+            className="flex text-2xl items-center"
+          >
+            <CapitionIcon className="mr-2 w-10 h-10" />
+            <span className="font-bold mr-10 hover:text-blue-500 hover:cursor-pointer">
+              El Capitan
+            </span>
+          </div>
 
           <DropDownMenu
             label="Cryptocurrencies"
             groupedOptions={groupedOptionsCryptocurrencies}
-            goToPage={goToPage}
+            goToFeed={goToFeed}
           />
-
           <DropDownMenu
             label="Community"
             groupedOptions={groupedOptionsCommunity}
-            goToPage={goToPage}
+            goToPage={goToFeed}
           />
-
           <span className="font-bold mr-10 hover:text-blue-500 hover:cursor-pointer">
             FAQ
           </span>
