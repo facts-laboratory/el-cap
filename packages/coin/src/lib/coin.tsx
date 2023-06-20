@@ -17,7 +17,7 @@ import {
 } from '../assets/svg/index';
 import GrayButton from '../assets/component/GrayButton';
 import { ProcessedTokenData } from '@el-cap/interfaces';
-import { ArrowDownIcon } from 'packages/top-coins-card/src/icons';
+import { ArrowDownIcon } from '@el-cap/top-coins-card';
 import CoinAttributeLinkButton from '../assets/component/CoinAttributeLinkButton';
 
 interface CoinProps {
