@@ -8,7 +8,7 @@ import { TopCoinsCard } from '@el-cap/top-coins-card';
 import { TokenTable } from '@el-cap/token-table';
 import TabComponent from './components/TabComponent';
 import DropDownFeedOptions from './components/DropDownFeed';
-import { SortKey } from '@el-cap/interfaces';
+import { SortKey, TopCoins } from '@el-cap/interfaces';
 
 const TrendingdummyData = [
   {
@@ -44,11 +44,14 @@ export interface FeedProps {
     entities: any;
     loadingStatus: string;
     fetchFeed: (key: string | undefined) => void;
+    getTopCoins: () => void;
+    topCoins: TopCoins;
   };
 }
 
 export function Feed(props: FeedProps) {
-  const { fetchFeed, entities, loadingStatus } = props.feedPage;
+  const { fetchFeed, entities, loadingStatus, getTopCoins, topCoins } =
+    props.feedPage;
   const { goToCoin, goToFeed } = props;
   const [showCase, setShowCase] = useState<boolean>(true);
   const [sortKey, setSortKey] = useState<string | undefined>();
@@ -89,6 +92,12 @@ export function Feed(props: FeedProps) {
     { title: 'Layer 1', key: 'feed5' },
     { title: 'Layer 2', key: 'feed6' },
   ];
+
+  useEffect(() => {
+    if (entities.length > 0) {
+      getTopCoins();
+    }
+  }, [entities]);
 
   return (
     <div>
@@ -138,29 +147,39 @@ export function Feed(props: FeedProps) {
             </div>
             {showCase && !sortKey && (
               <div className="flex flex-wrap gap-5 my-6">
-                <TopCoinsCard
-                  title="Trending Coins"
-                  type="Percentage"
-                  data={TrendingdummyData}
-                  goToCoin={goToCoin}
-                  goToFeed={goToFeed}
-                />
-                <TopCoinsCard
-                  title="Biggest Gainers"
-                  type="Price"
-                  data={TrendingdummyData}
-                  goToCoin={goToCoin}
-                  goToFeed={goToFeed}
-                />
-                <TopCoinsCard
-                  title="Recently Updated Socials"
-                  type="Price"
-                  data={TrendingdummyData}
-                  goToCoin={goToCoin}
-                  goToFeed={goToFeed}
-                />
+                {topCoins && topCoins['7d'] && topCoins['7d'].length > 0 && (
+                  <TopCoinsCard
+                    title="Biggest Gainers"
+                    type="Percentage"
+                    dataKey="7d"
+                    data={topCoins['7d']}
+                    goToCoin={goToCoin}
+                    goToFeed={goToFeed}
+                  />
+                )}
+                {topCoins && topCoins['24h'] && topCoins['24h'].length > 0 && (
+                  <TopCoinsCard
+                    title="Trending Coins"
+                    type="Price"
+                    dataKey="24h"
+                    data={topCoins['24h']}
+                    goToCoin={goToCoin}
+                    goToFeed={goToFeed}
+                  />
+                )}
+                {topCoins && topCoins['1h'] && topCoins['1h'].length > 0 && (
+                  <TopCoinsCard
+                    title="Moving"
+                    type="Price"
+                    dataKey="1h"
+                    data={topCoins['1h']}
+                    goToCoin={goToCoin}
+                    goToFeed={goToFeed}
+                  />
+                )}
               </div>
             )}
+
             <div className="flex justify-between items-center">
               <TabComponent fetchFeed={fetchFeed} />
               <DropDownFeedOptions
