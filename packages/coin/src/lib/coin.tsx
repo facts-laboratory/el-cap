@@ -19,6 +19,7 @@ import GrayButton from '../assets/component/GrayButton';
 import { ProcessedTokenData } from '@el-cap/interfaces';
 import { ArrowDownIcon } from 'packages/top-coins-card/src/icons';
 import CoinAttributeLinkButton from '../assets/component/CoinAttributeLinkButton';
+import ToggleComponent from '../assets/component/ToggleComponent';
 
 interface CoinProps {
   goToFeed: () => void;
@@ -129,6 +130,14 @@ export function Coin(props: CoinProps) {
   const [coins, setCoins] = useState<ProcessedTokenData[]>([]);
   const [shouldLoad, setShouldLoad] = useState(true);
   const [error, setError] = useState<string | undefined>();
+  const [viewType, setViewType] = useState<string>('Chart');
+
+  const setView = (view: string) => {
+    console.log(view);
+    setViewType(view);
+  };
+
+  const toggleView: string[] = ['Chart', 'Table'];
 
   const fetchState = async () => {
     const contractId = 'MH-w8Sq6uw3Jwc_stPqyJT8fEcIhx4VrrE10NFgv-KY';
@@ -340,7 +349,8 @@ export function Coin(props: CoinProps) {
           </div>
         </div>
       </div>
-      <div>
+      <div className="my-4">
+        <ToggleComponent view={toggleView} setView={setView} />
         <ChartWidget {...coinChartProps} ticker={ticker} />
       </div>
     </div>

@@ -21,8 +21,8 @@ enum TimeRange {
 }
 
 interface ChartData {
-  time: number,
-  value: number
+  time: number;
+  value: number;
 }
 
 enum LoadingStatus {
@@ -100,7 +100,7 @@ export function ChartWidget(props: CoinChartProps) {
     return (
       <>
         <div className="sm:flex items-center justify-between my-4">
-          <span className="font-bold md:text-3xl text-xl whitespace-nowrap mx-2 mb-2">
+          <span className="font-bold md:text-3xl text-xl whitespace-nowrap">
             Bitcoin To USD Chart
           </span>
           <div className="relative mr-2 px-4 py-2 bg-white rounded-lg overflow-auto">
