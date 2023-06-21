@@ -6,14 +6,12 @@ import { Othent } from 'othent';
 
 const StatusBar: React.FC = () => {
   const [user, setUser] = useState<LogInReturnProps | null>(null);
-  const [othent, setOthent] = useState(null);
+  const [othent, setOthent] = useState<any>();
 
   useEffect(() => {
-    console.log('running');
     const initOthent = async () => {
       const instance = await Othent({
         API_ID: '2384f84424a36b36ede2873be3e0c7e9',
-        callbackURLs: ['http://localhost:4200'],
       });
       console.log('instance', instance);
       setOthent(instance);
