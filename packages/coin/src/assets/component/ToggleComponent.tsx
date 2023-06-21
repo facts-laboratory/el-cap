@@ -25,7 +25,7 @@ const ToggleComponent: React.FC<ToggleViewProps> = ({ view, setView }) => {
   }, [activeTabIndex]);
 
   return (
-    <div className="relative mr-2 px-4 py-2 bg-white rounded-xl overflow-auto">
+    <div className="relative mr-2 px-4 py-2 bg-white rounded-xl overflow-auto w-[220px]">
       <div className="flex">
         {view.map((tab, idx) => {
           return (
