@@ -148,6 +148,7 @@ export function Coin(props: CoinProps) {
     console.log('state running here', state);
     setCoins(coins);
   };
+
   useEffect(() => {
     fetchState();
   }, []);
