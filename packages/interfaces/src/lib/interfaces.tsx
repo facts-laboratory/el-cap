@@ -11,6 +11,13 @@ export interface ProcessedTokenData {
   '7d': number;
 }
 
+export type SearchCoin = {
+  name: string;
+  symbol: string;
+  ranking: number;
+  image: string;
+};
+
 export enum SortKey {
   NAME = 'name',
   IMAGE = 'image',

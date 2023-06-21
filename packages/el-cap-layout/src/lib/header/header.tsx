@@ -1,21 +1,41 @@
 import { goToPage, mapStateToProps } from '@el-cap/store';
 import { connect } from 'react-redux';
 import StatusBar from './statusBar';
+import { WarpFactory } from 'warp-contracts';
 import SearchBar from './searchBar';
+import { SearchCoin } from '@el-cap/interfaces';
+import { useEffect } from 'react';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface HeaderProps {
   goToFeed: () => void;
+  header: {
+    fetchCoins: () => void;
+    coins: SearchCoin;
+    loadingStatus: string;
+  };
 }
 
 export function Header(props: HeaderProps) {
   // const ref: React.RefObject<HTMLDivElement> = useRef(null);
-  const { goToFeed } = props;
+  const { header, goToFeed } = props;
+  const { fetchCoins, coins, loadingStatus } = header;
+
+  useEffect(() => {
+    if (loadingStatus === 'not loaded') {
+      fetchCoins();
+    }
+    console.log('fetching coins', fetchCoins);
+  }, [fetchCoins, loadingStatus]);
 
   return (
     <div className="bg-white min-w-full">
       <StatusBar />
-      <SearchBar goToFeed={() => goToFeed()} />
+      <SearchBar
+        goToFeed={() => goToFeed()}
+        coins={coins}
+        loadingStatus={loadingStatus}
+      />
     </div>
   );
 }

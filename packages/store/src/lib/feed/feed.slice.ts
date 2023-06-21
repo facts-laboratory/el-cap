@@ -17,7 +17,7 @@ export const FEED_FEATURE_KEY = 'feed';
  * Update these interfaces according to your requirements.
  */
 export interface FeedEntity {
-  [index: string]: { symbol: string } & Record<string, unknown>;
+  coin: string;
 }
 
 export interface FeedState extends EntityState<FeedEntity> {

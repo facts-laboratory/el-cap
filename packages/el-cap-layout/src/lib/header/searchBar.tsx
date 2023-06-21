@@ -36,11 +36,12 @@ enum LoadingStatus {
 
 export interface SearchBarProps {
   goToFeed: () => void;
+  coins: SearchCoin[];
 }
 
 const SearchBar = (props: SearchBarProps) => {
   const [menuStatus, setMenuStatus] = useState<boolean>(true);
-  const { goToFeed } = props;
+  const { goToFeed, coins } = props;
 
   const groupedOptionsCommunity = [
     {
@@ -241,17 +242,8 @@ const SearchBar = (props: SearchBarProps) => {
     // Fetch search results from API or other data source
 
     try {
-      //example fetch
-      // const response = await fetch(`https://api.example.com/search?query=${query}`);
-      // const searchResults = await response.json();
-      const state = await contract.readState();
-      const searchResults = state.cachedValue.state.coins;
-      console.log('state running here', state);
-
       const regex = new RegExp(query, 'i');
-      const filteredItems = searchResults.filter((item) =>
-        item.name.match(regex)
-      );
+      const filteredItems = coins.filter((item) => item.name.match(regex));
 
       setSearchResults(filteredItems);
     } catch (err) {

@@ -4,6 +4,7 @@ import {
   Footer,
 } from '@el-cap/el-cap-layout';
 import {
+  fetchCoins,
   fetch24PriceData,
   selectChartData,
   mapStateToProps,
@@ -16,6 +17,8 @@ import {
   fetchCoin,
   fetchRemainingPriceData,
   selectCoinLoadingStatus,
+  selectAllContracts,
+  selectContractsLoadingStatus,
 } from '@el-cap/store';
 import { connect } from 'react-redux';
 import loadable from '@loadable/component';
@@ -41,6 +44,11 @@ export interface AppProps {
 export function App(props: AppProps) {
   const dispatch = useAppDispatch();
   const { page } = props;
+  const header = {
+    fetchCoins: () => dispatch(fetchCoins()),
+    coins: useAppSelector(selectAllContracts),
+    loadingStatus: useAppSelector(selectContractsLoadingStatus),
+  };
   const feedPage = {
     entities: useAppSelector(selectAllFeed),
     loadingStatus: useAppSelector(selectFeedLoadingStatus),
@@ -66,7 +74,7 @@ export function App(props: AppProps) {
   const Page = components[(page as keyof ObjectKeys) || 'Feed'];
   return (
     <div className="flex flex-col h-screen">
-      <ConnectedHeader />
+      <ConnectedHeader header={header} />
       <ContentContainer
         children={<Page coinPage={coinPage} feedPage={feedPage} />}
       />
