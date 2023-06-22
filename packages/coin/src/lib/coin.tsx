@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { WarpFactory } from 'warp-contracts';
 import { mapStateToProps } from '@el-cap/store';
 import { ChartWidget } from '@el-cap/chart-widget';
+import { HistoricalPriceTable } from '@el-cap/historical-price-table';
 import { connect } from 'react-redux';
 import { PriceData } from 'redstone-api/lib/types';
 import { ArrowUpIcon, WatchlistIcon } from '../assets/icons';
@@ -352,7 +353,11 @@ export function Coin(props: CoinProps) {
       </div>
       <div className="my-4">
         <ToggleComponent view={toggleView} setView={setView} />
-        <ChartWidget {...coinChartProps} ticker={ticker} />
+        {viewType === 'Chart' ? (
+          <ChartWidget {...coinChartProps} ticker={ticker} />
+        ) : (
+          <HistoricalPriceTable />
+        )}
       </div>
     </div>
   );
