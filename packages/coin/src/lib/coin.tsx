@@ -39,7 +39,7 @@ interface CoinProps {
 }
 
 enum TimeRange {
-  DAY_1 = '24h',
+  DAY_1 = '1d',
   DAY_7 = '7d',
   MONTH_1 = '1m',
   MONTH_3 = '3m',
@@ -125,6 +125,21 @@ const coinAttributeButtonData = [
   },
 ];
 
+const coinTable = {
+  '1d': [
+    { value: 3000, timestamp: 1687442340000 },
+    { value: 3000, timestamp: 1687445940000 },
+  ],
+  '7d': [
+    { value: 6000, timestamp: 1686923940000 },
+    { value: 6000, timestamp: 1686927540000 },
+  ],
+  '1m': [
+    { value: 9000, timestamp: 1686923940000 },
+    { value: 9000, timestamp: 1686927540000 },
+  ],
+};
+
 export function Coin(props: CoinProps) {
   const { goToFeed, entity, ticker, coinPage } = props;
   const { coinChartProps, fetchCoin, loadingStatus, fetchedEntity } = coinPage;
@@ -182,6 +197,7 @@ export function Coin(props: CoinProps) {
 
   if (error) return <p>{error}</p>;
 
+  console.log(coinChartProps);
   return (
     <div className="bg-gray-100 min-h-screen">
       <div className="flex">
@@ -360,7 +376,7 @@ export function Coin(props: CoinProps) {
         {viewType === 'Chart' ? (
           <ChartWidget {...coinChartProps} ticker={ticker} />
         ) : (
-          <HistoricalPriceTable />
+          <HistoricalPriceTable coinTable={coinTable} loadingStatus="loaded" />
         )}
       </div>
     </div>
