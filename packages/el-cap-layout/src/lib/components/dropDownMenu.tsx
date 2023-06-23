@@ -4,7 +4,7 @@ import { Tooltip } from 'flowbite-react';
 type DropDownMenuProps = {
   label: string;
   groupedOptions: DropDownGroup[];
-  goToPage: (option: DropDownOption) => void;
+  goToFeed: (label: string) => void;
 };
 
 type DropDownGroup = {
@@ -13,15 +13,23 @@ type DropDownGroup = {
 };
 
 type DropDownOption = {
-  value: string;
   label: string;
   destination: string;
   image: string;
+  available: boolean;
 };
 
 class DropDownMenu extends Component<DropDownMenuProps> {
   render(): ReactNode {
-    const { groupedOptions, goToPage, label } = this.props;
+    const { groupedOptions, goToFeed, label } = this.props;
+
+    const handleOptionClick = (option: DropDownOption) => {
+      if (option.available) {
+        goToFeed(option.destination.toLowerCase());
+      } else {
+        alert('Coming soon');
+      }
+    };
 
     const groupMenu = (groupOption: DropDownGroup[]) => {
       return groupOption.map((group: DropDownGroup, key) => {
@@ -41,7 +49,7 @@ class DropDownMenu extends Component<DropDownMenuProps> {
               <div
                 className="inline-flex space-x-3 items-center cursor-pointer p-2 font-semibold hover:bg-gray-100"
                 key={key}
-                onClick={() => goToPage(option)}
+                onClick={() => handleOptionClick(option)}
               >
                 <img
                   src={option.image}

@@ -25,6 +25,7 @@ export enum SortKey {
   MARKET_CAP = 'marketCap',
   VOLUME = 'volume',
   CIRCULATING_SUPPLY = 'circulatingSupply',
+  LOSERS = 'losers',
   ONE_HOUR = '1h',
   LOSERS = 'losers',
   TWENTY_FOUR_HOURS = '24h',
