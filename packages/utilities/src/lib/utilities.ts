@@ -3,6 +3,7 @@ import {
   SortKey,
   RemainingObject,
   RedstoneObject,
+  TopCoins,
 } from '@el-cap/interfaces';
 
 export function processTokenData(
@@ -26,6 +27,33 @@ export function processTokenData(
       '7d': combinedTokenItem.price_change_percentage_7d_in_currency || 0,
     };
   });
+}
+
+export function sortTopCoins(
+  entities: Record<string, ProcessedTokenData>
+): TopCoins {
+  // Convert the entities object to an array
+  const entityArray = Object.values(entities);
+
+  // Sort the entities by the 7d, 24h, and 1h properties in descending order
+  const sortedEntitiesBy7d = entityArray
+    .sort((a, b) => b['7d'] - a['7d'])
+    .slice(0, 4);
+  const sortedEntitiesBy24h = entityArray
+    .sort((a, b) => b['24h'] - a['24h'])
+    .slice(0, 4);
+  const sortedEntitiesBy1h = entityArray
+    .sort((a, b) => b['1h'] - a['1h'])
+    .slice(0, 4);
+
+  // Create an object with values for the top four entities sorted by 7d, 24h, and 1h
+  const result: TopCoins = {
+    '7d': sortedEntitiesBy7d,
+    '24h': sortedEntitiesBy24h,
+    '1h': sortedEntitiesBy1h,
+  };
+
+  return result;
 }
 
 export function sortPrices(

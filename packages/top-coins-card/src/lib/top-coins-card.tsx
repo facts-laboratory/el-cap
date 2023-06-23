@@ -6,20 +6,15 @@ import {
   StarIcon,
   TrendingIcon,
 } from '../icons';
+import { ProcessedTokenData } from '@el-cap/interfaces';
 
 type TopCoinsCardProps = {
   title: string;
   type: string;
-  data: TopCoin[];
+  data: ProcessedTokenData[];
   goToCoin: (symbol: string) => void;
   goToFeed: (title: string) => void;
-};
-
-type TopCoin = {
-  name: string;
-  symbol: string;
-  metric: number;
-  image: string;
+  dataKey: string;
 };
 
 const TopCoinsCard: React.FC<TopCoinsCardProps> = ({
@@ -28,7 +23,9 @@ const TopCoinsCard: React.FC<TopCoinsCardProps> = ({
   data,
   goToCoin,
   goToFeed,
+  dataKey,
 }) => {
+  console.log('props in topcoinscard', data, type, title, dataKey);
   const icon = () => {
     switch (title) {
       case 'Trending Coins':
@@ -37,7 +34,7 @@ const TopCoinsCard: React.FC<TopCoinsCardProps> = ({
       case 'Biggest Gainers':
         return <LightningIcon width={32} height={32} />;
 
-      case 'Recently Updated Socials':
+      case 'Moving':
         return <StarIcon width={32} height={32} />;
 
       default:
@@ -45,10 +42,10 @@ const TopCoinsCard: React.FC<TopCoinsCardProps> = ({
     }
   };
 
-  const metrics = (metric: number) => {
+  const metrics = (metric: ProcessedTokenData) => {
     switch (type) {
       case 'Percentage':
-        if (metric < 0) {
+        if (metric[dataKey] < 0) {
           return (
             <span className="text-red-600 font-bold flex">
               <ArrowDownIcon
@@ -57,7 +54,7 @@ const TopCoinsCard: React.FC<TopCoinsCardProps> = ({
                 height={20}
                 color="#ff0000"
               />
-              {Math.abs(metric)}%
+              {Math.abs(metric).toFixed(4)}%
             </span>
           );
         }
@@ -69,12 +66,12 @@ const TopCoinsCard: React.FC<TopCoinsCardProps> = ({
               height={20}
               color="#00ff00"
             />
-            {Math.abs(metric)}%
+            {Math.abs(metric[dataKey].toFixed(4))}%
           </span>
         );
 
       default:
-        return <span className="font-bold">${metric}</span>;
+        return <span className="font-bold">${metric[dataKey].toFixed(4)}</span>;
     }
   };
 
@@ -104,14 +101,14 @@ const TopCoinsCard: React.FC<TopCoinsCardProps> = ({
               <div
                 className="flex justify-between m-2 cursor-pointer"
                 key={index}
-                onClick={() => goToCoin(coin.symbol)}
+                onClick={() => goToCoin(coin.coin)}
               >
                 <div className="flex items-center gap-3 whitespace-nowrap">
-                  <img src={coin.image} className="h-5 w-5" alt={coin.symbol} />
+                  <img src={coin.image} className="h-5 w-5" alt={coin.coin} />
                   <span className="font-bold">{coin.name}</span>
-                  <span className="text-gray-400">{coin.symbol}</span>
+                  <span className="text-gray-400">{coin.coin}</span>
                 </div>
-                <div>{metrics(coin.metric)}</div>
+                <div>{metrics(coin)}</div>
               </div>
             );
           })}

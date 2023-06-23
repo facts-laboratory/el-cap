@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { WarpFactory } from 'warp-contracts';
 import { mapStateToProps } from '@el-cap/store';
 import { ChartWidget } from '@el-cap/chart-widget';
+import { HistoricalPriceTable } from '@el-cap/historical-price-table';
 import { connect } from 'react-redux';
 import { PriceData } from 'redstone-api/lib/types';
 import { ArrowUpIcon, WatchlistIcon } from '../assets/icons';
@@ -15,10 +16,11 @@ import {
   RedditSVG,
   Broadcast,
 } from '../assets/svg/index';
-import GrayButton from '../assets/component/GrayButton';
+import Tag from '../assets/component/Tag';
 import { ProcessedTokenData } from '@el-cap/interfaces';
-import { ArrowDownIcon } from 'packages/top-coins-card/src/icons';
+import { ArrowDownIcon } from '@el-cap/top-coins-card';
 import CoinAttributeLinkButton from '../assets/component/CoinAttributeLinkButton';
+import ToggleComponent from '../assets/component/ToggleComponent';
 
 interface CoinProps {
   goToFeed: () => void;
@@ -129,6 +131,18 @@ export function Coin(props: CoinProps) {
   const [coins, setCoins] = useState<ProcessedTokenData[]>([]);
   const [shouldLoad, setShouldLoad] = useState(true);
   const [error, setError] = useState<string | undefined>();
+  const [viewType, setViewType] = useState<string>('Chart');
+
+  const setView = (view: string) => {
+    console.log(view);
+    setViewType(view);
+  };
+
+  const toggleView: string[] = ['Chart', 'Table'];
+
+  const goToTag = (tagName: string) => {
+    window.location.href = tagName.replace(/\s/g, '-');
+  };
 
   const fetchState = async () => {
     const contractId = 'MH-w8Sq6uw3Jwc_stPqyJT8fEcIhx4VrrE10NFgv-KY';
@@ -139,6 +153,7 @@ export function Coin(props: CoinProps) {
     console.log('state running here', state);
     setCoins(coins);
   };
+
   useEffect(() => {
     fetchState();
   }, []);
@@ -195,7 +210,7 @@ export function Coin(props: CoinProps) {
                 (fetchedEntity[0] && fetchedEntity[0].name) ||
                 'Bitcoin'}
             </span>
-            <GrayButton text="BTC" />
+            <Tag tagName="BTC" goToTag={goToTag} />
             <WatchlistIcon className="ml-2" width={18} height={18} />
           </div>
           <div className="flex flex-wrap gap-4">
@@ -216,10 +231,10 @@ export function Coin(props: CoinProps) {
           </div>
           <p className="my-2">Tags</p>
           <div className="flex gap-4 flex-wrap">
-            <GrayButton text="PoW" />
-            <GrayButton text="SHA-256" />
-            <GrayButton text="Store Of Value" />
-            <GrayButton text="Mineable" />
+            <Tag tagName="PoW" goToTag={goToTag} />
+            <Tag tagName="SHA-256" goToTag={goToTag} />
+            <Tag tagName="Store Of Value" goToTag={goToTag} />
+            <Tag tagName="Mineable" goToTag={goToTag} />
             <span className="text-blue-500 hover:cursor-pointer">View All</span>
           </div>
         </div>
@@ -340,8 +355,13 @@ export function Coin(props: CoinProps) {
           </div>
         </div>
       </div>
-      <div>
-        <ChartWidget {...coinChartProps} ticker={ticker} />
+      <div className="my-4">
+        <ToggleComponent view={toggleView} setView={setView} />
+        {viewType === 'Chart' ? (
+          <ChartWidget {...coinChartProps} ticker={ticker} />
+        ) : (
+          <HistoricalPriceTable />
+        )}
       </div>
     </div>
   );

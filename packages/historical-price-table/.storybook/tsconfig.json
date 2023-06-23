@@ -1,5 +1,7 @@
 {
+  "extends": "../tsconfig.json",
   "compilerOptions": {
+    "emitDecoratorMetadata": true,
     "outDir": ""
   },
   "files": [
@@ -20,11 +22,5 @@
     "../src/**/*.stories.tsx",
     "../src/**/*.stories.mdx",
     "*.js"
-  ],
-  "ts-node": {
-    "compilerOptions": {
-      "module": "commonjs",
-      "jsx": "react-jsx"
-    }
-  }
+  ]
 }

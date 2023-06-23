@@ -5,6 +5,8 @@ import {
 } from '@el-cap/el-cap-layout';
 import {
   fetch24PriceData,
+  getTopCoins,
+  selectTopCoins,
   selectChartData,
   mapStateToProps,
   useAppDispatch,
@@ -45,6 +47,8 @@ export function App(props: AppProps) {
     entities: useAppSelector(selectAllFeed),
     loadingStatus: useAppSelector(selectFeedLoadingStatus),
     fetchFeed: (key: string) => dispatch(fetchFeed(key)),
+    getTopCoins: () => dispatch(getTopCoins()),
+    topCoins: useAppSelector(selectTopCoins),
   };
   const coinPage = {
     loadingStatus: useAppSelector(selectCoinLoadingStatus),
