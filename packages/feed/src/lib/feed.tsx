@@ -55,6 +55,7 @@ export function Feed(props: FeedProps) {
   const { goToCoin, goToFeed } = props;
   const [showCase, setShowCase] = useState<boolean>(true);
   const [sortKey, setSortKey] = useState<string | undefined>();
+  const [activeTabIndex, setActiveTabIndex] = useState(0);
 
   const path = useSelector((state: RootState) => state.location.pathname);
   useEffect(() => {
@@ -94,6 +95,7 @@ export function Feed(props: FeedProps) {
   ];
 
   useEffect(() => {
+    // TODO after we have top coins in slice add getTopCoins to dependency and !== 'loaded' for getTopCoins
     if (entities.length > 0) {
       getTopCoins();
     }
@@ -160,7 +162,8 @@ export function Feed(props: FeedProps) {
                 {topCoins && topCoins['24h'] && topCoins['24h'].length > 0 && (
                   <TopCoinsCard
                     title="Trending Coins"
-                    type="Price"
+                    key="trending"
+                    type="Percentage"
                     dataKey="24h"
                     data={topCoins['24h']}
                     goToCoin={goToCoin}
@@ -170,7 +173,7 @@ export function Feed(props: FeedProps) {
                 {topCoins && topCoins['1h'] && topCoins['1h'].length > 0 && (
                   <TopCoinsCard
                     title="Moving"
-                    type="Price"
+                    type="Percentage"
                     dataKey="1h"
                     data={topCoins['1h']}
                     goToCoin={goToCoin}
@@ -181,13 +184,25 @@ export function Feed(props: FeedProps) {
             )}
 
             <div className="flex justify-between items-center">
-              <TabComponent fetchFeed={fetchFeed} />
+              <TabComponent
+                fetchFeed={fetchFeed}
+                activeTabIndex={activeTabIndex}
+                setActiveTabIndex={setActiveTabIndex}
+              />
               <DropDownFeedOptions
                 feedOptions={feedOptions}
                 goToFeed={goToFeed}
               />
             </div>
-            {entities && <TokenTable data={entities} goToCoin={goToCoin} />}
+            {entities && (
+              <TokenTable
+                data={entities}
+                goToCoin={goToCoin}
+                addToWatchlist={(coin: string) =>
+                  console.log('addToWatchlist ')
+                }
+              />
+            )}
           </div>
         </div>
       )}
