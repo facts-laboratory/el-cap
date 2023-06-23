@@ -11,6 +11,12 @@ export interface ProcessedTokenData {
   '7d': number;
 }
 
+export interface TopCoins {
+  '7d': ProcessedTokenData[];
+  '24h': ProcessedTokenData[];
+  '1h': ProcessedTokenData[];
+}
+
 export enum SortKey {
   NAME = 'name',
   IMAGE = 'image',
@@ -20,6 +26,7 @@ export enum SortKey {
   VOLUME = 'volume',
   CIRCULATING_SUPPLY = 'circulatingSupply',
   ONE_HOUR = '1h',
+  LOSERS = 'losers',
   TWENTY_FOUR_HOURS = '24h',
   SEVEN_DAYS = '7d',
 }
