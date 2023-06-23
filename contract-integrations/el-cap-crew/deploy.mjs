@@ -5,21 +5,16 @@ import { EL_CAP_CREW_TX, stateFromFile } from './initial-state';
 export async function deploy(coin) {
   const warp = WarpFactory.forMainnet().use(new DeployPlugin());
 
+  window.arweaveWallet.connect(['SIGN_TRANSACTION', 'ACCESS_ADDRESS']);
+
   const initialState = {
     ...stateFromFile,
 
     ...{
-      owner: '456',
+      owner: await window.arweaveWallet.getActiveAddress(),
       watchlist: [coin],
     },
   };
-
-  // const deploy = await warp.deploy({
-  //   wallet: new ArweaveSigner(jwk),
-  //   initState: JSON.stringify(initialState),
-  //   srcTxId: contractSrc,
-  // });
-  // console.log(`contractTxId ${deploy.contractTxId}`);
 
   console.log('warp', warp);
   const deployFromSourceTx = await warp.deployFromSourceTx(
@@ -29,7 +24,7 @@ export async function deploy(coin) {
       }),
       srcTxId: EL_CAP_CREW_TX,
       wallet: 'use_wallet',
-      tags: [{ name: 'El-Cap-Version', value: 'MVP-1' }],
+      tags: [{ name: 'El-Cap-Version', value: 'MVP-7' }],
     },
     { disableBundling: true }
   );

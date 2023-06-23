@@ -232,9 +232,7 @@ export function Feed(props: FeedProps) {
               <TokenTable
                 data={entities}
                 goToCoin={goToCoin}
-                addToWatchlist={(coin: string) =>
-                  console.log('addToWatchlist ')
-                }
+                addToWatchlist={(coin: string) => addToWatchlist(coin)}
               />
             )}
           </div>

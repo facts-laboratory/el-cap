@@ -8,8 +8,8 @@ import {
 } from '@reduxjs/toolkit';
 import { RootState } from '../store';
 import { WarpFactory } from 'warp-contracts';
-import { CrewMember } from '@el-cap/interfaces';
-import { deploy } from '@el-cap/contract-integrations';
+import { writeContract } from 'arweavekit/contract';
+import { deploy, getCrewMemberContract } from '@el-cap/contract-integrations';
 
 export const CONTRACTS_FEATURE_KEY = 'contracts';
 
@@ -21,7 +21,6 @@ export interface ContractsEntity {
 export interface ContractsState extends EntityState<ContractsEntity> {
   loadingStatus: 'not loaded' | 'loading' | 'loaded' | 'error';
   error?: string | null;
-  crew: CrewMember[];
 }
 
 export const contractsAdapter = createEntityAdapter<ContractsEntity>({
@@ -32,7 +31,7 @@ export const fetchContractcoins = createAsyncThunk(
   'contracts/fetchContractcoins',
   async (_, thunkAPI) => {
     console.log('fetchContractcoins in thunk');
-    const contractId = 'zQyVXGGHME6Uh3opS8ULRTIb8jVTjvz2BT3f4jnH_wo';
+    const contractId = 'MH-w8Sq6uw3Jwc_stPqyJT8fEcIhx4VrrE10NFgv-KY';
     const warp = WarpFactory.forMainnet();
     const contract = warp.contract(contractId);
     const state: any = await contract.readState();
@@ -46,8 +45,36 @@ export const fetchContractcoins = createAsyncThunk(
 export const addToWatchlist = createAsyncThunk(
   'contracts/addToWatchlist',
   async (coin: string, thunkAPI) => {
-    console.log('addToWatchList in thunk');
-    deploy(coin);
+    console.log('==addToWatchlist==');
+    const queryCrewState = await getCrewMemberContract();
+    const address = await window.arweaveWallet.getActiveAddress();
+    console.log('addToWatchList in thunk', queryCrewState, address);
+    if (queryCrewState.length > 0) {
+      console.log('queryCrewState', queryCrewState[0]);
+      const contractId = 'Y8VMLtjcdWhQJQ7pwPi1hPOPizWnwoYQDFdW7Y0HM-s';
+      const warp = WarpFactory.forMainnet();
+      const contract = warp.contract(contractId);
+      const state: any = await contract.readState();
+      console.log('state in fetchContracts', state);
+      try {
+        const writeResult = await writeContract({
+          environment: 'mainnet' as const,
+          contractTxId: queryCrewState[0].node.id,
+          wallet: 'use_wallet' as const,
+          options: {
+            function: 'updateWatchlist',
+            ticker: coin,
+          },
+        });
+
+        console.log('writeResult', writeResult);
+      } catch (error) {
+        console.log('==transaction not yet finalised==');
+        localStorage.setItem('el-cap-watchlist', JSON.stringify(coin));
+      }
+    } else {
+      deploy(coin);
+    }
   }
 );
 

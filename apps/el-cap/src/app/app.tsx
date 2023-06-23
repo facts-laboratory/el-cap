@@ -22,6 +22,7 @@ import {
   selectCoinLoadingStatus,
   selectAllContracts,
   selectContractsLoadingStatus,
+  checkCoinOnWatchlist,
 } from '@el-cap/store';
 import { connect } from 'react-redux';
 import loadable from '@loadable/component';
@@ -64,6 +65,9 @@ export function App(props: AppProps) {
     loadingStatus: useAppSelector(selectCoinLoadingStatus),
     fetchCoin: (input: { symbol: string; name: string }) =>
       dispatch(fetchCoin(input)),
+    addToWatchlist: (input: string) => dispatch(addToWatchlist(input)),
+    checkCoinOnWatchlist: (coin: string) =>
+      dispatch(checkCoinOnWatchlist(coin)),
     fetchedEntity: useAppSelector(selectAllCoin),
     coinChartProps: {
       fetch: (input: { symbol: string; interval: string }) =>

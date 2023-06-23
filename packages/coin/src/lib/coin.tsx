@@ -30,6 +30,8 @@ interface CoinProps {
     fetchCoin: (input: { symbol: string; name: string }) => void;
     loadingStatus: string;
     fetchedEntity: ProcessedTokenData[];
+    addToWatchlist: (coin: string) => void;
+    checkCoinOnWatchlist: (coin: string) => void;
     coinChartProps: {
       fetchRemaining: (input: { symbol: string; interval: string }) => void;
       fetchCoin: (input: { symbol: string; name: string }) => void;
@@ -127,10 +129,18 @@ const coinAttributeButtonData = [
 
 export function Coin(props: CoinProps) {
   const { goToFeed, entity, ticker, coinPage } = props;
-  const { coinChartProps, fetchCoin, loadingStatus, fetchedEntity } = coinPage;
+  const {
+    coinChartProps,
+    fetchCoin,
+    loadingStatus,
+    fetchedEntity,
+    addToWatchlist,
+    checkCoinOnWatchlist,
+  } = coinPage;
   const [coins, setCoins] = useState<ProcessedTokenData[]>([]);
   const [shouldLoad, setShouldLoad] = useState(true);
   const [error, setError] = useState<string | undefined>();
+  const [onWatchList, setOnWatchList] = useState(false);
   const [viewType, setViewType] = useState<string>('Chart');
 
   const setView = (view: string) => {
@@ -156,8 +166,13 @@ export function Coin(props: CoinProps) {
 
   useEffect(() => {
     fetchState();
+    const isCoinOnWatchlist = async () => {
+      const watchlist = await checkCoinOnWatchlist(ticker);
+      console.log('===isOnWatchlist==', watchlist);
+      setOnWatchList(watchlist.payload);
+    };
+    isCoinOnWatchlist();
   }, []);
-
   function findNameByTicker(ticker: string, coins: ProcessedTokenData[]) {
     console.log('ticker', ticker, 'coins', coins);
     const coin = coins.find(
@@ -211,7 +226,19 @@ export function Coin(props: CoinProps) {
                 'Bitcoin'}
             </span>
             <Tag tagName="BTC" goToTag={goToTag} />
-            <WatchlistIcon className="ml-2" width={18} height={18} />
+            <div
+              onClick={() => {
+                addToWatchlist(ticker);
+                setOnWatchList(true);
+              }}
+            >
+              <WatchlistIcon
+                className="ml-2"
+                width={18}
+                height={18}
+                isOnWatchlist={onWatchList}
+              />
+            </div>
           </div>
           <div className="flex flex-wrap gap-4">
             {coinAttributeButtonData.map((item, key) => {

@@ -7,10 +7,11 @@ import {
   PayloadAction,
 } from '@reduxjs/toolkit';
 import { ProcessedTokenData } from '@el-cap/interfaces';
-import { processTokenData } from '@el-cap/utilities';
 import { getCoin } from '../feed/el-cap-kit.js';
+import { getCrewMemberContract } from '@el-cap/contract-integrations';
 
 import { RootState } from '../store';
+import { WarpFactory } from 'warp-contracts';
 
 export const COIN_FEATURE_KEY = 'coin';
 
@@ -56,6 +57,48 @@ export const fetchCoin = createAsyncThunk(
     } catch (error) {
       console.log('fetching error', error);
       return [];
+    }
+  }
+);
+
+export const checkCoinOnWatchlist = createAsyncThunk(
+  'contracts/checkCoinOnWatchlist',
+  async (coin: string, thunkAPI) => {
+    console.log('==checkCoinOnWatchlist==');
+
+    try {
+      // Attempt to read state from the contract
+      const queryCrewState = await getCrewMemberContract();
+
+      if (queryCrewState.length > 0) {
+        console.log('queryCrewState', queryCrewState[0]);
+
+        const contractId = 'Y8VMLtjcdWhQJQ7pwPi1hPOPizWnwoYQDFdW7Y0HM-s';
+        const warp = WarpFactory.forMainnet();
+        const contract = warp.contract(contractId);
+
+        const state: any = await contract.readState();
+        console.log('state in checkCoinOnWatchlist', state);
+
+        const watchlist = state.cachedValue.state.watchlist;
+
+        const isOnWatchlist = watchlist.includes(coin);
+        console.log('isOnWallet in thunk', isOnWatchlist);
+        return isOnWatchlist;
+      }
+    } catch (error) {
+      console.log('==error reading state from contract==', error);
+
+      // Check coin in local storage
+      const localStorageWatchlist = JSON.parse(
+        localStorage.getItem('el-cap-watchlist') || '[]'
+      );
+      console.log(localStorageWatchlist);
+
+      // return true if the coin is in local storage, false otherwise
+      const isOnWatchlist = localStorageWatchlist.includes(coin);
+      console.log('isOnWallet in thunk', localStorageWatchlist, isOnWatchlist);
+      return isOnWatchlist;
     }
   }
 );
