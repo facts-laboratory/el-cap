@@ -2,17 +2,21 @@ import { useEffect, useState } from 'react';
 import styles from './token-table.module.css';
 import BitcoinSVG from '../assets/svg/bitcoin.svg';
 import { WatchlistIcon } from '../assets/icons';
-import { ProcessedTokenData, TokenData } from '@el-cap/interfaces';
+import { ProcessedTokenData } from '@el-cap/interfaces';
 
 /* eslint-disable-next-line */
-export interface TokenTableProps {}
+export interface TokenTableProps {
+  data: ProcessedTokenData[];
+  goToCoin: (coin: string) => void;
+  addToWatchlist: (coin: string) => string;
+}
 
 export const orderByMarketCap = (data: ProcessedTokenData[]) => {
   return data.sort((a, b) => b.marketCap - a.marketCap);
 };
 
 export function TokenTable(props: TokenTableProps) {
-  const { data, goToCoin } = props;
+  const { data, goToCoin, addToWatchlist } = props;
   const [tokenData, setTokenData] = useState<ProcessedTokenData[]>([]);
 
   useEffect(() => {
@@ -21,6 +25,31 @@ export function TokenTable(props: TokenTableProps) {
       setTokenData(data);
     }
   }, [data]);
+
+  const [watchlist, setWatchlist] = useState<Record<string, boolean>>({});
+
+  // Whenever data changes, update the watchlist state
+  useEffect(() => {
+    if (data) {
+      setTokenData(data);
+
+      // Reset watchlist
+      const newWatchlist: Record<string, boolean> = {};
+      data.forEach((coin: ProcessedTokenData) => {
+        newWatchlist[coin.coin] = false;
+      });
+      setWatchlist(newWatchlist);
+    }
+  }, [data]);
+
+  // Function to handle adding to watchlist
+  const handleAddToWatchlist = (coin: string) => {
+    setWatchlist({
+      ...watchlist,
+      [coin]: !watchlist[coin],
+    });
+    addToWatchlist(coin);
+  };
   return (
     <div className="mt-4 relative overflow-x-auto shadow-md sm:rounded-lg">
       <table className="w-full text-sm text-left text-gray-500">
@@ -60,13 +89,18 @@ export function TokenTable(props: TokenTableProps) {
           {tokenData &&
             tokenData?.map((entity, key) => {
               return (
-                <tr
-                  onClick={() => goToCoin(entity.coin, entity)}
-                  className="bg-gray-100 border-b font-bold"
-                  key={key}
-                >
-                  <th scope="row" className="px-6 py-4">
-                    <WatchlistIcon className="mr-1" width={24} height={24} />
+                <tr className="bg-gray-100 border-b font-bold" key={key}>
+                  <th
+                    onClick={() => handleAddToWatchlist(entity.coin)}
+                    scope="row"
+                    className="px-6 py-4"
+                  >
+                    <WatchlistIcon
+                      isOnWatchlist={watchlist[entity.coin]}
+                      className="mr-1"
+                      width={24}
+                      height={24}
+                    />
                   </th>
                   <td className="px-6 py-4 flex items-center my-4">
                     <img

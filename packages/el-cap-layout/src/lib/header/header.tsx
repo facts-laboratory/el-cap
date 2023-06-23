@@ -10,8 +10,8 @@ import { useEffect } from 'react';
 export interface HeaderProps {
   goToFeed: () => void;
   header: {
-    fetchCoins: () => void;
-    coins: SearchCoin;
+    fetchContractcoins: () => void;
+    coins: SearchCoin[];
     loadingStatus: string;
   };
 }
@@ -19,14 +19,14 @@ export interface HeaderProps {
 export function Header(props: HeaderProps) {
   // const ref: React.RefObject<HTMLDivElement> = useRef(null);
   const { header, goToFeed } = props;
-  const { fetchCoins, coins, loadingStatus } = header;
+  const { fetchContractcoins, coins, loadingStatus } = header;
 
   useEffect(() => {
     if (loadingStatus === 'not loaded') {
-      fetchCoins();
+      fetchContractcoins();
     }
-    console.log('fetching coins', fetchCoins);
-  }, [fetchCoins, loadingStatus]);
+    console.log('fetching coins', fetchContractcoins);
+  }, [fetchContractcoins, loadingStatus]);
 
   return (
     <div className="bg-white min-w-full">

@@ -48,7 +48,7 @@ export interface FeedProps {
 }
 
 export function Feed(props: FeedProps) {
-  const { fetchFeed, entities, loadingStatus } = props.feedPage;
+  const { fetchFeed, entities, loadingStatus, addToWatchlist } = props.feedPage;
   const { goToCoin, goToFeed } = props;
   console.log('props', props);
   const [showCase, setShowCase] = useState<boolean>(true);
@@ -152,7 +152,13 @@ export function Feed(props: FeedProps) {
           <TabComponent />
           <DropDownFeedOptions feedOptions={feedOptions} goToFeed={goToFeed} />
         </div>
-        {entities && <TokenTable data={entities} goToCoin={goToCoin} />}
+        {entities && (
+          <TokenTable
+            data={entities}
+            goToCoin={goToCoin}
+            addToWatchlist={addToWatchlist}
+          />
+        )}
       </div>
     </div>
   );

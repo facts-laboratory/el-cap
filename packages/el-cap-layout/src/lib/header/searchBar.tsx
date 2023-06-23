@@ -12,7 +12,6 @@ import SearchInput from './searchInput';
 import DropDownMenu from '../components/dropDownMenu';
 const contractId = 'MH-w8Sq6uw3Jwc_stPqyJT8fEcIhx4VrrE10NFgv-KY';
 const warp = WarpFactory.forMainnet();
-const contract = warp.contract(contractId);
 
 type DropDownOption = {
   value: string;
@@ -37,6 +36,7 @@ enum LoadingStatus {
 export interface SearchBarProps {
   goToFeed: () => void;
   coins: SearchCoin[];
+  loadingStatus: string;
 }
 
 const SearchBar = (props: SearchBarProps) => {
@@ -243,7 +243,9 @@ const SearchBar = (props: SearchBarProps) => {
 
     try {
       const regex = new RegExp(query, 'i');
-      const filteredItems = coins.filter((item) => item.name.match(regex));
+      const filteredItems = coins
+        .filter((item) => item.name.match(regex))
+        .slice(0, 6);
 
       setSearchResults(filteredItems);
     } catch (err) {

@@ -31,6 +31,18 @@ export enum SortKey {
   SEVEN_DAYS = '7d',
 }
 
+export interface CrewMember {
+  watchlist: string[];
+}
+
+export interface CrewState {
+  cachedValue: {
+    state: {
+      crew: CrewMember;
+    };
+  };
+}
+
 export type RedstoneObject = { [ticker: string]: unknown };
 export type RemainingObject = {
   [index: string]: { symbol: string } & Record<string, unknown>;

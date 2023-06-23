@@ -4,7 +4,7 @@ import {
   Footer,
 } from '@el-cap/el-cap-layout';
 import {
-  fetchCoins,
+  fetchContractcoins,
   fetch24PriceData,
   selectChartData,
   mapStateToProps,
@@ -12,6 +12,7 @@ import {
   useAppSelector,
   selectAllFeed,
   selectFeedLoadingStatus,
+  addToWatchlist,
   selectAllCoin,
   fetchFeed,
   fetchCoin,
@@ -45,7 +46,7 @@ export function App(props: AppProps) {
   const dispatch = useAppDispatch();
   const { page } = props;
   const header = {
-    fetchCoins: () => dispatch(fetchCoins()),
+    fetchContractcoins: () => dispatch(fetchContractcoins()),
     coins: useAppSelector(selectAllContracts),
     loadingStatus: useAppSelector(selectContractsLoadingStatus),
   };
@@ -53,6 +54,7 @@ export function App(props: AppProps) {
     entities: useAppSelector(selectAllFeed),
     loadingStatus: useAppSelector(selectFeedLoadingStatus),
     fetchFeed: (key: string) => dispatch(fetchFeed(key)),
+    addToWatchlist: (input: string) => dispatch(addToWatchlist(input)),
   };
   const coinPage = {
     loadingStatus: useAppSelector(selectCoinLoadingStatus),
