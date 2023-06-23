@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useSelector } from 'react-redux';
 
 import { connect } from 'react-redux';
@@ -57,6 +57,9 @@ export function Feed(props: FeedProps) {
   const [sortKey, setSortKey] = useState<string | undefined>();
   const [activeTabIndex, setActiveTabIndex] = useState(0);
 
+  const fetchFeedRef = useRef(fetchFeed);
+  fetchFeedRef.current = fetchFeed;
+
   const path = useSelector((state: RootState) => state.location.pathname);
   useEffect(() => {
     const sortKeyMap: { [key: string]: SortKey } = {
@@ -83,7 +86,29 @@ export function Feed(props: FeedProps) {
       console.log('Path parameter: ', path);
       fetchFeed(key);
     }
-  }, [fetchFeed, entities, loadingStatus, path, sortKey]);
+  }, [fetchFeed, loadingStatus, path, sortKey]);
+
+  useEffect(() => {
+    const sortKeyMap: { [key: string]: SortKey } = {
+      name: SortKey.NAME,
+      image: SortKey.IMAGE,
+      coin: SortKey.COIN,
+      price: SortKey.PRICE,
+      marketcap: SortKey.MARKET_CAP,
+      volume: SortKey.VOLUME,
+      lossers: SortKey.LOSERS,
+      circulatingsupply: SortKey.CIRCULATING_SUPPLY,
+      trending: SortKey.SEVEN_DAYS,
+      gainers: SortKey.SEVEN_DAYS,
+      '1h': SortKey.ONE_HOUR,
+      '24h': SortKey.TWENTY_FOUR_HOURS,
+      '7d': SortKey.SEVEN_DAYS,
+    };
+
+    const key = sortKeyMap[path.slice(1).toLowerCase()];
+    setSortKey(key);
+    fetchFeedRef.current(key);
+  }, [path]);
   const feedOptions = [
     { title: 'All', key: 'feed0' },
     { title: 'Algorand Ecosystem', key: 'feed1' },
@@ -184,11 +209,13 @@ export function Feed(props: FeedProps) {
             )}
 
             <div className="flex justify-between items-center">
-              <TabComponent
-                fetchFeed={fetchFeed}
-                activeTabIndex={activeTabIndex}
-                setActiveTabIndex={setActiveTabIndex}
-              />
+              {!sortKey && (
+                <TabComponent
+                  fetchFeed={fetchFeed}
+                  activeTabIndex={activeTabIndex}
+                  setActiveTabIndex={setActiveTabIndex}
+                />
+              )}
               <DropDownFeedOptions
                 feedOptions={feedOptions}
                 goToFeed={goToFeed}
