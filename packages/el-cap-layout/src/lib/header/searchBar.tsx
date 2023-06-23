@@ -303,7 +303,7 @@ const SearchBar = (props: SearchBarProps) => {
           <DropDownMenu
             label="Community"
             groupedOptions={groupedOptionsCommunity}
-            goToPage={goToFeed}
+            goToFeed={goToFeed}
           />
           <span className="font-bold mr-10 hover:text-blue-500 hover:cursor-pointer">
             FAQ

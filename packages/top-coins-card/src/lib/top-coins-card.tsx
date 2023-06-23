@@ -8,6 +8,8 @@ import {
 } from '../icons';
 import { ProcessedTokenData } from '@el-cap/interfaces';
 
+type MetricKey = '1h' | '24h' | '7d';
+
 type TopCoinsCardProps = {
   title: string;
   type: string;
@@ -42,10 +44,14 @@ const TopCoinsCard: React.FC<TopCoinsCardProps> = ({
     }
   };
 
+  type MetricKey = '1h' | '24h' | '7d';
+
   const metrics = (metric: ProcessedTokenData) => {
+    const dataKeyOfMetric = dataKey as MetricKey;
+
     switch (type) {
       case 'Percentage':
-        if (metric[dataKey] < 0) {
+        if (metric[dataKeyOfMetric] < 0) {
           return (
             <span className="text-red-600 font-bold flex">
               <ArrowDownIcon
@@ -54,7 +60,7 @@ const TopCoinsCard: React.FC<TopCoinsCardProps> = ({
                 height={20}
                 color="#ff0000"
               />
-              {Math.abs(metric).toFixed(4)}%
+              {Math.abs(metric[dataKeyOfMetric]).toFixed(4)}%
             </span>
           );
         }
@@ -66,12 +72,16 @@ const TopCoinsCard: React.FC<TopCoinsCardProps> = ({
               height={20}
               color="#00ff00"
             />
-            {Math.abs(metric[dataKey].toFixed(4))}%
+            {Math.abs(metric[dataKeyOfMetric]).toFixed(4)}%
           </span>
         );
 
       default:
-        return <span className="font-bold">${metric[dataKey].toFixed(4)}</span>;
+        return (
+          <span className="font-bold">
+            ${metric[dataKeyOfMetric].toFixed(4)}
+          </span>
+        );
     }
   };
 
@@ -90,7 +100,7 @@ const TopCoinsCard: React.FC<TopCoinsCardProps> = ({
           </div>
           <span
             className="text-gray-500 hover:cursor-pointer hover:text-gray-600"
-            onClick={() => goToFeed(convertString(title))}
+            onClick={() => goToFeed(convertString(dataKey))}
           >
             More &gt;
           </span>
