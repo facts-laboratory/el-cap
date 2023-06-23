@@ -6,6 +6,8 @@ import {
 import {
   fetchContractcoins,
   fetch24PriceData,
+  getTopCoins,
+  selectTopCoins,
   selectChartData,
   mapStateToProps,
   useAppDispatch,
@@ -55,6 +57,8 @@ export function App(props: AppProps) {
     loadingStatus: useAppSelector(selectFeedLoadingStatus),
     fetchFeed: (key: string) => dispatch(fetchFeed(key)),
     addToWatchlist: (input: string) => dispatch(addToWatchlist(input)),
+    getTopCoins: () => dispatch(getTopCoins()),
+    topCoins: useAppSelector(selectTopCoins),
   };
   const coinPage = {
     loadingStatus: useAppSelector(selectCoinLoadingStatus),

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 import styles from './token-table.module.css';
 import BitcoinSVG from '../assets/svg/bitcoin.svg';
 import { WatchlistIcon } from '../assets/icons';
@@ -15,7 +15,7 @@ export const orderByMarketCap = (data: ProcessedTokenData[]) => {
   return data.sort((a, b) => b.marketCap - a.marketCap);
 };
 
-export function TokenTable(props: TokenTableProps) {
+export const TokenTable = memo((props: TokenTableProps) => {
   const { data, goToCoin, addToWatchlist } = props;
   const [tokenData, setTokenData] = useState<ProcessedTokenData[]>([]);
 
@@ -163,6 +163,6 @@ export function TokenTable(props: TokenTableProps) {
       </table>
     </div>
   );
-}
+});
 
 export default TokenTable;

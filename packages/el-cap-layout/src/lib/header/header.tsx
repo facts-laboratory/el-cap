@@ -1,3 +1,4 @@
+import { useCallback } from 'react';
 import { goToPage, mapStateToProps } from '@el-cap/store';
 import { connect } from 'react-redux';
 import StatusBar from './statusBar';
@@ -43,5 +44,5 @@ export function Header(props: HeaderProps) {
 export default Header;
 
 export const ConnectedHeader = connect(mapStateToProps, (dispatch) => ({
-  goToFeed: () => dispatch({ type: 'FEED' }),
+  goToFeed: (key: string) => dispatch({ type: 'FEED', payload: { key } }),
 }))(Header);

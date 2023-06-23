@@ -1,25 +1,33 @@
-import { useEffect, useRef, useState } from "react";
+import { SortKey } from '@el-cap/interfaces';
+import { useEffect, useRef, useState } from 'react';
 
 const tabsData = [
   {
-    label: "Top",
+    label: 'Top',
   },
   {
-    label: "Trending",
+    label: 'Trending',
   },
   {
-    label: "Gainer",
+    label: 'Gainers',
   },
   {
-    label: "Losers",
+    label: 'Losers',
   },
   {
-    label: "Updated",
+    label: 'Updated',
   },
 ];
 
-const TabComponent: React.FC = () => {
-  const [activeTabIndex, setActiveTabIndex] = useState(0);
+interface TabComponentProps {
+  fetchFeed: (key: string) => void;
+  activeTabIndex: number;
+  setActiveTabIndex: (index: number) => void;
+}
+
+const TabComponent = (props: TabComponentProps) => {
+  const { fetchFeed, activeTabIndex, setActiveTabIndex } = props;
+  console.log('props', props);
   const [tabUnderlineWidth, setTabUnderlineWidth] = useState(0);
   const [tabUnderlineLeft, setTabUnderlineLeft] = useState(0);
 
@@ -33,9 +41,42 @@ const TabComponent: React.FC = () => {
     }
 
     setTabPosition();
-    window.addEventListener("resize", setTabPosition);
+    window.addEventListener('resize', setTabPosition);
 
-    return () => window.removeEventListener("resize", setTabPosition);
+    return () => window.removeEventListener('resize', setTabPosition);
+  }, [activeTabIndex]);
+
+  const handleTabClick = (tabIndex: number, tabKey: string) => {
+    const sortKeyMap: { [key: string]: SortKey } = {
+      name: SortKey.NAME,
+      image: SortKey.IMAGE,
+      coin: SortKey.COIN,
+      price: SortKey.PRICE,
+      marketcap: SortKey.MARKET_CAP,
+      volume: SortKey.VOLUME,
+      losers: SortKey.LOSERS,
+      circulatingsupply: SortKey.CIRCULATING_SUPPLY,
+      trending: SortKey.TWENTY_FOUR_HOURS,
+      gainers: SortKey.SEVEN_DAYS,
+      '1h': SortKey.ONE_HOUR,
+      '24h': SortKey.TWENTY_FOUR_HOURS,
+      '7d': SortKey.SEVEN_DAYS,
+    };
+
+    const key = sortKeyMap[tabKey.toLowerCase()];
+    console.log('tabKey', key, tabKey, activeTabIndex, tabIndex);
+
+    // add a delay before updating the state
+    setTimeout(() => {
+      fetchFeed(key);
+      setActiveTabIndex(tabIndex);
+      console.log('active before', activeTabIndex);
+      console.log('active after', tabIndex);
+    }, 200); // 300ms delay
+  };
+
+  useEffect(() => {
+    console.log('active effect', activeTabIndex);
   }, [activeTabIndex]);
 
   return (
@@ -47,7 +88,7 @@ const TabComponent: React.FC = () => {
               key={idx}
               ref={(el) => (tabsRef.current[idx] = el)}
               className="p-2 px-4 mx-2 z-20 font-bold"
-              onClick={() => setActiveTabIndex(idx)}
+              onClick={() => handleTabClick(idx, tab.label)}
             >
               {tab.label}
             </button>

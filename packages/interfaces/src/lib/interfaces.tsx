@@ -17,6 +17,11 @@ export type SearchCoin = {
   ranking: number;
   image: string;
 };
+export interface TopCoins {
+  '7d': ProcessedTokenData[];
+  '24h': ProcessedTokenData[];
+  '1h': ProcessedTokenData[];
+}
 
 export enum SortKey {
   NAME = 'name',
@@ -26,6 +31,7 @@ export enum SortKey {
   MARKET_CAP = 'marketCap',
   VOLUME = 'volume',
   CIRCULATING_SUPPLY = 'circulatingSupply',
+  LOSERS = 'losers',
   ONE_HOUR = '1h',
   TWENTY_FOUR_HOURS = '24h',
   SEVEN_DAYS = '7d',

@@ -6,7 +6,13 @@ import {
   EntityState,
   PayloadAction,
 } from '@reduxjs/toolkit';
-import { mergeObjects, sortPrices, processTokenData } from '@el-cap/utilities';
+import {
+  mergeObjects,
+  sortPrices,
+  processTokenData,
+  sortTopCoins,
+} from '@el-cap/utilities';
+import { TopCoins } from '@el-cap/interfaces';
 import { getPrices } from './el-cap-kit.js';
 
 import { RootState } from '../store';
@@ -23,6 +29,8 @@ export interface FeedEntity {
 export interface FeedState extends EntityState<FeedEntity> {
   loadingStatus: 'not loaded' | 'loading' | 'loaded' | 'error';
   error?: string | null;
+  topLoadingStatus: 'not loaded' | 'loading' | 'loaded' | 'error';
+  topCoins: TopCoins;
 }
 
 export const feedAdapter = createEntityAdapter<FeedEntity>({
@@ -33,21 +41,52 @@ export const fetchFeed = createAsyncThunk(
   'feed/fetchFeed',
   async (key: string, thunkAPI) => {
     try {
-      console.log('fetching feed');
-      const prices = await getPrices();
-      console.log('Prices: ', prices); // Logging prices
-      const combinedPrices = mergeObjects(prices.redstone, prices.remaining);
+      console.log('fetching feed', key);
+      const { feed } = thunkAPI.getState() as RootState;
+      const { entities } = feed;
+      console.log('feedPage', feed, key);
 
-      const processedPrices = processTokenData(combinedPrices);
-      console.log('Processed Prices: ', processedPrices); // Logging processedPrices
+      if (Object.keys(entities).length === 0) {
+        // Run this if there are no entities
+        const prices = await getPrices();
+        console.log('Prices: ', prices); // Logging prices
+        const combinedPrices = mergeObjects(prices.redstone, prices.remaining);
 
-      const sortedPrices = sortPrices(processedPrices, key);
-      console.log('Sorted Prices: ', sortedPrices); // Logging sortedPrices
+        const processedPrices = processTokenData(combinedPrices);
+        console.log('Processed Prices: ', processedPrices); // Logging processedPrices
 
-      return sortedPrices;
+        const sortedPrices = sortPrices(processedPrices, key);
+        console.log('Sorted Prices: ', sortedPrices); // Logging sortedPrices
+
+        return sortedPrices;
+      } else {
+        const sortedPrices = sortPrices(entities, key);
+        console.log('Sorted Prices: ', sortedPrices); // Logging sortedPrices
+
+        return sortedPrices;
+      }
     } catch (error) {
       console.log(error);
       return [];
+    }
+  }
+);
+
+export const getTopCoins = createAsyncThunk(
+  'feed/getTopCoins',
+  async (_, thunkAPI) => {
+    try {
+      const { feed } = thunkAPI.getState() as RootState;
+      const { entities } = feed;
+      console.log('Fetching top coins');
+
+      // Process and sort the data
+      const sortedTopCoins = sortTopCoins(entities);
+
+      return sortedTopCoins;
+    } catch (error) {
+      console.log(error);
+      throw new Error('Failed to fetch top coins');
     }
   }
 );
@@ -73,12 +112,27 @@ export const feedSlice = createSlice({
       .addCase(
         fetchFeed.fulfilled,
         (state: FeedState, action: PayloadAction<FeedEntity[]>) => {
+          console.log('loaded feed', action.payload);
           feedAdapter.setAll(state, action.payload);
           state.loadingStatus = 'loaded';
         }
       )
       .addCase(fetchFeed.rejected, (state: FeedState, action) => {
         state.loadingStatus = 'error';
+        state.error = action.error.message;
+      })
+      .addCase(getTopCoins.pending, (state: FeedState) => {
+        state.topLoadingStatus = 'loading';
+      })
+      .addCase(
+        getTopCoins.fulfilled,
+        (state: FeedState, action: PayloadAction<TopCoins[]>) => {
+          state.topCoins = action.payload;
+          state.topLoadingStatus = 'loaded';
+        }
+      )
+      .addCase(getTopCoins.rejected, (state: FeedState, action) => {
+        state.topLoadingStatus = 'error';
         state.error = action.error.message;
       });
   },
@@ -136,3 +190,13 @@ export const selectFeedLoadingStatus = createSelector(
 );
 
 export const selectFeedEntities = createSelector(getFeedState, selectEntities);
+
+export const selectTopLoadingStatus = createSelector(
+  getFeedState,
+  (state: FeedState) => state.topLoadingStatus
+);
+
+export const selectTopCoins = createSelector(
+  getFeedState,
+  (state: FeedState) => state.topCoins
+);
