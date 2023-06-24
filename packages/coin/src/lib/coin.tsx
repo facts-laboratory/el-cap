@@ -52,6 +52,15 @@ enum LoadingStatus {
   NOT_LOADED = 'not loaded',
 }
 
+type CoinTable = {
+  [timeRange: string]: HistoricalData[];
+};
+
+type HistoricalData = {
+  timestamp: number;
+  value: number;
+};
+
 const coinAttributeButtonData = [
   {
     icon: LinkSVG,
@@ -125,18 +134,26 @@ const coinAttributeButtonData = [
   },
 ];
 
-const coinTable = {
+const coinTable: CoinTable = {
   '1d': [
     { value: 3000, timestamp: 1687442340000 },
     { value: 3000, timestamp: 1687445940000 },
   ],
   '7d': [
     { value: 6000, timestamp: 1686923940000 },
-    { value: 6000, timestamp: 1686927540000 },
+    { value: 6000, timestamp: 1686929540000 },
   ],
   '1m': [
-    { value: 9000, timestamp: 1686923940000 },
-    { value: 9000, timestamp: 1686927540000 },
+    { value: 9000, timestamp: 1686953940000 },
+    { value: 9000, timestamp: 1686921540000 },
+  ],
+  '3m': [
+    { value: 12000, timestamp: 1686933940000 },
+    { value: 12000, timestamp: 1686937540000 },
+  ],
+  '1y': [
+    { value: 15000, timestamp: 1686983940000 },
+    { value: 15000, timestamp: 1686987540000 },
   ],
 };
 
