@@ -300,11 +300,13 @@ const SearchBar = (props: SearchBarProps) => {
             groupedOptions={groupedOptionsCryptocurrencies}
             goToFeed={goToFeed}
           />
+
           <DropDownMenu
             label="Community"
             groupedOptions={groupedOptionsCommunity}
             goToFeed={goToFeed}
           />
+
           <span className="font-bold mr-10 hover:text-blue-500 hover:cursor-pointer">
             FAQ
           </span>
