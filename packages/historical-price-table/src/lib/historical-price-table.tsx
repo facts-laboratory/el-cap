@@ -52,6 +52,12 @@ export function HistoricalPriceTable(props: TableProps) {
     };
   });
 
+  useEffect(() => {
+    if (!coinTable && loadingStatus === 'not loaded') {
+      fetch('1d');
+    }
+  }, [coinTable, loadingStatus, fetch]);
+
   const handleSelect = (timeRange: SetStateAction<string>) => {
     setTimeRange(timeRange);
     setIsOpen(false);

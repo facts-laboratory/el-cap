@@ -166,7 +166,6 @@ export function Coin(props: CoinProps) {
   const [viewType, setViewType] = useState<string>('Chart');
 
   const setView = (view: string) => {
-    console.log(view);
     setViewType(view);
   };
 
@@ -214,7 +213,6 @@ export function Coin(props: CoinProps) {
 
   if (error) return <p>{error}</p>;
 
-  console.log(coinChartProps);
   return (
     <div className="bg-gray-100 min-h-screen">
       <div className="flex">
