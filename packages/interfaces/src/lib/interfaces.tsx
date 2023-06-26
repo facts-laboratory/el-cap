@@ -53,3 +53,23 @@ export type RedstoneObject = { [ticker: string]: unknown };
 export type RemainingObject = {
   [index: string]: { symbol: string } & Record<string, unknown>;
 };
+
+export interface CachedValue {
+  state: unknown;
+}
+
+export interface ReadContractResult {
+  cachedValue: CachedValue;
+}
+
+export interface ReadContractStateResult {
+  readContract: ReadContractResult;
+  result: {
+    status: number;
+    statusText: string;
+  };
+}
+
+export interface State {
+  coins: ProcessedTokenData[];
+}

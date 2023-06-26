@@ -19,13 +19,6 @@ export const TokenTable = memo((props: TokenTableProps) => {
   const { data, goToCoin, addToWatchlist } = props;
   const [tokenData, setTokenData] = useState<ProcessedTokenData[]>([]);
 
-  useEffect(() => {
-    console.log('data', data);
-    if (data) {
-      setTokenData(data);
-    }
-  }, [data]);
-
   const [watchlist, setWatchlist] = useState<Record<string, boolean>>({});
 
   // Whenever data changes, update the watchlist state
@@ -42,7 +35,6 @@ export const TokenTable = memo((props: TokenTableProps) => {
     }
   }, [data]);
 
-  // Function to handle adding to watchlist
   const handleAddToWatchlist = (coin: string) => {
     setWatchlist({
       ...watchlist,

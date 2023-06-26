@@ -17,7 +17,12 @@ import {
   Broadcast,
 } from '../assets/svg/index';
 import Tag from '../assets/component/Tag';
-import { ProcessedTokenData } from '@el-cap/interfaces';
+import {
+  ProcessedTokenData,
+  ReadContractResult,
+  ReadContractStateResult,
+  State,
+} from '@el-cap/interfaces';
 import { ArrowDownIcon } from '@el-cap/top-coins-card';
 import CoinAttributeLinkButton from '../assets/component/CoinAttributeLinkButton';
 import ToggleComponent from '../assets/component/ToggleComponent';
@@ -38,20 +43,6 @@ interface CoinProps {
       chart24hourData: PriceData | undefined;
     };
   };
-}
-
-enum TimeRange {
-  DAY_1 = '24h',
-  DAY_7 = '7d',
-  MONTH_1 = '1m',
-  MONTH_3 = '3m',
-  YEAR_1 = '1y',
-}
-
-enum LoadingStatus {
-  LOADED = 'loaded',
-  LOADING = 'loading',
-  NOT_LOADED = 'not loaded',
 }
 
 const coinAttributeButtonData = [
@@ -158,8 +149,10 @@ export function Coin(props: CoinProps) {
     const contractId = 'MH-w8Sq6uw3Jwc_stPqyJT8fEcIhx4VrrE10NFgv-KY';
     const warp = WarpFactory.forMainnet();
     const contract = warp.contract(contractId);
-    const state = await contract.readState();
-    const coins = state.cachedValue.state.coins;
+    const result: ReadContractResult = await contract.readState();
+    const state = result.cachedValue.state as State;
+
+    const coins = state.coins;
     console.log('state running here', state);
     setCoins(coins);
   };
