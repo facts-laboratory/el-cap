@@ -135,7 +135,6 @@ export function Coin(props: CoinProps) {
   const [viewType, setViewType] = useState<string>('Chart');
 
   const setView = (view: string) => {
-    console.log(view);
     setViewType(view);
   };
 
@@ -153,7 +152,6 @@ export function Coin(props: CoinProps) {
     const state = result.cachedValue.state as State;
 
     const coins = state.coins;
-    console.log('state running here', state);
     setCoins(coins);
   };
 
@@ -167,7 +165,6 @@ export function Coin(props: CoinProps) {
     isCoinOnWatchlist();
   }, []);
   function findNameByTicker(ticker: string, coins: ProcessedTokenData[]) {
-    console.log('ticker', ticker, 'coins', coins);
     const coin = coins.find(
       (c) => c.symbol.toLowerCase() === ticker.toLowerCase()
     );
@@ -182,7 +179,6 @@ export function Coin(props: CoinProps) {
       coins.length > 0
     ) {
       const name = findNameByTicker(ticker, coins);
-      console.log('name', name);
       fetchCoin({ symbol: ticker, name });
       setShouldLoad(false);
     }

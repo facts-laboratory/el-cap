@@ -23,6 +23,7 @@ import {
   selectAllContracts,
   selectContractsLoadingStatus,
   checkCoinOnWatchlist,
+  syncLocalCoins,
 } from '@el-cap/store';
 import { connect } from 'react-redux';
 import loadable from '@loadable/component';
@@ -52,6 +53,7 @@ export function App(props: AppProps) {
     fetchContractcoins: () => dispatch(fetchContractcoins()),
     coins: useAppSelector(selectAllContracts),
     loadingStatus: useAppSelector(selectContractsLoadingStatus),
+    syncLocalCoins: () => dispatch(syncLocalCoins()),
   };
   const feedPage = {
     entities: useAppSelector(selectAllFeed),

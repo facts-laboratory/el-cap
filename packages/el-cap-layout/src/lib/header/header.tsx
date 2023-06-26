@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { goToPage, mapStateToProps } from '@el-cap/store';
+import { goToPage, mapStateToProps, syncLocalCoins } from '@el-cap/store';
 import { connect } from 'react-redux';
 import StatusBar from './statusBar';
 import { WarpFactory } from 'warp-contracts';
@@ -14,19 +14,20 @@ export interface HeaderProps {
     fetchContractcoins: () => void;
     coins: SearchCoin[];
     loadingStatus: string;
+    syncLocalCoins: () => void;
   };
 }
 
 export function Header(props: HeaderProps) {
   // const ref: React.RefObject<HTMLDivElement> = useRef(null);
   const { header, goToFeed } = props;
-  const { fetchContractcoins, coins, loadingStatus } = header;
+  const { fetchContractcoins, coins, loadingStatus, syncLocalCoins } = header;
 
   useEffect(() => {
+    syncLocalCoins();
     if (loadingStatus === 'not loaded') {
       fetchContractcoins();
     }
-    console.log('fetching coins', fetchContractcoins);
   }, [fetchContractcoins, loadingStatus]);
 
   return (

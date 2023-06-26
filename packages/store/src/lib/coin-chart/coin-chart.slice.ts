@@ -49,7 +49,6 @@ export const coinChartAdapter = createEntityAdapter<CoinChartEntity>();
 export const fetch24PriceData = createAsyncThunk(
   'coinChart/fetchStatus',
   async (input: { symbol: string; interval: string }, thunkAPI) => {
-    console.log('fetching 24h data', input);
     const { symbol, interval } = input;
     const coinChart = await get24hPrice({ symbol, interval });
     /**
@@ -64,16 +63,12 @@ export const fetch24PriceData = createAsyncThunk(
 export const fetchRemainingPriceData = createAsyncThunk(
   'coinChart/fetchRemaining',
   async (input: { symbol: string; interval: string }, thunkAPI) => {
-    console.log('fetching remaining data');
     const state = thunkAPI.getState() as RootState;
-    console.log('state', state);
     const coinChart = state.coinChart.chartData;
-    console.log('coinChart in fetchRemainingPriceData', coinChart);
     const remaining = await getRemainingPriceHistory({
       ...coinChart,
       symbol: input.symbol,
     });
-    console.log('remaining', remaining);
     /**
      * Replace this with your custom fetch call.
      * For example, `return myApi.getCoinCharts()`;
@@ -107,7 +102,6 @@ export const coinChartSlice = createSlice({
       .addCase(
         fetch24PriceData.fulfilled,
         (state: CoinChartState, action: PayloadAction<CoinChartEntity[]>) => {
-          console.log('action', action.payload);
           state.chartData = action.payload;
           state.loadingStatus = 'loaded';
         }
@@ -122,7 +116,6 @@ export const coinChartSlice = createSlice({
       .addCase(
         fetchRemainingPriceData.fulfilled,
         (state: CoinChartState, action: PayloadAction<RemainingData[]>) => {
-          console.log('action', action.payload);
           state.chartData = action.payload;
           state.remainingLoadingStatus = 'loaded';
         }

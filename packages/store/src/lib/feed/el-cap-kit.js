@@ -33,7 +33,6 @@ export async function get24hPrice(input) {
     })
 
     .fork(console.error, (result) => {
-      console.log('original call result', result);
       return result;
     });
 }
@@ -42,8 +41,6 @@ export async function getRemainingPriceHistory(input) {
   return (
     of(input)
       .chain((input) => {
-        console.log('getRemainingPriceHistory1', input);
-
         return fromPromise(fetchHistoricalPrice)({
           coinChart: input,
           symbol: input.symbol,

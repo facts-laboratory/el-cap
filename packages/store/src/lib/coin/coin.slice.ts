@@ -31,7 +31,6 @@ export const fetchCoin = createAsyncThunk(
   async (input: { symbol: string; name: string }, thunkAPI) => {
     const { symbol, name } = input;
 
-    console.log('fetching Coin', symbol, name);
     try {
       const coinData = await getCoin({ symbol, name });
       const processedCoin = {
@@ -55,7 +54,6 @@ export const fetchCoin = createAsyncThunk(
       };
       return [processedCoin];
     } catch (error) {
-      console.log('fetching error', error);
       return [];
     }
   }
@@ -64,15 +62,11 @@ export const fetchCoin = createAsyncThunk(
 export const checkCoinOnWatchlist = createAsyncThunk(
   'contracts/checkCoinOnWatchlist',
   async (coin: string, thunkAPI) => {
-    console.log('==checkCoinOnWatchlist==');
-
     try {
       // Attempt to read state from the contract
       const queryCrewState = await getCrewMemberContract();
 
       if (queryCrewState.length > 0) {
-        console.log('queryCrewState', queryCrewState[0]);
-
         const contractId = 'Y8VMLtjcdWhQJQ7pwPi1hPOPizWnwoYQDFdW7Y0HM-s';
         const warp = WarpFactory.forMainnet();
         const contract = warp.contract(contractId);
@@ -124,7 +118,6 @@ export const coinSlice = createSlice({
       .addCase(
         fetchCoin.fulfilled,
         (state: CoinState, action: PayloadAction<ProcessedTokenData[]>) => {
-          console.log('coin action', action);
           coinAdapter.setAll(state, action.payload);
           state.loadingStatus = 'loaded';
         }

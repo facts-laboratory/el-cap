@@ -89,8 +89,6 @@ export function Feed(props: FeedProps) {
     setSortKey(key);
 
     if (loadingStatus !== 'loaded' && loadingStatus !== 'loading') {
-      console.log('loadingStatus', loadingStatus);
-      console.log('Path parameter: ', path);
       fetchFeed(key);
     }
   }, [fetchFeed, loadingStatus, path, sortKey]);

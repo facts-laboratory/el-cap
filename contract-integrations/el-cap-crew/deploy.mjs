@@ -16,7 +16,6 @@ export async function deploy(coin) {
     },
   };
 
-  console.log('warp', warp);
   const deployFromSourceTx = await warp.deployFromSourceTx(
     {
       initState: JSON.stringify({
@@ -24,7 +23,7 @@ export async function deploy(coin) {
       }),
       srcTxId: EL_CAP_CREW_TX,
       wallet: 'use_wallet',
-      tags: [{ name: 'El-Cap-Version', value: 'MVP-7' }],
+      tags: [{ name: 'El-Cap-Version', value: 'MVP-9' }],
     },
     { disableBundling: true }
   );
