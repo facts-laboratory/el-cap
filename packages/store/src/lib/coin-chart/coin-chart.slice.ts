@@ -8,6 +8,7 @@ import {
 } from '@reduxjs/toolkit';
 import { getRemainingPriceHistory, get24hPrice } from '../feed/el-cap-kit.js';
 import { RootState } from '../store.js';
+import { RemainingObject } from '@el-cap/interfaces';
 
 export const COIN_CHART_FEATURE_KEY = 'coinChart';
 
@@ -23,7 +24,7 @@ export interface CoinChartState extends EntityState<CoinChartEntity> {
   error?: string | null;
   // @todo update types
   chartData: any;
-  remainingChartData: any;
+  remainingChartData: RemainingObject[];
   remainingLoadingStatus: 'not loaded' | 'loading' | 'loaded' | 'error';
 }
 
@@ -84,6 +85,7 @@ export const initialCoinChartState: CoinChartState =
     error: null,
     chartData: {},
     remainingChartData: {},
+    remainingLoadingStatus: 'not loaded',
   });
 
 export const coinChartSlice = createSlice({
@@ -115,7 +117,7 @@ export const coinChartSlice = createSlice({
       })
       .addCase(
         fetchRemainingPriceData.fulfilled,
-        (state: CoinChartState, action: PayloadAction<RemainingData[]>) => {
+        (state: CoinChartState, action: PayloadAction<RemainingObject[]>) => {
           state.chartData = action.payload;
           state.remainingLoadingStatus = 'loaded';
         }

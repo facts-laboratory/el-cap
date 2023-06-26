@@ -1,9 +1,7 @@
-import { getEdges, getNode } from '@facts-kit/contract-kit';
-
 export async function getCrewMemberContract() {
   const query = `
       {
-        transactions(first: 30, tags: [{name: "El-Cap-Version", values: ["MVP-9"]}], owners:["BcSorVqCuAW4vvHeia1C-xcNzd4YNiEUcoIcBrAgZQo"]) {
+        transactions(first: 30, tags: [{name: "El-Cap-Version", values: ["MVP-13"]}], owners:["BcSorVqCuAW4vvHeia1C-xcNzd4YNiEUcoIcBrAgZQo"]) {
           edges {
             node {
               id

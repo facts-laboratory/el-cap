@@ -1,6 +1,7 @@
 import { Warp, WarpFactory } from 'warp-contracts';
 import { DeployPlugin, ArweaveSigner } from 'warp-contracts-plugin-deploy';
-import { EL_CAP_CREW_TX, stateFromFile } from './initial-state';
+import { stateFromFile } from './initial-state';
+import { EL_CAP_CREW_SRC } from './constants';
 
 export async function deploy(coin) {
   const warp = WarpFactory.forMainnet().use(new DeployPlugin());
@@ -21,9 +22,9 @@ export async function deploy(coin) {
       initState: JSON.stringify({
         ...initialState,
       }),
-      srcTxId: EL_CAP_CREW_TX,
+      srcTxId: EL_CAP_CREW_SRC,
       wallet: 'use_wallet',
-      tags: [{ name: 'El-Cap-Version', value: 'MVP-9' }],
+      tags: [{ name: 'El-Cap-Version', value: 'MVP-13' }],
     },
     { disableBundling: true }
   );

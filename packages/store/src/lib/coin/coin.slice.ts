@@ -6,9 +6,12 @@ import {
   EntityState,
   PayloadAction,
 } from '@reduxjs/toolkit';
-import { ProcessedTokenData } from '@el-cap/interfaces';
+import { ProcessedTokenData, State } from '@el-cap/interfaces';
 import { getCoin } from '../feed/el-cap-kit.js';
-import { getCrewMemberContract } from '@el-cap/contract-integrations';
+import {
+  getCrewMemberContract,
+  readState,
+} from '@el-cap/contract-integrations';
 
 import { RootState } from '../store';
 import { WarpFactory } from 'warp-contracts';
@@ -67,14 +70,14 @@ export const checkCoinOnWatchlist = createAsyncThunk(
       const queryCrewState = await getCrewMemberContract();
 
       if (queryCrewState.length > 0) {
-        const contractId = 'Y8VMLtjcdWhQJQ7pwPi1hPOPizWnwoYQDFdW7Y0HM-s';
+        const contractId = '36ujkpS-AogOB0DOV3O8Hp-P7rDGIeRZ1n620i1RmSU';
         const warp = WarpFactory.forMainnet();
         const contract = warp.contract(contractId);
 
-        const state: any = await contract.readState();
+        const state: State = await readState(queryCrewState[0].node.id);
         console.log('state in checkCoinOnWatchlist', state);
 
-        const watchlist = state.cachedValue.state.watchlist;
+        const watchlist = state.watchlist;
 
         const isOnWatchlist = watchlist.includes(coin);
         console.log('isOnWallet in thunk', isOnWatchlist);

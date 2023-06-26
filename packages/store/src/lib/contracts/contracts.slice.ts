@@ -9,7 +9,13 @@ import {
 import { RootState } from '../store';
 import { WarpFactory } from 'warp-contracts';
 import { writeContract } from 'arweavekit/contract';
-import { deploy, getCrewMemberContract } from '@el-cap/contract-integrations';
+import {
+  deploy,
+  getCrewMemberContract,
+  CONTRACT_TX,
+  readState,
+} from '@el-cap/contract-integrations';
+import { State } from '@el-cap/interfaces';
 
 export const CONTRACTS_FEATURE_KEY = 'contracts';
 
@@ -48,12 +54,11 @@ export const addToWatchlist = createAsyncThunk(
     console.log('addToWatchList in thunk', queryCrewState, address);
     if (queryCrewState.length > 0) {
       console.log('queryCrewState', queryCrewState[0]);
-      const contractId = '36ujkpS-AogOB0DOV3O8Hp-P7rDGIeRZ1n620i1RmSU';
-      const warp = WarpFactory.forMainnet();
-      const contract = warp.contract(contractId);
-      const state: any = await contract.readState();
-      console.log('state in addToWatchlist', state);
+
       try {
+        const state: State = await readState(queryCrewState[0].node.id);
+
+        console.log('state in addToWatchlist', state);
         const writeResult = await writeContract({
           environment: 'mainnet' as const,
           contractTxId: queryCrewState[0].node.id,
@@ -67,7 +72,14 @@ export const addToWatchlist = createAsyncThunk(
         console.log('writeResult', writeResult);
       } catch (error) {
         console.log('==transaction not yet finalised==');
-        localStorage.setItem('el-cap-watchlist', JSON.stringify(coin));
+        // Get existing coins from local storage
+        const existingCoins = JSON.parse(
+          localStorage.getItem('el-cap-watchlist') || '[]'
+        );
+        // Add new coin to the array
+        existingCoins.push(coin);
+        // Save updated array to local storage
+        localStorage.setItem('el-cap-watchlist', JSON.stringify(existingCoins));
       }
     } else {
       deploy(coin);
@@ -85,7 +97,7 @@ export const syncLocalCoins = createAsyncThunk(
       localStorage.getItem('el-cap-watchlist') || '[]'
     );
 
-    if (!localCoins.length) {
+    if (localCoins.length === 0) {
       console.log('No coins in local storage to sync');
       return;
     }
@@ -94,27 +106,29 @@ export const syncLocalCoins = createAsyncThunk(
     const address = await window.arweaveWallet.getActiveAddress();
     console.log('syncLocalCoins in thunk', queryCrewState, address);
 
-    if (queryCrewState.length > 0) {
+    console.log(
+      'lOCAL COINS',
+      localCoins,
+      localCoins.length,
+      localCoins.length > 0
+    );
+    if (queryCrewState.length > 0 && localCoins.length > 0) {
       console.log('queryCrewState', queryCrewState[0]);
-      const contractId = '36ujkpS-AogOB0DOV3O8Hp-P7rDGIeRZ1n620i1RmSU';
-      const warp = WarpFactory.forMainnet();
-      const contract = warp.contract(contractId);
-      const state: any = await contract.readState();
+      const state: State = await readState(queryCrewState[0].node.id);
       console.log('state in syncLocalCoins', state);
 
       try {
         // Iterate over each local coin and add it to the blockchain
-        for (const coin of localCoins) {
-          await writeContract({
-            environment: 'mainnet' as const,
-            contractTxId: queryCrewState[0].node.id,
-            wallet: 'use_wallet' as const,
-            options: {
-              function: 'updateWatchlist',
-              ticker: coin,
-            },
-          });
-        }
+        console.log(`syncing ${localCoins} by adding to watchlist`);
+        await writeContract({
+          environment: 'mainnet' as const,
+          contractTxId: queryCrewState[0].node.id,
+          wallet: 'use_wallet' as const,
+          options: {
+            function: 'addMultipleCoinsToWatchlist',
+            tickers: localCoins,
+          },
+        });
         console.log('All local coins have been synced');
 
         // Clear the local storage after syncing

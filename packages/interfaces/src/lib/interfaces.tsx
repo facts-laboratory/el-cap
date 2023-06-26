@@ -72,4 +72,5 @@ export interface ReadContractStateResult {
 
 export interface State {
   coins: ProcessedTokenData[];
+  watchlist: any;
 }
