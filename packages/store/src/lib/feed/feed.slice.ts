@@ -12,10 +12,13 @@ import {
   processTokenData,
   sortTopCoins,
 } from '@el-cap/utilities';
-import { TopCoins } from '@el-cap/interfaces';
+import { TopCoins, State, ProcessedTokenData } from '@el-cap/interfaces';
 import { getPrices } from './el-cap-kit.js';
-
-import { RootState } from '../store';
+import {
+  getCrewMemberContract,
+  readState,
+} from '@el-cap/contract-integrations';
+import { RootState } from '../store.js';
 
 export const FEED_FEATURE_KEY = 'feed';
 
@@ -30,12 +33,30 @@ export interface FeedState extends EntityState<FeedEntity> {
   loadingStatus: 'not loaded' | 'loading' | 'loaded' | 'error';
   error?: string | null;
   topLoadingStatus: 'not loaded' | 'loading' | 'loaded' | 'error';
-  topCoins: TopCoins;
+  topCoins?: TopCoins;
 }
 
 export const feedAdapter = createEntityAdapter<FeedEntity>({
   selectId: (entity) => entity.coin,
 });
+
+export const checkIfOnWatchlist = async (entities: any[]) => {
+  const queryCrewState = await getCrewMemberContract();
+  let watchlist = [];
+
+  if (queryCrewState.length > 0) {
+    const state: State = await readState(queryCrewState[0].node.id);
+    console.log('state in checkCoinsOnWatchlist', state);
+    watchlist = state.watchlist;
+  }
+
+  return entities.map((coin) => {
+    return {
+      ...coin,
+      watchlist: watchlist.includes(coin.coin),
+    };
+  });
+};
 
 export const fetchFeed = createAsyncThunk(
   'feed/fetchFeed',
@@ -51,11 +72,19 @@ export const fetchFeed = createAsyncThunk(
 
         const processedPrices = processTokenData(combinedPrices);
 
-        const sortedPrices = sortPrices(processedPrices, key);
+        // Add the watchlist flag to each entity
+        const processedPricesWithWatchlistFlag = await checkIfOnWatchlist(
+          processedPrices
+        );
+
+        const sortedPrices = sortPrices(processedPricesWithWatchlistFlag, key);
 
         return sortedPrices;
       } else {
-        const sortedPrices = sortPrices(entities, key);
+        // If entities exist, sort them and also add watchlist flag
+        const entitiesWithWatchlistFlag = await checkIfOnWatchlist(entities);
+
+        const sortedPrices = sortPrices(entitiesWithWatchlistFlag, key);
 
         return sortedPrices;
       }
@@ -84,9 +113,60 @@ export const getTopCoins = createAsyncThunk(
   }
 );
 
+export const checkCoinsOnWatchlist = createAsyncThunk(
+  'feed/checkCoinsOnWatchlist',
+  async (_, thunkAPI) => {
+    console.log('==checkCoinsOnWatchlist==');
+    const state = thunkAPI.getState() as RootState;
+    const coins = state.feed.entities;
+
+    console.log('==checkCoinsOnWatchlist==', state, coins);
+    try {
+      // Attempt to read state from the contract
+      const queryCrewState = await getCrewMemberContract();
+
+      if (queryCrewState.length > 0) {
+        const state: State = await readState(queryCrewState[0].node.id);
+        console.log('state in checkCoinsOnWatchlist', state);
+
+        const watchlist = state.watchlist;
+
+        const coinsOnWatchlist = Object.values(coins)
+          .filter((coin: ProcessedTokenData) => watchlist.includes(coin.coin))
+          .map((coin: ProcessedTokenData) => coin.coin);
+
+        console.log('coinsOnWatchlist in thunk', coinsOnWatchlist);
+        return coinsOnWatchlist;
+      }
+    } catch (error) {
+      console.log('==error reading state from contract==', error);
+
+      // Check coins in local storage
+      const localStorageWatchlist = JSON.parse(
+        localStorage.getItem('el-cap-watchlist') || '[]'
+      );
+      console.log(localStorageWatchlist);
+
+      const coinsOnWatchlist = Object.values(coins)
+        .filter((coin: ProcessedTokenData) =>
+          localStorageWatchlist.includes(coin.coin)
+        )
+        .map((coin: ProcessedTokenData) => coin.coin);
+
+      console.log(
+        'coinsOnWatchlist in thunk',
+        localStorageWatchlist,
+        coinsOnWatchlist
+      );
+      return coinsOnWatchlist;
+    }
+  }
+);
+
 export const initialFeedState: FeedState = feedAdapter.getInitialState({
   loadingStatus: 'not loaded',
   error: null,
+  topLoadingStatus: 'not loaded',
 });
 
 export const feedSlice = createSlice({
@@ -118,13 +198,27 @@ export const feedSlice = createSlice({
       })
       .addCase(
         getTopCoins.fulfilled,
-        (state: FeedState, action: PayloadAction<TopCoins[]>) => {
+        (state: FeedState, action: PayloadAction<TopCoins>) => {
           state.topCoins = action.payload;
           state.topLoadingStatus = 'loaded';
         }
       )
       .addCase(getTopCoins.rejected, (state: FeedState, action) => {
         state.topLoadingStatus = 'error';
+        state.error = action.error.message;
+      })
+      .addCase(checkCoinsOnWatchlist.pending, (state: FeedState) => {
+        state.loadingStatus = 'loading';
+      })
+      .addCase(
+        checkCoinsOnWatchlist.fulfilled,
+        (state: FeedState, action: PayloadAction<any>) => {
+          state.watchlist = action.payload;
+          state.loadingStatus = 'loaded';
+        }
+      )
+      .addCase(checkCoinsOnWatchlist.rejected, (state: FeedState, action) => {
+        state.loadingStatus = 'error';
         state.error = action.error.message;
       });
   },
@@ -179,6 +273,11 @@ export const selectAllFeed = createSelector(getFeedState, selectAll);
 export const selectFeedLoadingStatus = createSelector(
   getFeedState,
   (state: FeedState) => state.loadingStatus
+);
+
+export const selectWatchlist = createSelector(
+  getFeedState,
+  (state: FeedState) => state.watchlist
 );
 
 export const selectFeedEntities = createSelector(getFeedState, selectEntities);

@@ -29,12 +29,14 @@ export const TokenTable = memo((props: TokenTableProps) => {
       // Reset watchlist
       const newWatchlist: Record<string, boolean> = {};
       data.forEach((coin: ProcessedTokenData) => {
-        newWatchlist[coin.coin] = false;
+        // Use the watchlist property of each coin to set the watchlist state
+        newWatchlist[coin.coin] = coin.watchlist;
       });
       setWatchlist(newWatchlist);
     }
   }, [data]);
 
+  // Function to handle adding to watchlist
   const handleAddToWatchlist = (coin: string) => {
     setWatchlist({
       ...watchlist,

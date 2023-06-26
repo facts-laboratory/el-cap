@@ -10,33 +10,6 @@ import TabComponent from './components/TabComponent';
 import DropDownFeedOptions from './components/DropDownFeed';
 import { SortKey, TopCoins } from '@el-cap/interfaces';
 
-const TrendingdummyData = [
-  {
-    name: 'Bitcoin',
-    symbol: 'BTC',
-    metric: -4.28,
-    image: 'https://s2.coinmarketcap.com/static/img/coins/64x64/1.png',
-  },
-  {
-    name: 'Ethereum',
-    symbol: 'ETH',
-    metric: 4000,
-    image: 'https://s2.coinmarketcap.com/static/img/coins/64x64/1027.png',
-  },
-  {
-    name: 'Cardano',
-    symbol: 'ADA',
-    metric: 2.12,
-    image: 'https://s2.coinmarketcap.com/static/img/coins/64x64/2010.png',
-  },
-  {
-    name: 'Dogecoin',
-    symbol: 'DOGE',
-    metric: 0.24,
-    image: 'https://s2.coinmarketcap.com/static/img/coins/64x64/74.png',
-  },
-];
-
 export interface FeedProps {
   goToCoin: (ticker: string) => void;
   goToFeed: (key: string) => void;
@@ -47,6 +20,7 @@ export interface FeedProps {
     getTopCoins: () => void;
     topCoins: TopCoins;
     addToWatchlist: () => void;
+    checkCoinsOnWatchlist: () => void;
   };
 }
 
@@ -58,6 +32,8 @@ export function Feed(props: FeedProps) {
     getTopCoins,
     topCoins,
     addToWatchlist,
+    checkCoinsOnWatchlist,
+    watchlist,
   } = props.feedPage;
   const { goToCoin, goToFeed } = props;
   const [showCase, setShowCase] = useState<boolean>(true);
@@ -126,8 +102,13 @@ export function Feed(props: FeedProps) {
 
   useEffect(() => {
     // TODO after we have top coins in slice add getTopCoins to dependency and !== 'loaded' for getTopCoins
+
+    console.log('checkCoinsOnWatchlist', checkCoinsOnWatchlist);
     if (entities.length > 0) {
+      console.log('loading extra data in feed');
       getTopCoins();
+
+      checkCoinsOnWatchlist();
     }
   }, [entities]);
 

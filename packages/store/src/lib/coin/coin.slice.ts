@@ -70,10 +70,6 @@ export const checkCoinOnWatchlist = createAsyncThunk(
       const queryCrewState = await getCrewMemberContract();
 
       if (queryCrewState.length > 0) {
-        const contractId = '36ujkpS-AogOB0DOV3O8Hp-P7rDGIeRZ1n620i1RmSU';
-        const warp = WarpFactory.forMainnet();
-        const contract = warp.contract(contractId);
-
         const state: State = await readState(queryCrewState[0].node.id);
         console.log('state in checkCoinOnWatchlist', state);
 

@@ -36,11 +36,8 @@ export const contractsAdapter = createEntityAdapter<ContractsEntity>({
 export const fetchContractcoins = createAsyncThunk(
   'contracts/fetchContractcoins',
   async (_, thunkAPI) => {
-    const contractId = 'MH-w8Sq6uw3Jwc_stPqyJT8fEcIhx4VrrE10NFgv-KY';
-    const warp = WarpFactory.forMainnet();
-    const contract = warp.contract(contractId);
-    const state: any = await contract.readState();
-    const coins = state.cachedValue.state.coins;
+    const state: State = await readState();
+    const coins = state.coins;
     return coins;
   }
 );
