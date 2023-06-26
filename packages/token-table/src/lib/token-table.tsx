@@ -102,7 +102,10 @@ export const TokenTable = memo((props: TokenTableProps) => {
                       height={24}
                     />
                   </th>
-                  <td className="px-6 py-4 flex items-center my-4">
+                  <td
+                    className="px-6 py-4 flex items-center my-4 cursor-pointer"
+                    onClick={() => goToCoin(entity.coin)}
+                  >
                     <img
                       src={entity.image}
                       alt={entity.name}
