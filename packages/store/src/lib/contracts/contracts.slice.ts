@@ -47,8 +47,6 @@ export const addToWatchlist = createAsyncThunk(
   async (coin: string, thunkAPI) => {
     console.log('==addToWatchlist==');
     const queryCrewState = await getCrewMemberContract();
-    const address = await window.arweaveWallet.getActiveAddress();
-    console.log('addToWatchList in thunk', queryCrewState, address);
     if (queryCrewState.length > 0) {
       console.log('queryCrewState', queryCrewState[0]);
 
@@ -65,8 +63,6 @@ export const addToWatchlist = createAsyncThunk(
             ticker: coin,
           },
         });
-
-        console.log('writeResult', writeResult);
       } catch (error) {
         console.log('==transaction not yet finalised==');
         // Get existing coins from local storage
@@ -80,6 +76,7 @@ export const addToWatchlist = createAsyncThunk(
       }
     } else {
       deploy(coin);
+      localStorage.setItem('el-cap-watchlist', JSON.stringify([coin]));
     }
   }
 );
@@ -100,15 +97,7 @@ export const syncLocalCoins = createAsyncThunk(
     }
 
     const queryCrewState = await getCrewMemberContract();
-    const address = await window.arweaveWallet.getActiveAddress();
-    console.log('syncLocalCoins in thunk', queryCrewState, address);
 
-    console.log(
-      'lOCAL COINS',
-      localCoins,
-      localCoins.length,
-      localCoins.length > 0
-    );
     if (queryCrewState.length > 0 && localCoins.length > 0) {
       console.log('queryCrewState', queryCrewState[0]);
       const state: State = await readState(queryCrewState[0].node.id);

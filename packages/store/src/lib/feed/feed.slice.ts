@@ -42,7 +42,7 @@ export const feedAdapter = createEntityAdapter<FeedEntity>({
 
 export const checkIfOnWatchlist = async (entities: any[]) => {
   const queryCrewState = await getCrewMemberContract();
-  let watchlist = [];
+  let watchlist: string[] = [];
 
   if (queryCrewState.length > 0) {
     const state: State = await readState(queryCrewState[0].node.id);
@@ -113,56 +113,6 @@ export const getTopCoins = createAsyncThunk(
   }
 );
 
-export const checkCoinsOnWatchlist = createAsyncThunk(
-  'feed/checkCoinsOnWatchlist',
-  async (_, thunkAPI) => {
-    console.log('==checkCoinsOnWatchlist==');
-    const state = thunkAPI.getState() as RootState;
-    const coins = state.feed.entities;
-
-    console.log('==checkCoinsOnWatchlist==', state, coins);
-    try {
-      // Attempt to read state from the contract
-      const queryCrewState = await getCrewMemberContract();
-
-      if (queryCrewState.length > 0) {
-        const state: State = await readState(queryCrewState[0].node.id);
-        console.log('state in checkCoinsOnWatchlist', state);
-
-        const watchlist = state.watchlist;
-
-        const coinsOnWatchlist = Object.values(coins)
-          .filter((coin: ProcessedTokenData) => watchlist.includes(coin.coin))
-          .map((coin: ProcessedTokenData) => coin.coin);
-
-        console.log('coinsOnWatchlist in thunk', coinsOnWatchlist);
-        return coinsOnWatchlist;
-      }
-    } catch (error) {
-      console.log('==error reading state from contract==', error);
-
-      // Check coins in local storage
-      const localStorageWatchlist = JSON.parse(
-        localStorage.getItem('el-cap-watchlist') || '[]'
-      );
-      console.log(localStorageWatchlist);
-
-      const coinsOnWatchlist = Object.values(coins)
-        .filter((coin: ProcessedTokenData) =>
-          localStorageWatchlist.includes(coin.coin)
-        )
-        .map((coin: ProcessedTokenData) => coin.coin);
-
-      console.log(
-        'coinsOnWatchlist in thunk',
-        localStorageWatchlist,
-        coinsOnWatchlist
-      );
-      return coinsOnWatchlist;
-    }
-  }
-);
-
 export const initialFeedState: FeedState = feedAdapter.getInitialState({
   loadingStatus: 'not loaded',
   error: null,
@@ -205,20 +155,6 @@ export const feedSlice = createSlice({
       )
       .addCase(getTopCoins.rejected, (state: FeedState, action) => {
         state.topLoadingStatus = 'error';
-        state.error = action.error.message;
-      })
-      .addCase(checkCoinsOnWatchlist.pending, (state: FeedState) => {
-        state.loadingStatus = 'loading';
-      })
-      .addCase(
-        checkCoinsOnWatchlist.fulfilled,
-        (state: FeedState, action: PayloadAction<any>) => {
-          state.watchlist = action.payload;
-          state.loadingStatus = 'loaded';
-        }
-      )
-      .addCase(checkCoinsOnWatchlist.rejected, (state: FeedState, action) => {
-        state.loadingStatus = 'error';
         state.error = action.error.message;
       });
   },

@@ -86,7 +86,7 @@ export const checkCoinOnWatchlist = createAsyncThunk(
       const localStorageWatchlist = JSON.parse(
         localStorage.getItem('el-cap-watchlist') || '[]'
       );
-      console.log(localStorageWatchlist);
+      console.log('localStorageWatchlist', localStorageWatchlist);
 
       // return true if the coin is in local storage, false otherwise
       const isOnWatchlist = localStorageWatchlist.includes(coin);

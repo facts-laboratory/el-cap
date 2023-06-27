@@ -23,7 +23,6 @@ import {
   selectAllContracts,
   selectContractsLoadingStatus,
   syncLocalCoins,
-  checkCoinsOnWatchlist,
   checkCoinOnWatchlist,
   selectWatchlist,
 } from '@el-cap/store';
@@ -64,7 +63,6 @@ export function App(props: AppProps) {
     addToWatchlist: (input: string) => dispatch(addToWatchlist(input)),
     getTopCoins: () => dispatch(getTopCoins()),
     topCoins: useAppSelector(selectTopCoins),
-    checkCoinsOnWatchlist: () => dispatch(checkCoinsOnWatchlist()),
     watchlist: useAppSelector(selectWatchlist),
   };
   const coinPage = {

@@ -19,7 +19,7 @@ export interface FeedProps {
     fetchFeed: (key: string | undefined) => void;
     getTopCoins: () => void;
     topCoins: TopCoins;
-    addToWatchlist: () => void;
+    addToWatchlist: (coin: string) => void;
     checkCoinsOnWatchlist: () => void;
   };
 }
@@ -33,7 +33,6 @@ export function Feed(props: FeedProps) {
     topCoins,
     addToWatchlist,
     checkCoinsOnWatchlist,
-    watchlist,
   } = props.feedPage;
   const { goToCoin, goToFeed } = props;
   const [showCase, setShowCase] = useState<boolean>(true);
@@ -103,12 +102,9 @@ export function Feed(props: FeedProps) {
   useEffect(() => {
     // TODO after we have top coins in slice add getTopCoins to dependency and !== 'loaded' for getTopCoins
 
-    console.log('checkCoinsOnWatchlist', checkCoinsOnWatchlist);
     if (entities.length > 0) {
       console.log('loading extra data in feed');
       getTopCoins();
-
-      checkCoinsOnWatchlist();
     }
   }, [entities]);
 
