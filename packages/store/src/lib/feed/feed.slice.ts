@@ -19,6 +19,7 @@ import {
   readState,
 } from '@el-cap/contract-integrations';
 import { RootState } from '../store.js';
+import { Dictionary } from 'ramda';
 
 export const FEED_FEATURE_KEY = 'feed';
 
@@ -39,24 +40,7 @@ export interface FeedState extends EntityState<FeedEntity> {
 export const feedAdapter = createEntityAdapter<FeedEntity>({
   selectId: (entity) => entity.coin,
 });
-
-export const checkCoinsOnWatchlist = async (entities: ProcessedTokenData[]) => {
-  const queryCrewState = await getCrewMemberContract();
-  let watchlist: string[] = [];
-
-  if (queryCrewState.length > 0) {
-    const state: State = await readState(queryCrewState[0].node.id);
-    console.log('state in checkCoinsOnWatchlist', state);
-    watchlist = state.watchlist.map((item: string) => item.toLowerCase());
-  }
-
-  return entities.map((coin) => {
-    return {
-      ...coin,
-      watchlist: watchlist.includes(coin.coin.toLowerCase()),
-    };
-  });
-};
+// Modify checkCoinsOnWatchlist function to work with Dictionary<ProcessedTokenData>
 
 export const fetchFeed = createAsyncThunk(
   'feed/fetchFeed',
@@ -70,21 +54,24 @@ export const fetchFeed = createAsyncThunk(
         const prices = await getPrices();
         const combinedPrices = mergeObjects(prices.redstone, prices.remaining);
 
-        const processedPrices = processTokenData(combinedPrices);
+        const processedPrices = await processTokenData(combinedPrices);
 
-        // Add the watchlist flag to each entity
-        const processedPricesWithWatchlistFlag = await checkCoinsOnWatchlist(
-          processedPrices
+        const sortedPrices = sortPrices(processedPrices, key);
+
+        console.log(
+          'processed',
+          processedPrices,
+          'sorted',
+          sortedPrices,
+          'combined',
+          combinedPrices
         );
-
-        const sortedPrices = sortPrices(processedPricesWithWatchlistFlag, key);
 
         return sortedPrices;
       } else {
         // If entities exist, sort them and also add watchlist flag
-        const entitiesWithWatchlistFlag = await checkCoinsOnWatchlist(entities);
 
-        const sortedPrices = sortPrices(entitiesWithWatchlistFlag, key);
+        const sortedPrices = sortPrices(entities, key);
 
         return sortedPrices;
       }

@@ -5,14 +5,18 @@ import {
   RedstoneObject,
   TopCoins,
 } from '@el-cap/interfaces';
+import { checkCoinsOnWatchlist } from '@el-cap/store';
+import { Dictionary } from '@reduxjs/toolkit';
 
-export function processTokenData(
+export async function processTokenData(
   combinedTokenData: Record<string, any>
-): ProcessedTokenData[] {
-  return Object.keys(combinedTokenData).map((key) => {
+): Promise<Dictionary<ProcessedTokenData>> {
+  const processedData: Dictionary<ProcessedTokenData> = {};
+
+  Object.keys(combinedTokenData).forEach((key) => {
     const combinedTokenItem = combinedTokenData[key];
 
-    return {
+    processedData[key] = {
       name: combinedTokenItem.name || '',
       image: combinedTokenItem.image || '',
       coin: combinedTokenItem.symbol || '',
@@ -25,10 +29,12 @@ export function processTokenData(
       '1h': combinedTokenItem.price_change_percentage_1h_in_currency || 0,
       '24h': combinedTokenItem.price_change_percentage_24h_in_currency || 0,
       '7d': combinedTokenItem.price_change_percentage_7d_in_currency || 0,
+      watchlist: false, // Default to false, will be updated by checkCoinsOnWatchlist
     };
   });
-}
 
+  return await checkCoinsOnWatchlist(processedData);
+}
 export function sortTopCoins(
   entities: Record<string, ProcessedTokenData>
 ): TopCoins {
