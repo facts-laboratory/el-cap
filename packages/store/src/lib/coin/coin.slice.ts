@@ -33,7 +33,6 @@ export const fetchCoin = createAsyncThunk(
     console.log('fetching Coin', symbol, name);
     try {
       const coinData = await getCoin({ symbol, name });
-      console.log('coindata', coinData);
       const processedCoin = {
         name: coinData.remaining.name || '',
         image: coinData.remaining.image?.large || '',

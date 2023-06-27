@@ -73,7 +73,6 @@ function trimData(inputArray) {
 function removeDuplicatesByTimestamp(data) {
   return data.reduce((acc, current) => {
     const exists = acc.find((item) => item.timestamp === current.timestamp);
-    console.log('exists', exists);
     if (!exists) {
       return acc.concat([current]);
     } else {

@@ -11,7 +11,7 @@ const components: ObjectKeys = {
 
 export const routesMap: RoutesMap = {
   FEED: {
-    path: '/',
+    path: '/:key?',
     thunk: async (dispatch, getState) => {
       console.log('Feed thunk.');
     },
