@@ -14,7 +14,7 @@ import {
 } from '@el-cap/contract-integrations';
 
 import { RootState } from '../store';
-import { checkCoinsOnWatchlist } from '../feed/feed.slice.js';
+import { checkCoinsOnWatchlist } from '@el-cap/utilities';
 
 export const COIN_FEATURE_KEY = 'coin';
 

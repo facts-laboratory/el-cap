@@ -11,15 +11,11 @@ import {
   sortPrices,
   processTokenData,
   sortTopCoins,
+  entriesToObj,
 } from '@el-cap/utilities';
-import { TopCoins, State, ProcessedTokenData } from '@el-cap/interfaces';
+import { TopCoins } from '@el-cap/interfaces';
 import { getPrices } from './el-cap-kit.js';
-import {
-  getCrewMemberContract,
-  readState,
-} from '@el-cap/contract-integrations';
 import { RootState } from '../store.js';
-import { Dictionary } from 'ramda';
 
 export const FEED_FEATURE_KEY = 'feed';
 
@@ -56,22 +52,13 @@ export const fetchFeed = createAsyncThunk(
 
         const processedPrices = await processTokenData(combinedPrices);
 
-        const sortedPrices = sortPrices(processedPrices, key);
-
-        console.log(
-          'processed',
-          processedPrices,
-          'sorted',
-          sortedPrices,
-          'combined',
-          combinedPrices
-        );
+        const sortedPrices = sortPrices(entriesToObj(processedPrices), key);
 
         return sortedPrices;
       } else {
         // If entities exist, sort them and also add watchlist flag
 
-        const sortedPrices = sortPrices(entities, key);
+        const sortedPrices = sortPrices(entriesToObj(entities), key);
 
         return sortedPrices;
       }
@@ -90,7 +77,7 @@ export const getTopCoins = createAsyncThunk(
       const { entities } = feed;
 
       // Process and sort the data
-      const sortedTopCoins = sortTopCoins(entities);
+      const sortedTopCoins = sortTopCoins(entriesToObj(entities));
 
       return sortedTopCoins;
     } catch (error) {
@@ -147,45 +134,10 @@ export const feedSlice = createSlice({
   },
 });
 
-/*
- * Export reducer for store configuration.
- */
 export const feedReducer = feedSlice.reducer;
 
-/*
- * Export action creators to be dispatched. For use with the `useDispatch` hook.
- *
- * e.g.
- * ```
- * import React, { useEffect } from 'react';
- * import { useDispatch } from 'react-redux';
- *
- * // ...
- *
- * const dispatch = useDispatch();
- * useEffect(() => {
- *   dispatch(feedActions.add({ id: 1 }))
- * }, [dispatch]);
- * ```
- *
- * See: https://react-redux.js.org/next/api/hooks#usedispatch
- */
 export const feedActions = feedSlice.actions;
 
-/*
- * Export selectors to query state. For use with the `useSelector` hook.
- *
- * e.g.
- * ```
- * import { useSelector } from 'react-redux';
- *
- * // ...
- *
- * const entities = useSelector(selectAllFeed);
- * ```
- *
- * See: https://react-redux.js.org/next/api/hooks#useselector
- */
 const { selectAll, selectEntities } = feedAdapter.getSelectors();
 
 export const getFeedState = (rootState: RootState): FeedState =>
