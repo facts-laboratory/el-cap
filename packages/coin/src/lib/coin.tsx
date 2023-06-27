@@ -185,6 +185,10 @@ export function Coin(props: CoinProps) {
     setCoins(coins);
   };
 
+  const fetchHistoricalPrice = (symbol: string) => {
+    console.log(symbol);
+  };
+
   useEffect(() => {
     fetchState();
   }, []);
@@ -212,6 +216,8 @@ export function Coin(props: CoinProps) {
   }, [fetchCoin, loadingStatus, ticker, entity, coins]);
 
   if (error) return <p>{error}</p>;
+
+  console.log(coinChartProps);
 
   return (
     <div className="bg-gray-100 min-h-screen">
@@ -391,7 +397,12 @@ export function Coin(props: CoinProps) {
         {viewType === 'Chart' ? (
           <ChartWidget {...coinChartProps} ticker={ticker} />
         ) : (
-          <HistoricalPriceTable coinTable={coinTable} loadingStatus="loaded" />
+          <HistoricalPriceTable
+            coinTable={coinTable}
+            loadingStatus={LoadingStatus.LOADED}
+            fetch={fetchHistoricalPrice}
+            error={null}
+          />
         )}
       </div>
     </div>
