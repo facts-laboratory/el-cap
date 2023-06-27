@@ -35,7 +35,7 @@ export async function deploy(coin) {
     }),
     srcTxId: EL_CAP_CREW_SRC,
     wallet: userSigner,
-    tags: [{ name: 'El-Cap-Version', value: 'MVP-18' }],
+    tags: [{ name: 'El-Cap-Version', value: 'MVP-21' }],
   });
 
   console.log(

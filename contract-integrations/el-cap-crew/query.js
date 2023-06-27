@@ -1,7 +1,7 @@
 export async function getCrewMemberContract() {
   const query = `
       {
-        transactions(first: 30, tags: [{name: "El-Cap-Version", values: ["MVP-18"]}], owners:["BcSorVqCuAW4vvHeia1C-xcNzd4YNiEUcoIcBrAgZQo"]) {
+        transactions(first: 30, tags: [{name: "El-Cap-Version", values: ["MVP-21"]}], owners:["BcSorVqCuAW4vvHeia1C-xcNzd4YNiEUcoIcBrAgZQo"]) {
           edges {
             node {
               id

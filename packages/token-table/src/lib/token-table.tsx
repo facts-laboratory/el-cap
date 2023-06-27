@@ -7,7 +7,7 @@ import { ProcessedTokenData } from '@el-cap/interfaces';
 /* eslint-disable-next-line */
 export interface TokenTableProps {
   data: ProcessedTokenData[];
-  goToCoin: (coin: string) => void;
+  goToCoin: (coin: string, entity: ProcessedTokenData) => void;
   addToWatchlist: (coin: string) => void;
 }
 
@@ -100,7 +100,7 @@ export const TokenTable = memo((props: TokenTableProps) => {
                   </th>
                   <td
                     className="px-6 py-4 flex items-center my-4 cursor-pointer"
-                    onClick={() => goToCoin(entity.coin)}
+                    onClick={() => goToCoin(entity.coin, entity)}
                   >
                     <img
                       src={entity.image}

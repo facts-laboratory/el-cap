@@ -117,6 +117,7 @@ const coinAttributeButtonData = [
 ];
 
 export function Coin(props: CoinProps) {
+  console.log('coinpageprops', props);
   const { goToFeed, entity, ticker, coinPage } = props;
   const {
     coinChartProps,
@@ -167,7 +168,7 @@ export function Coin(props: CoinProps) {
     if (
       shouldLoad &&
       loadingStatus !== 'loaded' &&
-      ticker !== entity?.coin &&
+      ticker !== fetchedEntity[0]?.coin &&
       coins.length > 0
     ) {
       const name = findNameByTicker(ticker, coins);
