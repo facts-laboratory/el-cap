@@ -9,6 +9,7 @@ export interface ProcessedTokenData {
   '1h': number;
   '24h': number;
   '7d': number;
+  watchlist?: boolean;
 }
 
 export type SearchCoin = {

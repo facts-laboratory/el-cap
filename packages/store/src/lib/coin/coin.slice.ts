@@ -14,7 +14,7 @@ import {
 } from '@el-cap/contract-integrations';
 
 import { RootState } from '../store';
-import { WarpFactory } from 'warp-contracts';
+import { checkCoinsOnWatchlist } from '../feed/feed.slice.js';
 
 export const COIN_FEATURE_KEY = 'coin';
 
@@ -55,43 +55,12 @@ export const fetchCoin = createAsyncThunk(
           coinData.remaining.market_data.price_change_percentage_7d_in_currency
             .usd || 0,
       };
-      return [processedCoin];
+      const coinWithWatchListFlag = await checkCoinsOnWatchlist([
+        processedCoin,
+      ]);
+      return coinWithWatchListFlag;
     } catch (error) {
       return [];
-    }
-  }
-);
-
-export const checkCoinOnWatchlist = createAsyncThunk(
-  'contracts/checkCoinOnWatchlist',
-  async (coin: string, thunkAPI) => {
-    try {
-      // Attempt to read state from the contract
-      const queryCrewState = await getCrewMemberContract();
-
-      if (queryCrewState.length > 0) {
-        const state: State = await readState(queryCrewState[0].node.id);
-        console.log('state in checkCoinOnWatchlist', state);
-
-        const watchlist = state.watchlist;
-
-        const isOnWatchlist = watchlist.includes(coin);
-        console.log('isOnWallet in thunk', isOnWatchlist);
-        return isOnWatchlist;
-      }
-    } catch (error) {
-      console.log('==error reading state from contract==', error);
-
-      // Check coin in local storage
-      const localStorageWatchlist = JSON.parse(
-        localStorage.getItem('el-cap-watchlist') || '[]'
-      );
-      console.log('localStorageWatchlist', localStorageWatchlist);
-
-      // return true if the coin is in local storage, false otherwise
-      const isOnWatchlist = localStorageWatchlist.includes(coin);
-      console.log('isOnWallet in thunk', localStorageWatchlist, isOnWatchlist);
-      return isOnWatchlist;
     }
   }
 );
@@ -120,11 +89,7 @@ export const coinSlice = createSlice({
           coinAdapter.setAll(state, action.payload);
           state.loadingStatus = 'loaded';
         }
-      )
-      .addCase(fetchCoin.rejected, (state: CoinState, action) => {
-        state.loadingStatus = 'error';
-        state.error = action.error.message;
-      });
+      );
   },
 });
 

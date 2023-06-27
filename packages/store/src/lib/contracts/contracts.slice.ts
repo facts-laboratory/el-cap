@@ -52,9 +52,8 @@ export const addToWatchlist = createAsyncThunk(
 
       try {
         const state: State = await readState(queryCrewState[0].node.id);
-
         console.log('state in addToWatchlist', state);
-        const writeResult = await writeContract({
+        await writeContract({
           environment: 'mainnet' as const,
           contractTxId: queryCrewState[0].node.id,
           wallet: 'use_wallet' as const,
@@ -65,65 +64,9 @@ export const addToWatchlist = createAsyncThunk(
         });
       } catch (error) {
         console.log('==transaction not yet finalised==');
-        // Get existing coins from local storage
-        const existingCoins = JSON.parse(
-          localStorage.getItem('el-cap-watchlist') || '[]'
-        );
-        // Add new coin to the array
-        existingCoins.push(coin);
-        // Save updated array to local storage
-        localStorage.setItem('el-cap-watchlist', JSON.stringify(existingCoins));
       }
     } else {
       deploy(coin);
-      localStorage.setItem('el-cap-watchlist', JSON.stringify([coin]));
-    }
-  }
-);
-
-export const syncLocalCoins = createAsyncThunk(
-  'contracts/syncLocalCoins',
-  async (_, thunkAPI) => {
-    console.log('==syncLocalCoins==');
-
-    // Fetch coins from local storage
-    const localCoins = JSON.parse(
-      localStorage.getItem('el-cap-watchlist') || '[]'
-    );
-
-    if (localCoins.length === 0) {
-      console.log('No coins in local storage to sync');
-      return;
-    }
-
-    const queryCrewState = await getCrewMemberContract();
-
-    if (queryCrewState.length > 0 && localCoins.length > 0) {
-      console.log('queryCrewState', queryCrewState[0]);
-      const state: State = await readState(queryCrewState[0].node.id);
-      console.log('state in syncLocalCoins', state);
-
-      try {
-        // Iterate over each local coin and add it to the blockchain
-        console.log(`syncing ${localCoins} by adding to watchlist`);
-        await writeContract({
-          environment: 'mainnet' as const,
-          contractTxId: queryCrewState[0].node.id,
-          wallet: 'use_wallet' as const,
-          options: {
-            function: 'addMultipleCoinsToWatchlist',
-            tickers: localCoins,
-          },
-        });
-        console.log('All local coins have been synced');
-
-        // Clear the local storage after syncing
-        localStorage.removeItem('el-cap-watchlist');
-      } catch (error) {
-        console.log('==error syncing coins==', error);
-      }
-    } else {
-      console.log('No contract exists to sync coins to');
     }
   }
 );
@@ -149,7 +92,7 @@ export const contractsSlice = createSlice({
       })
       .addCase(
         fetchContractcoins.fulfilled,
-        (state: ContractsState, action: PayloadAction<ContractsEntity[]>) => {
+        (state: ContractsState, action: PayloadAction<any>) => {
           contractsAdapter.setAll(state, action.payload);
           state.loadingStatus = 'loaded';
         }

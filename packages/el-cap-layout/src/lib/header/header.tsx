@@ -14,17 +14,15 @@ export interface HeaderProps {
     fetchContractcoins: () => void;
     coins: SearchCoin[];
     loadingStatus: string;
-    syncLocalCoins: () => void;
   };
 }
 
 export function Header(props: HeaderProps) {
   // const ref: React.RefObject<HTMLDivElement> = useRef(null);
   const { header, goToFeed } = props;
-  const { fetchContractcoins, coins, loadingStatus, syncLocalCoins } = header;
+  const { fetchContractcoins, coins, loadingStatus } = header;
 
   useEffect(() => {
-    syncLocalCoins();
     if (loadingStatus === 'not loaded') {
       fetchContractcoins();
     }

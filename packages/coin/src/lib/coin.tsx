@@ -20,7 +20,6 @@ import Tag from '../assets/component/Tag';
 import {
   ProcessedTokenData,
   ReadContractResult,
-  ReadContractStateResult,
   State,
 } from '@el-cap/interfaces';
 import { ArrowDownIcon } from '@el-cap/top-coins-card';
@@ -36,7 +35,6 @@ interface CoinProps {
     loadingStatus: string;
     fetchedEntity: ProcessedTokenData[];
     addToWatchlist: (coin: string) => void;
-    checkCoinOnWatchlist: (coin: string) => void;
     coinChartProps: {
       fetchRemaining: (input: { symbol: string; interval: string }) => void;
       fetchCoin: (input: { symbol: string; name: string }) => void;
@@ -126,11 +124,12 @@ export function Coin(props: CoinProps) {
     loadingStatus,
     fetchedEntity,
     addToWatchlist,
-    checkCoinOnWatchlist,
   } = coinPage;
   const [coins, setCoins] = useState<ProcessedTokenData[]>([]);
   const [shouldLoad, setShouldLoad] = useState(true);
   const [error, setError] = useState<string | undefined>();
+  const [isInWatchlist, setIsInWatchlist] = useState(false);
+
   const [onWatchList, setOnWatchList] = useState(false);
   const [viewType, setViewType] = useState<string>('Chart');
 
@@ -157,12 +156,6 @@ export function Coin(props: CoinProps) {
 
   useEffect(() => {
     fetchState();
-    const isCoinOnWatchlist = async () => {
-      const watchlist = await checkCoinOnWatchlist(ticker);
-      console.log('===isOnWatchlist==', watchlist);
-      setOnWatchList(watchlist.payload);
-    };
-    isCoinOnWatchlist();
   }, []);
   function findNameByTicker(ticker: string, coins: ProcessedTokenData[]) {
     const coin = coins.find(
@@ -170,7 +163,6 @@ export function Coin(props: CoinProps) {
     );
     return coin ? coin.name : 'Ticker not found';
   }
-
   useEffect(() => {
     if (
       shouldLoad &&
@@ -183,6 +175,21 @@ export function Coin(props: CoinProps) {
       setShouldLoad(false);
     }
   }, [fetchCoin, loadingStatus, ticker, entity, coins]);
+
+  // Update the watchlist state whenever the coin data changes
+  useEffect(() => {
+    console.log('setting on watchlist', entity, fetchedEntity);
+    if (entity || fetchedEntity) {
+      console.log('setting on watchlist', entity, fetchedEntity);
+      setIsInWatchlist(entity?.watchlist || fetchedEntity[0]?.watchlist);
+    }
+  }, [entity, fetchedEntity]);
+
+  // Function to handle adding to watchlist
+  const handleAddToWatchlist = () => {
+    setIsInWatchlist(!isInWatchlist);
+    addToWatchlist(ticker); // assuming addToWatchlist function takes a ticker
+  };
 
   if (error) return <p>{error}</p>;
 
@@ -215,17 +222,12 @@ export function Coin(props: CoinProps) {
                 'Bitcoin'}
             </span>
             <Tag tagName="BTC" goToTag={goToTag} />
-            <div
-              onClick={() => {
-                addToWatchlist(ticker);
-                setOnWatchList(true);
-              }}
-            >
+            <div onClick={() => handleAddToWatchlist()}>
               <WatchlistIcon
                 className="ml-2"
                 width={18}
                 height={18}
-                isOnWatchlist={onWatchList}
+                isOnWatchlist={isInWatchlist}
               />
             </div>
           </div>
@@ -259,7 +261,7 @@ export function Coin(props: CoinProps) {
             <span className="md:text-[60px] text-3xl mr-2 p-2">
               $
               {(entity && entity.price) ||
-                (fetchedEntity[0] && fetchedEntity[0].price) ||
+                (fetchedEntity[0] && fetchedEntity[0].price.toFixed(4)) ||
                 '34,000'}
             </span>
             {entity &&

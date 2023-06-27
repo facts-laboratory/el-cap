@@ -40,20 +40,20 @@ export const feedAdapter = createEntityAdapter<FeedEntity>({
   selectId: (entity) => entity.coin,
 });
 
-export const checkIfOnWatchlist = async (entities: any[]) => {
+export const checkCoinsOnWatchlist = async (entities: ProcessedTokenData[]) => {
   const queryCrewState = await getCrewMemberContract();
   let watchlist: string[] = [];
 
   if (queryCrewState.length > 0) {
     const state: State = await readState(queryCrewState[0].node.id);
     console.log('state in checkCoinsOnWatchlist', state);
-    watchlist = state.watchlist;
+    watchlist = state.watchlist.map((item: string) => item.toLowerCase());
   }
 
   return entities.map((coin) => {
     return {
       ...coin,
-      watchlist: watchlist.includes(coin.coin),
+      watchlist: watchlist.includes(coin.coin.toLowerCase()),
     };
   });
 };
@@ -73,7 +73,7 @@ export const fetchFeed = createAsyncThunk(
         const processedPrices = processTokenData(combinedPrices);
 
         // Add the watchlist flag to each entity
-        const processedPricesWithWatchlistFlag = await checkIfOnWatchlist(
+        const processedPricesWithWatchlistFlag = await checkCoinsOnWatchlist(
           processedPrices
         );
 
@@ -82,7 +82,7 @@ export const fetchFeed = createAsyncThunk(
         return sortedPrices;
       } else {
         // If entities exist, sort them and also add watchlist flag
-        const entitiesWithWatchlistFlag = await checkIfOnWatchlist(entities);
+        const entitiesWithWatchlistFlag = await checkCoinsOnWatchlist(entities);
 
         const sortedPrices = sortPrices(entitiesWithWatchlistFlag, key);
 

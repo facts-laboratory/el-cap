@@ -32,7 +32,6 @@ export function Feed(props: FeedProps) {
     getTopCoins,
     topCoins,
     addToWatchlist,
-    checkCoinsOnWatchlist,
   } = props.feedPage;
   const { goToCoin, goToFeed } = props;
   const [showCase, setShowCase] = useState<boolean>(true);

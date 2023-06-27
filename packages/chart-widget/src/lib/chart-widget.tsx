@@ -60,22 +60,12 @@ export function ChartWidget(props: CoinChartProps) {
   }, [chartData['24h']]);
 
   useEffect(() => {
-    if (loadingStatus === LoadingStatus.NOT_LOADED) {
-      // fetch(selectedTimeRange);
-    }
-  }, [loadingStatus, fetch, selectedTimeRange]);
-
-  useEffect(() => {
     const selectedButton = buttonRefs.get(selectedTimeRange);
     if (selectedButton && underlineRef.current) {
       underlineRef.current.style.transform = `translateX(${selectedButton.offsetLeft}px)`;
       underlineRef.current.style.width = `${selectedButton.offsetWidth}px`;
     }
   }, [selectedTimeRange]);
-
-  const handleTimeRangeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedTimeRange(e.target.value as TimeRange);
-  };
 
   function convertTimeStampAndSetData(data: HistoricalDataPoint[]) {
     const newData: ChartData[] = [];
@@ -111,10 +101,12 @@ export function ChartWidget(props: CoinChartProps) {
                   data-time-range={timeRange}
                   // disabled if it's 3m or 1y
                   disabled={
+                    !chartData[timeRange] ||
                     timeRange === TimeRange.MONTH_3 ||
                     timeRange === TimeRange.YEAR_1
                   }
                   className={`px-5 mx-2 z-20 font-bold transition-colors duration-300 rounded time-range-button ${
+                    !chartData[timeRange] ||
                     timeRange === TimeRange.MONTH_3 ||
                     timeRange === TimeRange.YEAR_1
                       ? 'cursor-not-allowed bg-gray-300 text-gray-500'

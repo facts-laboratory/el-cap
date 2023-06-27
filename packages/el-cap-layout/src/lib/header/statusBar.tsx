@@ -50,7 +50,7 @@ const StatusBar: React.FC = () => {
         <div className="flex items-center text-sm">
           <span className="cursor-pointer font-bold mr-4 flex">
             <WatchlistIcon className="mr-1" width={24} height={24} />
-            Whachlist
+            Watchlist
           </span>
           <span className="cursor-pointer font-bold mr-4 flex items-center">
             <PortfolioIcon className="mr-1" width={24} height={24} />
