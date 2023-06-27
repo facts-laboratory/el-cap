@@ -39,7 +39,7 @@ interface CoinProps {
 }
 
 enum TimeRange {
-  DAY_1 = '24h',
+  DAY_1 = '1d',
   DAY_7 = '7d',
   MONTH_1 = '1m',
   MONTH_3 = '3m',
@@ -51,6 +51,15 @@ enum LoadingStatus {
   LOADING = 'loading',
   NOT_LOADED = 'not loaded',
 }
+
+type CoinTable = {
+  [timeRange: string]: HistoricalData[];
+};
+
+type HistoricalData = {
+  timestamp: number;
+  value: number;
+};
 
 const coinAttributeButtonData = [
   {
@@ -125,6 +134,29 @@ const coinAttributeButtonData = [
   },
 ];
 
+const coinTable: CoinTable = {
+  '1d': [
+    { value: 3000, timestamp: 1687442340000 },
+    { value: 3000, timestamp: 1687445940000 },
+  ],
+  '7d': [
+    { value: 6000, timestamp: 1686923940000 },
+    { value: 6000, timestamp: 1686929540000 },
+  ],
+  '1m': [
+    { value: 9000, timestamp: 1686953940000 },
+    { value: 9000, timestamp: 1686921540000 },
+  ],
+  '3m': [
+    { value: 12000, timestamp: 1686933940000 },
+    { value: 12000, timestamp: 1686937540000 },
+  ],
+  '1y': [
+    { value: 15000, timestamp: 1686983940000 },
+    { value: 15000, timestamp: 1686987540000 },
+  ],
+};
+
 export function Coin(props: CoinProps) {
   const { goToFeed, entity, ticker, coinPage } = props;
   const { coinChartProps, fetchCoin, loadingStatus, fetchedEntity } = coinPage;
@@ -134,7 +166,6 @@ export function Coin(props: CoinProps) {
   const [viewType, setViewType] = useState<string>('Chart');
 
   const setView = (view: string) => {
-    console.log(view);
     setViewType(view);
   };
 
@@ -360,7 +391,7 @@ export function Coin(props: CoinProps) {
         {viewType === 'Chart' ? (
           <ChartWidget {...coinChartProps} ticker={ticker} />
         ) : (
-          <HistoricalPriceTable />
+          <HistoricalPriceTable coinTable={coinTable} loadingStatus="loaded" />
         )}
       </div>
     </div>
