@@ -211,11 +211,6 @@ export const selectFeedLoadingStatus = createSelector(
   (state: FeedState) => state.loadingStatus
 );
 
-export const selectWatchlist = createSelector(
-  getFeedState,
-  (state: FeedState) => state.watchlist
-);
-
 export const selectFeedEntities = createSelector(getFeedState, selectEntities);
 
 export const selectTopLoadingStatus = createSelector(

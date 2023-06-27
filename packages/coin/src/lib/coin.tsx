@@ -116,6 +116,29 @@ const coinAttributeButtonData = [
   },
 ];
 
+const coinTable: CoinTable = {
+  '1d': [
+    { value: 3000, timestamp: 1687442340000 },
+    { value: 3000, timestamp: 1687445940000 },
+  ],
+  '7d': [
+    { value: 6000, timestamp: 1686923940000 },
+    { value: 6000, timestamp: 1686929540000 },
+  ],
+  '1m': [
+    { value: 9000, timestamp: 1686953940000 },
+    { value: 9000, timestamp: 1686921540000 },
+  ],
+  '3m': [
+    { value: 12000, timestamp: 1686933940000 },
+    { value: 12000, timestamp: 1686937540000 },
+  ],
+  '1y': [
+    { value: 15000, timestamp: 1686983940000 },
+    { value: 15000, timestamp: 1686987540000 },
+  ],
+};
+
 export function Coin(props: CoinProps) {
   console.log('coinpageprops', props);
   const { goToFeed, entity, ticker, coinPage } = props;
@@ -379,7 +402,7 @@ export function Coin(props: CoinProps) {
         {viewType === 'Chart' ? (
           <ChartWidget {...coinChartProps} ticker={ticker} />
         ) : (
-          <HistoricalPriceTable />
+          <HistoricalPriceTable coinTable={coinTable} loadingStatus="loaded" />
         )}
       </div>
     </div>
