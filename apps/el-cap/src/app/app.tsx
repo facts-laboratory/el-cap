@@ -35,6 +35,9 @@ const components: ObjectKeys = {
   Coin: loadable(() => import('@el-cap/coin'), {
     resolveComponent: (components) => components.ConnectedCoin,
   }),
+  Watchlist: loadable(() => import('@el-cap/watchlist'), {
+    resolveComponent: (components) => components.ConnectedWatchlist,
+  }),
 };
 
 export interface AppProps {
@@ -67,12 +70,19 @@ export function App(props: AppProps) {
       ),
     },
   };
+  const watchlistPage = {};
   const Page = components[(page as keyof ObjectKeys) || 'Feed'];
   return (
     <div className="flex flex-col h-screen">
       <ConnectedHeader />
       <ContentContainer
-        children={<Page coinPage={coinPage} feedPage={feedPage} />}
+        children={
+          <Page
+            coinPage={coinPage}
+            feedPage={feedPage}
+            watchlistPage={watchlistPage}
+          />
+        }
       />
       <Footer />
     </div>

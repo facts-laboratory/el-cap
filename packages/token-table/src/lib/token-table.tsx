@@ -8,7 +8,7 @@ import { ProcessedTokenData } from '@el-cap/interfaces';
 export interface TokenTableProps {
   data: ProcessedTokenData[];
   goToCoin: (coin: string) => void;
-  addToWatchlist: (coin: string) => string;
+  addToWatchlist: (coin: string) => void;
 }
 
 export const orderByMarketCap = (data: ProcessedTokenData[]) => {

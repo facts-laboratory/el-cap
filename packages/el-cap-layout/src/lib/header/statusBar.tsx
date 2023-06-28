@@ -4,7 +4,12 @@ import { PortfolioIcon, WatchlistIcon, WalletIcon } from '../icons';
 import { LogInReturnProps } from 'othent/src/types';
 import { Othent, useOthentReturnProps } from 'othent';
 
-const StatusBar: React.FC = () => {
+interface StatusBarProps {
+  goToWatchlist: () => void;
+}
+
+const StatusBar = (props: StatusBarProps) => {
+  const { goToWatchlist } = props;
   const [user, setUser] = useState<LogInReturnProps | null>(null);
   const [othent, setOthent] = useState<useOthentReturnProps | null>(null);
 
@@ -51,9 +56,12 @@ const StatusBar: React.FC = () => {
       </div>
       <div className="hidden xl:block">
         <div className="flex items-center text-sm">
-          <span className="cursor-pointer font-bold mr-4 flex">
+          <span
+            onClick={goToWatchlist}
+            className="cursor-pointer font-bold mr-4 flex"
+          >
             <WatchlistIcon className="mr-1" width={24} height={24} />
-            Whachlist
+            Watchlist
           </span>
           <span className="cursor-pointer font-bold mr-4 flex items-center">
             <PortfolioIcon className="mr-1" width={24} height={24} />

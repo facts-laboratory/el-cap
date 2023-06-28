@@ -6,6 +6,7 @@ export interface ObjectKeys {
 const components: ObjectKeys = {
   FEED: 'Feed',
   COIN: 'Coin',
+  WATCHLIST: 'Watchlist',
   [NOT_FOUND]: 'Feed',
 };
 
@@ -20,6 +21,12 @@ export const routesMap: RoutesMap = {
     path: '/coin/:ticker',
     thunk: async (dispatch, getState) => {
       console.log('Coin thunk.');
+    },
+  },
+  WATCHLIST: {
+    path: '/watchlist',
+    thunk: async (dispatch, getState) => {
+      console.log('Watchlist thunk.');
     },
   },
   NOT_FOUND: {

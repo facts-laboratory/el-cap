@@ -7,15 +7,16 @@ import SearchBar from './searchBar';
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface HeaderProps {
   goToFeed: () => void;
+  goToWatchlist: () => void;
 }
 
 export function Header(props: HeaderProps) {
   // const ref: React.RefObject<HTMLDivElement> = useRef(null);
-  const { goToFeed } = props;
+  const { goToFeed, goToWatchlist } = props;
 
   return (
     <div className="bg-white min-w-full">
-      <StatusBar />
+      <StatusBar goToWatchlist={goToWatchlist} />
       <SearchBar goToFeed={goToFeed} />
     </div>
   );
@@ -25,4 +26,5 @@ export default Header;
 
 export const ConnectedHeader = connect(mapStateToProps, (dispatch) => ({
   goToFeed: (key: string) => dispatch({ type: 'FEED', payload: { key } }),
+  goToWatchlist: () => dispatch({ type: 'WATCHLIST' }),
 }))(Header);
