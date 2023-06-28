@@ -2,17 +2,16 @@ import { useEffect, useState } from 'react';
 import StatusInfo from '../components/statusInfo';
 import { PortfolioIcon, WatchlistIcon, WalletIcon } from '../icons';
 import { LogInReturnProps } from 'othent/src/types';
-import { Othent } from 'othent';
+import { Othent, useOthentReturnProps } from 'othent';
 
 const StatusBar: React.FC = () => {
   const [user, setUser] = useState<LogInReturnProps | null>(null);
-  const [othent, setOthent] = useState(null);
+  const [othent, setOthent] = useState<useOthentReturnProps | null>(null);
 
   useEffect(() => {
     const initOthent = async () => {
       const instance = await Othent({
         API_ID: '2384f84424a36b36ede2873be3e0c7e9',
-        callbackURLs: ['http://localhost:4200'],
       });
       setOthent(instance);
     };

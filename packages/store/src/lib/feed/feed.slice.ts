@@ -13,7 +13,7 @@ import {
   sortTopCoins,
   entriesToObj,
 } from '@el-cap/utilities';
-import { TopCoins } from '@el-cap/interfaces';
+import { ProcessedTokenData, TopCoins } from '@el-cap/interfaces';
 import { getPrices } from './el-cap-kit.js';
 import { RootState } from '../store.js';
 
@@ -99,7 +99,6 @@ export const feedSlice = createSlice({
   reducers: {
     add: feedAdapter.addOne,
     remove: feedAdapter.removeOne,
-    // ...
   },
   extraReducers: (builder) => {
     builder
@@ -108,7 +107,7 @@ export const feedSlice = createSlice({
       })
       .addCase(
         fetchFeed.fulfilled,
-        (state: FeedState, action: PayloadAction<FeedEntity[]>) => {
+        (state: FeedState, action: PayloadAction<ProcessedTokenData[]>) => {
           feedAdapter.setAll(state, action.payload);
           state.loadingStatus = 'loaded';
         }

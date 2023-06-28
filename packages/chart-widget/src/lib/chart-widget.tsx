@@ -1,37 +1,17 @@
 import { useEffect, useState, useRef } from 'react';
 import { CSSTransition } from 'react-transition-group';
 import ChartComponent from './components/ChartComponent';
+import {
+  TimeRange,
+  LoadingStatus,
+  ChartData,
+  HistoricalDataPoint,
+  ChartHistoricalDataPoint,
+} from '@el-cap/interfaces';
 import './components/slideranimations.css';
 
-type CoinChart = {
-  [timeRange: string]: HistoricalDataPoint[];
-};
-
-type HistoricalDataPoint = {
-  timestamp: number;
-  value: number;
-};
-
-enum TimeRange {
-  DAY_1 = '24h',
-  DAY_7 = '7d',
-  MONTH_1 = '1m',
-  MONTH_3 = '3m',
-  YEAR_1 = '1y',
-}
-
-interface ChartData {
-  time: number;
-  value: number;
-}
-
-enum LoadingStatus {
-  LOADED = 'loaded',
-  LOADING = 'loading',
-  NOT_LOADED = 'not loaded',
-}
 interface CoinChartProps {
-  chartData: CoinChart;
+  chartData: ChartData;
   fetch: (input: { symbol: string; interval: string }) => void;
   loadingStatus: LoadingStatus;
   error?: string | null;
@@ -44,12 +24,8 @@ export function ChartWidget(props: CoinChartProps) {
   const { chartData, fetch, loadingStatus, error, ticker, fetchRemaining } =
     props;
   const [selectedTimeRange, setSelectedTimeRange] = useState(TimeRange.DAY_1);
-  const underlineRef = useRef(null);
+  const underlineRef = useRef<HTMLDivElement | null>(null);
   const buttonRefs = useRef(new Map()).current;
-
-  useEffect(() => {
-    fetch({ symbol: ticker, interval: '24h' });
-  }, []);
 
   useEffect(() => {
     console.log('chartData in effect', chartData);
@@ -57,7 +33,13 @@ export function ChartWidget(props: CoinChartProps) {
       console.log('fetching', ticker);
       fetchRemaining({ symbol: ticker, interval: '7d' });
     }
-  }, [chartData['24h']]);
+  }, [chartData, loadingStatus, ticker, fetchRemaining]);
+
+  useEffect(() => {
+    if (loadingStatus === LoadingStatus.NOT_LOADED) {
+      fetch({ symbol: ticker, interval: '24h' });
+    }
+  }, [loadingStatus, fetch, selectedTimeRange, ticker]);
 
   useEffect(() => {
     const selectedButton = buttonRefs.get(selectedTimeRange);
@@ -65,10 +47,10 @@ export function ChartWidget(props: CoinChartProps) {
       underlineRef.current.style.transform = `translateX(${selectedButton.offsetLeft}px)`;
       underlineRef.current.style.width = `${selectedButton.offsetWidth}px`;
     }
-  }, [selectedTimeRange]);
+  }, [selectedTimeRange, buttonRefs]);
 
   function convertTimeStampAndSetData(data: HistoricalDataPoint[]) {
-    const newData: ChartData[] = [];
+    const newData: ChartHistoricalDataPoint[] = [];
     data.forEach((el) => {
       newData.push({
         time: el.timestamp,
@@ -134,6 +116,8 @@ export function ChartWidget(props: CoinChartProps) {
         </div>
       </>
     );
+  } else {
+    return <></>;
   }
 }
 
