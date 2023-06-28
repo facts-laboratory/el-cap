@@ -7,7 +7,7 @@ type CoinAttributeLinkProps = {
   title: string;
   url?: string;
   type: 'link' | 'dropdown';
-  dropdownOptions?: DropdownOption[];
+  dropdownOptions?: DropdownOption[] | [];
 };
 
 export type DropdownOption = {

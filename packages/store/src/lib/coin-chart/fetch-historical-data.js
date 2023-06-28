@@ -1,11 +1,6 @@
 import redstone from 'redstone-api';
 
 export const fetchHistoricalPrice = async (input) => {
-  console.log(
-    'input start of fetchHistoricalPrice',
-    JSON.parse(JSON.stringify(input))
-  );
-
   let { symbol, interval = '24h' } = input;
   let { coinChart } = input;
   coinChart = coinChart || {};

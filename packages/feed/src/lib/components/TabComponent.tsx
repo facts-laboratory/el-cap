@@ -27,7 +27,6 @@ interface TabComponentProps {
 
 const TabComponent = (props: TabComponentProps) => {
   const { fetchFeed, activeTabIndex, setActiveTabIndex } = props;
-  console.log('props', props);
   const [tabUnderlineWidth, setTabUnderlineWidth] = useState(0);
   const [tabUnderlineLeft, setTabUnderlineLeft] = useState(0);
 
@@ -64,20 +63,15 @@ const TabComponent = (props: TabComponentProps) => {
     };
 
     const key = sortKeyMap[tabKey.toLowerCase()];
-    console.log('tabKey', key, tabKey, activeTabIndex, tabIndex);
 
     // add a delay before updating the state
     setTimeout(() => {
       fetchFeed(key);
       setActiveTabIndex(tabIndex);
-      console.log('active before', activeTabIndex);
-      console.log('active after', tabIndex);
     }, 200); // 300ms delay
   };
 
-  useEffect(() => {
-    console.log('active effect', activeTabIndex);
-  }, [activeTabIndex]);
+  useEffect(() => {}, [activeTabIndex]);
 
   return (
     <div className="relative mr-2 px-4 py-2 bg-white rounded-xl overflow-auto">

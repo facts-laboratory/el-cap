@@ -29,7 +29,10 @@
       "@el-cap/token-table": ["packages/token-table/src/index.ts"],
       "@el-cap/top-coins-card": ["packages/top-coins-card/src/index.ts"],
       "@el-cap/utilities": ["packages/utilities/src/index.ts"],
-      "@el-cap/widget-coin-card": ["packages/widget-coin-card/src/index.ts"]
+      "@el-cap/widget-coin-card": ["packages/widget-coin-card/src/index.ts"],
+      "@el-cap/contract-integrations": [
+        "contract-integrations/el-cap-crew/index.js"
+      ]
     }
   },
   "exclude": ["node_modules", "tmp"]

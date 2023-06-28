@@ -9,12 +9,10 @@ const StatusBar: React.FC = () => {
   const [othent, setOthent] = useState<useOthentReturnProps | null>(null);
 
   useEffect(() => {
-    console.log('running');
     const initOthent = async () => {
       const instance = await Othent({
         API_ID: '2384f84424a36b36ede2873be3e0c7e9',
       });
-      console.log('instance', instance);
       setOthent(instance);
     };
 
@@ -22,11 +20,9 @@ const StatusBar: React.FC = () => {
   }, []);
 
   const handleLogin = async () => {
-    console.log('user', user, 'othent', othent);
     if (othent) {
       const wallet = await othent.logIn();
       setUser(wallet);
-      console.log('wallet', wallet);
     } else {
       console.error('Othent is not initialized');
     }
@@ -53,7 +49,7 @@ const StatusBar: React.FC = () => {
         <div className="flex items-center text-sm">
           <span className="cursor-pointer font-bold mr-4 flex">
             <WatchlistIcon className="mr-1" width={24} height={24} />
-            Whachlist
+            Watchlist
           </span>
           <span className="cursor-pointer font-bold mr-4 flex items-center">
             <PortfolioIcon className="mr-1" width={24} height={24} />

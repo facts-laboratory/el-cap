@@ -12,7 +12,6 @@ import SearchInput from './searchInput';
 import DropDownMenu from '../components/dropDownMenu';
 const contractId = 'MH-w8Sq6uw3Jwc_stPqyJT8fEcIhx4VrrE10NFgv-KY';
 const warp = WarpFactory.forMainnet();
-const contract = warp.contract(contractId);
 
 type DropDownOption = {
   value: string;
@@ -36,12 +35,14 @@ enum LoadingStatus {
 
 export interface SearchBarProps {
   goToFeed: () => void;
+  coins: SearchCoin[];
+  loadingStatus: string;
 }
 
 const SearchBar = (props: SearchBarProps) => {
   const [menuStatus, setMenuStatus] = useState<boolean>(true);
-  console.log('searchbar props', props);
-  const { goToFeed } = props;
+  const { goToFeed, coins } = props;
+
   const groupedOptionsCommunity = [
     {
       groupLabel: '',
@@ -255,17 +256,10 @@ const SearchBar = (props: SearchBarProps) => {
     // Fetch search results from API or other data source
 
     try {
-      //example fetch
-      // const response = await fetch(`https://api.example.com/search?query=${query}`);
-      // const searchResults = await response.json();
-      const state = await contract.readState();
-      const searchResults = state.cachedValue.state.coins;
-      console.log('state running here', state);
-
       const regex = new RegExp(query, 'i');
-      const filteredItems = searchResults.filter((item) =>
-        item.name.match(regex)
-      );
+      const filteredItems = coins
+        .filter((item) => item.name.match(regex))
+        .slice(0, 6);
 
       setSearchResults(filteredItems);
     } catch (err) {

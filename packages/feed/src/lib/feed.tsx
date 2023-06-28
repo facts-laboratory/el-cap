@@ -10,33 +10,6 @@ import TabComponent from './components/TabComponent';
 import DropDownFeedOptions from './components/DropDownFeed';
 import { SortKey, TopCoins } from '@el-cap/interfaces';
 
-const TrendingdummyData = [
-  {
-    name: 'Bitcoin',
-    symbol: 'BTC',
-    metric: -4.28,
-    image: 'https://s2.coinmarketcap.com/static/img/coins/64x64/1.png',
-  },
-  {
-    name: 'Ethereum',
-    symbol: 'ETH',
-    metric: 4000,
-    image: 'https://s2.coinmarketcap.com/static/img/coins/64x64/1027.png',
-  },
-  {
-    name: 'Cardano',
-    symbol: 'ADA',
-    metric: 2.12,
-    image: 'https://s2.coinmarketcap.com/static/img/coins/64x64/2010.png',
-  },
-  {
-    name: 'Dogecoin',
-    symbol: 'DOGE',
-    metric: 0.24,
-    image: 'https://s2.coinmarketcap.com/static/img/coins/64x64/74.png',
-  },
-];
-
 export interface FeedProps {
   goToCoin: (ticker: string) => void;
   goToFeed: (key: string) => void;
@@ -46,12 +19,20 @@ export interface FeedProps {
     fetchFeed: (key: string | undefined) => void;
     getTopCoins: () => void;
     topCoins: TopCoins;
+    addToWatchlist: (coin: string) => void;
+    checkCoinsOnWatchlist: () => void;
   };
 }
 
 export function Feed(props: FeedProps) {
-  const { fetchFeed, entities, loadingStatus, getTopCoins, topCoins } =
-    props.feedPage;
+  const {
+    fetchFeed,
+    entities,
+    loadingStatus,
+    getTopCoins,
+    topCoins,
+    addToWatchlist,
+  } = props.feedPage;
   const { goToCoin, goToFeed } = props;
   const [showCase, setShowCase] = useState<boolean>(true);
   const [sortKey, setSortKey] = useState<string | undefined>();
@@ -82,8 +63,6 @@ export function Feed(props: FeedProps) {
     setSortKey(key);
 
     if (loadingStatus !== 'loaded' && loadingStatus !== 'loading') {
-      console.log('loadingStatus', loadingStatus);
-      console.log('Path parameter: ', path);
       fetchFeed(key);
     }
   }, [fetchFeed, loadingStatus, path, sortKey]);
@@ -121,7 +100,9 @@ export function Feed(props: FeedProps) {
 
   useEffect(() => {
     // TODO after we have top coins in slice add getTopCoins to dependency and !== 'loaded' for getTopCoins
+
     if (entities.length > 0) {
+      console.log('loading extra data in feed');
       getTopCoins();
     }
   }, [entities]);
@@ -225,9 +206,7 @@ export function Feed(props: FeedProps) {
               <TokenTable
                 data={entities}
                 goToCoin={goToCoin}
-                addToWatchlist={(coin: string) =>
-                  console.log('addToWatchlist ')
-                }
+                addToWatchlist={(coin: string) => addToWatchlist(coin)}
               />
             )}
           </div>

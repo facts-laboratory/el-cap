@@ -4,30 +4,71 @@ import {
   RemainingObject,
   RedstoneObject,
   TopCoins,
+  State,
 } from '@el-cap/interfaces';
+import { Dictionary } from '@reduxjs/toolkit';
+import {
+  getCrewMemberContract,
+  readState,
+} from '@el-cap/contract-integrations';
+import { FeedEntity } from '@el-cap/store';
 
-export function processTokenData(
+export async function processTokenData(
   combinedTokenData: Record<string, any>
-): ProcessedTokenData[] {
-  return Object.keys(combinedTokenData).map((key) => {
+): Promise<Dictionary<ProcessedTokenData>> {
+  const processedData: Dictionary<ProcessedTokenData> = {};
+
+  Object.keys(combinedTokenData).forEach((key) => {
     const combinedTokenItem = combinedTokenData[key];
 
-    return {
+    processedData[key] = {
       name: combinedTokenItem.name || '',
       image: combinedTokenItem.image || '',
       coin: combinedTokenItem.symbol || '',
       price: combinedTokenItem.value || 0,
       marketCap: combinedTokenItem.market_cap || 0,
       volume: combinedTokenItem.total_volume || 0,
-      gainers: combinedTokenItem.price_change_percentage_7d_in_currency || 0,
       circulatingSupply: combinedTokenItem.circulating_supply || 0,
-      losers: combinedTokenItem.price_change_percentage_7d_in_currency || 0,
       '1h': combinedTokenItem.price_change_percentage_1h_in_currency || 0,
       '24h': combinedTokenItem.price_change_percentage_24h_in_currency || 0,
       '7d': combinedTokenItem.price_change_percentage_7d_in_currency || 0,
+      watchlist: false,
     };
   });
+
+  return await checkCoinsOnWatchlist(processedData);
 }
+
+export function entriesToObj(
+  entities: Dictionary<FeedEntity>
+): Record<string, ProcessedTokenData> {
+  return Object.entries(entities).reduce(
+    (acc, [key, value]) => ({ ...acc, [key]: value }),
+    {}
+  );
+}
+
+export const checkCoinsOnWatchlist = async (
+  entities: Dictionary<ProcessedTokenData>
+) => {
+  const queryCrewState = await getCrewMemberContract();
+  let watchlist: string[] = [];
+
+  if (queryCrewState.length > 0) {
+    const state: State = await readState(queryCrewState[0].node.id);
+    console.log('state in checkCoinsOnWatchlist', state);
+    watchlist = state.watchlist.map((item: string) => item.toLowerCase());
+  }
+
+  Object.keys(entities).forEach((coinKey) => {
+    const coin = entities[coinKey];
+    if (coin) {
+      coin.watchlist = watchlist.includes(coin.coin.toLowerCase());
+    }
+  });
+
+  return entities;
+};
 
 export function sortTopCoins(
   entities: Record<string, ProcessedTokenData>
@@ -57,7 +98,7 @@ export function sortTopCoins(
 }
 
 export function sortPrices(
-  prices: ProcessedTokenData[] | { [key: string]: ProcessedTokenData },
+  prices: ProcessedTokenData[] | Record<string, ProcessedTokenData>,
   key: string
 ): ProcessedTokenData[] {
   console.log('sortkey in function', key);

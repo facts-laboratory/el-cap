@@ -18,6 +18,8 @@ import {
 } from '../assets/svg/index';
 import Tag from '../assets/component/Tag';
 import {
+  ReadContractResult,
+  State,
   ChartData,
   ContractCoin,
   LoadingStatus,
@@ -35,6 +37,7 @@ interface CoinProps {
     fetchCoin: (input: { symbol: string; name: string }) => void;
     loadingStatus: string;
     fetchedEntity: ProcessedTokenData[];
+    addToWatchlist: (coin: string) => void;
     coinChartProps: {
       fetchRemaining: (input: { symbol: string; interval: string }) => void;
       fetchCoin: (input: { symbol: string; name: string }) => void;
@@ -121,11 +124,23 @@ const coinAttributeButtonData = [
 ];
 
 export function Coin(props: CoinProps) {
+  console.log('coinpageprops', props);
   const { goToFeed, entity, ticker, coinPage } = props;
-  const { coinChartProps, fetchCoin, loadingStatus, fetchedEntity } = coinPage;
+  const {
+    coinChartProps,
+    fetchCoin,
+    loadingStatus,
+    fetchedEntity,
+    addToWatchlist,
+  } = coinPage;
   const [coins, setCoins] = useState<ContractCoin[]>([]);
   const [shouldLoad, setShouldLoad] = useState(true);
   const [error, setError] = useState<string | undefined>();
+  const [isInWatchlist, setIsInWatchlist] = useState<boolean | undefined>(
+    false
+  );
+
+  const [onWatchList, setOnWatchList] = useState(false);
   const [viewType, setViewType] = useState<string>('Chart');
 
   const setView = (view: string) => {
@@ -142,9 +157,10 @@ export function Coin(props: CoinProps) {
     const contractId = 'MH-w8Sq6uw3Jwc_stPqyJT8fEcIhx4VrrE10NFgv-KY';
     const warp = WarpFactory.forMainnet();
     const contract = warp.contract(contractId);
-    const state = await contract.readState();
-    const coins = state.cachedValue.state.coins;
-    console.log('state running here', state);
+    const result: ReadContractResult = await contract.readState();
+    const state = result.cachedValue.state as State;
+
+    const coins = state.coins;
     setCoins(coins);
   };
 
@@ -157,26 +173,46 @@ export function Coin(props: CoinProps) {
   }, []);
 
   function findNameByTicker(ticker: string, coins: ContractCoin[]) {
-    console.log('ticker', ticker, 'coins', coins);
     const coin = coins.find(
       (c) => c.symbol.toLowerCase() === ticker.toLowerCase()
     );
     return coin ? coin.name : 'Ticker not found';
   }
-
   useEffect(() => {
     if (
       shouldLoad &&
       loadingStatus !== 'loaded' &&
-      ticker !== entity?.coin &&
+      ticker !== fetchedEntity[0]?.coin &&
       coins.length > 0
     ) {
       const name = findNameByTicker(ticker, coins);
-      console.log('name', name);
       fetchCoin({ symbol: ticker, name });
       setShouldLoad(false);
     }
-  }, [fetchCoin, loadingStatus, ticker, entity, coins, shouldLoad]);
+  }, [
+    fetchCoin,
+    loadingStatus,
+    ticker,
+    entity,
+    coins,
+    shouldLoad,
+    fetchedEntity,
+  ]);
+
+  // Update the watchlist state whenever the coin data changes
+  useEffect(() => {
+    console.log('setting on watchlist', entity, fetchedEntity);
+    if (entity || fetchedEntity) {
+      console.log('setting on watchlist', entity, fetchedEntity);
+      setIsInWatchlist(entity?.watchlist || fetchedEntity[0]?.watchlist);
+    }
+  }, [entity, fetchedEntity]);
+
+  // Function to handle adding to watchlist
+  const handleAddToWatchlist = () => {
+    setIsInWatchlist(!isInWatchlist);
+    addToWatchlist(ticker); // assuming addToWatchlist function takes a ticker
+  };
 
   if (error) return <p>{error}</p>;
 
@@ -211,7 +247,14 @@ export function Coin(props: CoinProps) {
                 'Bitcoin'}
             </span>
             <Tag tagName="BTC" goToTag={goToTag} />
-            <WatchlistIcon className="ml-2" width={18} height={18} />
+            <div onClick={() => handleAddToWatchlist()}>
+              <WatchlistIcon
+                className="ml-2"
+                width={18}
+                height={18}
+                isOnWatchlist={isInWatchlist}
+              />
+            </div>
           </div>
           <div className="flex flex-wrap gap-4">
             {coinAttributeButtonData.map((item, key) => {
@@ -243,7 +286,7 @@ export function Coin(props: CoinProps) {
             <span className="md:text-[60px] text-3xl mr-2 p-2">
               $
               {(entity && entity.price) ||
-                (fetchedEntity[0] && fetchedEntity[0].price) ||
+                (fetchedEntity[0] && fetchedEntity[0].price.toFixed(4)) ||
                 '34,000'}
             </span>
             {entity &&

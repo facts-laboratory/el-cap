@@ -9,8 +9,15 @@ export interface ProcessedTokenData {
   '1h': number;
   '24h': number;
   '7d': number;
+  watchlist?: boolean;
 }
 
+export type SearchCoin = {
+  name: string;
+  symbol: string;
+  ranking: number;
+  image: string;
+};
 export interface ContractCoin {
   name: string;
   symbol: string;
@@ -45,6 +52,17 @@ export enum SortKey {
   SEVEN_DAYS = '7d',
 }
 
+export interface CrewMember {
+  watchlist: string[];
+}
+
+export interface CrewState {
+  cachedValue: {
+    state: {
+      crew: CrewMember;
+    };
+  };
+}
 export interface ChartData {
   [timeRange: string]: HistoricalDataPoint[];
 }
@@ -67,3 +85,24 @@ export type RedstoneObject = { [ticker: string]: unknown };
 export type RemainingObject = {
   [index: string]: { symbol: string } & Record<string, unknown>;
 };
+
+export interface CachedValue {
+  state: unknown;
+}
+
+export interface ReadContractResult {
+  cachedValue: CachedValue;
+}
+
+export interface ReadContractStateResult {
+  readContract: ReadContractResult;
+  result: {
+    status: number;
+    statusText: string;
+  };
+}
+
+export interface State {
+  coins: ProcessedTokenData[];
+  watchlist: any;
+}

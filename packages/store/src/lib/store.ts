@@ -9,6 +9,10 @@ import {
 import { feedReducer, FEED_FEATURE_KEY } from './feed/feed.slice';
 
 import { coinReducer, COIN_FEATURE_KEY } from './coin/coin.slice';
+import {
+  CONTRACTS_FEATURE_KEY,
+  contractsReducer,
+} from './contracts/contracts.slice';
 
 const { reducer, middleware, enhancer } = connectRoutes(routesMap, {
   basename: '#',
@@ -20,6 +24,7 @@ export const store = configureStore({
     location: reducer,
     [FEED_FEATURE_KEY]: feedReducer,
     [COIN_FEATURE_KEY]: coinReducer,
+    [CONTRACTS_FEATURE_KEY]: contractsReducer,
     page,
   },
   // Additional middleware can be passed to this array

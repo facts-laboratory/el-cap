@@ -7,7 +7,7 @@ import { ProcessedTokenData } from '@el-cap/interfaces';
 /* eslint-disable-next-line */
 export interface TokenTableProps {
   data: ProcessedTokenData[];
-  goToCoin: (coin: string) => void;
+  goToCoin: (coin: string, entity: ProcessedTokenData) => void;
   addToWatchlist: (coin: string) => void;
 }
 
@@ -19,14 +19,9 @@ export const TokenTable = memo((props: TokenTableProps) => {
   const { data, goToCoin, addToWatchlist } = props;
   const [tokenData, setTokenData] = useState<ProcessedTokenData[]>([]);
 
-  useEffect(() => {
-    console.log('data', data);
-    if (data) {
-      setTokenData(data);
-    }
-  }, [data]);
-
-  const [watchlist, setWatchlist] = useState<Record<string, boolean>>({});
+  const [watchlist, setWatchlist] = useState<
+    Record<string, boolean | undefined>
+  >({});
 
   // Whenever data changes, update the watchlist state
   useEffect(() => {
@@ -34,9 +29,10 @@ export const TokenTable = memo((props: TokenTableProps) => {
       setTokenData(data);
 
       // Reset watchlist
-      const newWatchlist: Record<string, boolean> = {};
+      const newWatchlist: Record<string, boolean | undefined> = {};
       data.forEach((coin: ProcessedTokenData) => {
-        newWatchlist[coin.coin] = false;
+        // Use the watchlist property of each coin to set the watchlist state
+        newWatchlist[coin.coin] = coin.watchlist;
       });
       setWatchlist(newWatchlist);
     }
@@ -102,7 +98,10 @@ export const TokenTable = memo((props: TokenTableProps) => {
                       height={24}
                     />
                   </th>
-                  <td className="px-6 py-4 flex items-center my-4">
+                  <td
+                    className="px-6 py-4 flex items-center my-4 cursor-pointer"
+                    onClick={() => goToCoin(entity.coin, entity)}
+                  >
                     <img
                       src={entity.image}
                       alt={entity.name}

@@ -27,7 +27,6 @@ const TopCoinsCard: React.FC<TopCoinsCardProps> = ({
   goToFeed,
   dataKey,
 }) => {
-  console.log('props in topcoinscard', data, type, title, dataKey);
   const icon = () => {
     switch (title) {
       case 'Trending Coins':

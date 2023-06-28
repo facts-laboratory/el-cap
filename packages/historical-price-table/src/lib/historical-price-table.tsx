@@ -7,7 +7,7 @@ export interface HistoricalPriceTableProps {}
 type TableProps = {
   chartData: CoinTable;
   fetch: (symbol: string) => void;
-  loadingStatus: LoadingStatus;
+  loadingStatus: string;
   error: string | null;
 };
 
