@@ -34,6 +34,10 @@ interface CoinProps {
       fetchRemaining: (input: { symbol: string; interval: string }) => void;
       fetchCoin: (input: { symbol: string; name: string }) => void;
       chart24hourData: PriceData | undefined;
+      loadingStatus: string;
+      chartData: ChartData;
+      fetch: () => void;
+      remainingLoadingStatus: string;
     };
   };
 }
@@ -315,6 +319,7 @@ export function Coin(props: CoinProps) {
               <span className="text-[#7D7D7D]">Market Cap</span>
               <br />
               <span className="font-bold">
+                $
                 {(entity && entity.marketCap) ||
                   (fetchedEntity[0] && fetchedEntity[0].marketCap) ||
                   '$535,170,972,845'}
@@ -352,6 +357,7 @@ export function Coin(props: CoinProps) {
               <span className="text-[#7D7D7D]">Volume</span>
               <br />
               <span className="font-bold">
+                $
                 {(entity && entity.volume) ||
                   (fetchedEntity[0] && fetchedEntity[0].volume) ||
                   '$535,170,972,845'}
@@ -373,13 +379,12 @@ export function Coin(props: CoinProps) {
                 <span className="font-bold">
                   {(entity && entity.circulatingSupply) ||
                     (fetchedEntity[0] && fetchedEntity[0].circulatingSupply) ||
-                    '18,618,806.00'}
+                    '18,618,806.00'}{' '}
                   {(entity && entity.coin) ||
                     (fetchedEntity[0] && fetchedEntity[0].coin) ||
                     'BTC'}
                 </span>
-                <span className="font-bold">92%</span>
-              </div>
+              </div>{' '}
               <span className="flex items-center text-green-500">
                 <div className="w-full bg-gray-400 rounded-full h-2.5 dark:bg-gray-700">
                   <div
@@ -398,7 +403,7 @@ export function Coin(props: CoinProps) {
           <ChartWidget {...coinChartProps} ticker={ticker} />
         ) : (
           <HistoricalPriceTable
-            coinTable={coinTable}
+            {...coinChartProps}
             loadingStatus={LoadingStatus.LOADED}
             fetch={fetchHistoricalPrice}
             error={null}

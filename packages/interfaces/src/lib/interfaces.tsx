@@ -31,6 +31,25 @@ export enum SortKey {
   SEVEN_DAYS = '7d',
 }
 
+export interface ChartData {
+  time: number;
+  value: number;
+}
+
+export enum LoadingStatus {
+  LOADED = 'loaded',
+  LOADING = 'loading',
+  NOT_LOADED = 'not loaded',
+}
+
+export enum TimeRange {
+  DAY_1 = '24h',
+  DAY_7 = '7d',
+  MONTH_1 = '1m',
+  MONTH_3 = '3m',
+  YEAR_1 = '1y',
+}
+
 export type RedstoneObject = { [ticker: string]: unknown };
 export type RemainingObject = {
   [index: string]: { symbol: string } & Record<string, unknown>;

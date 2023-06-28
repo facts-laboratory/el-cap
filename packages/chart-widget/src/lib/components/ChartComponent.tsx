@@ -3,7 +3,7 @@ import React, { useEffect, useRef } from 'react';
 import './chart.css';
 
 interface ChartProps {
-  data: { time: string; value: number }[];
+  data: ChartData;
   colors?: {
     backgroundColor?: string;
     lineColor?: string;
