@@ -11,11 +11,25 @@ export interface ProcessedTokenData {
   '7d': number;
 }
 
+export interface ContractCoin {
+  name: string;
+  symbol: string;
+}
+
 export interface TopCoins {
   '7d': ProcessedTokenData[];
   '24h': ProcessedTokenData[];
   '1h': ProcessedTokenData[];
 }
+export type HistoricalDataPoint = {
+  timestamp: number;
+  value: number;
+};
+
+export type ChartHistoricalDataPoint = {
+  time: number;
+  value: number;
+};
 
 export enum SortKey {
   NAME = 'name',
@@ -32,8 +46,7 @@ export enum SortKey {
 }
 
 export interface ChartData {
-  time: number;
-  value: number;
+  [timeRange: string]: HistoricalDataPoint[];
 }
 
 export enum LoadingStatus {

@@ -8,6 +8,7 @@ import {
 } from '@reduxjs/toolkit';
 import { getRemainingPriceHistory, get24hPrice } from '../feed/el-cap-kit.js';
 import { RootState } from '../store.js';
+import { RemainingObject } from '@el-cap/interfaces';
 
 export const COIN_CHART_FEATURE_KEY = 'coinChart';
 
@@ -29,34 +30,13 @@ export interface CoinChartState extends EntityState<CoinChartEntity> {
 
 export const coinChartAdapter = createEntityAdapter<CoinChartEntity>();
 
-/**
- * Export an effect using createAsyncThunk from
- * the Redux Toolkit: https://redux-toolkit.js.org/api/createAsyncThunk
- *
- * e.g.
- * ```
- * import React, { useEffect } from 'react';
- * import { useDispatch } from 'react-redux';
- *
- * // ...
- *
- * const dispatch = useDispatch();
- * useEffect(() => {
- *   dispatch(fetchCoinChart())
- * }, [dispatch]);
- * ```
- */
 export const fetch24PriceData = createAsyncThunk(
   'coinChart/fetchStatus',
   async (input: { symbol: string; interval: string }, thunkAPI) => {
     console.log('fetching 24h data', input);
     const { symbol, interval } = input;
     const coinChart = await get24hPrice({ symbol, interval });
-    /**
-     * Replace this with your custom fetch call.
-     * For example, `return myApi.getCoinCharts()`;
-     * Right now we just return an empty array.
-     */
+
     return coinChart;
   }
 );
@@ -74,11 +54,7 @@ export const fetchRemainingPriceData = createAsyncThunk(
       symbol: input.symbol,
     });
     console.log('remaining', remaining);
-    /**
-     * Replace this with your custom fetch call.
-     * For example, `return myApi.getCoinCharts()`;
-     * Right now we just return an empty array.
-     */
+
     return remaining;
   }
 );
@@ -89,6 +65,7 @@ export const initialCoinChartState: CoinChartState =
     error: null,
     chartData: {},
     remainingChartData: {},
+    remainingLoadingStatus: 'not loaded',
   });
 
 export const coinChartSlice = createSlice({
@@ -121,7 +98,7 @@ export const coinChartSlice = createSlice({
       })
       .addCase(
         fetchRemainingPriceData.fulfilled,
-        (state: CoinChartState, action: PayloadAction<RemainingData[]>) => {
+        (state: CoinChartState, action: PayloadAction<RemainingObject[]>) => {
           console.log('action', action.payload);
           state.chartData = action.payload;
           state.remainingLoadingStatus = 'loaded';

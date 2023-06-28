@@ -1,9 +1,10 @@
 import { createChart, ColorType, IChartApi } from 'lightweight-charts';
 import React, { useEffect, useRef } from 'react';
 import './chart.css';
+import { ChartData, ChartHistoricalDataPoint } from '@el-cap/interfaces';
 
 interface ChartProps {
-  data: ChartData;
+  data: ChartHistoricalDataPoint[];
   colors?: {
     backgroundColor?: string;
     lineColor?: string;

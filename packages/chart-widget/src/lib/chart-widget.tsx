@@ -1,20 +1,17 @@
 import { useEffect, useState, useRef } from 'react';
 import { CSSTransition } from 'react-transition-group';
 import ChartComponent from './components/ChartComponent';
-import { TimeRange, LoadingStatus, ChartData } from '@el-cap/interfaces';
+import {
+  TimeRange,
+  LoadingStatus,
+  ChartData,
+  HistoricalDataPoint,
+  ChartHistoricalDataPoint,
+} from '@el-cap/interfaces';
 import './components/slideranimations.css';
 
-type CoinChart = {
-  [timeRange: string]: HistoricalDataPoint[];
-};
-
-type HistoricalDataPoint = {
-  timestamp: number;
-  value: number;
-};
-
 interface CoinChartProps {
-  chartData: CoinChart;
+  chartData: ChartData;
   fetch: (input: { symbol: string; interval: string }) => void;
   loadingStatus: LoadingStatus;
   error?: string | null;
@@ -53,7 +50,7 @@ export function ChartWidget(props: CoinChartProps) {
   }, [selectedTimeRange, buttonRefs]);
 
   function convertTimeStampAndSetData(data: HistoricalDataPoint[]) {
-    const newData: ChartData[] = [];
+    const newData: ChartHistoricalDataPoint[] = [];
     data.forEach((el) => {
       newData.push({
         time: el.timestamp,

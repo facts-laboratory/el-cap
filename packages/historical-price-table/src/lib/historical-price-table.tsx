@@ -92,10 +92,15 @@ export function HistoricalPriceTable(props: TableProps) {
                           ? 'cursor-not-allowed bg-gray-300 text-gray-500'
                           : ''
                       }`}
+                      // disabled if it's 3m or 1y
+                      disabled={
+                        timeRange === TimeRange.MONTH_3 ||
+                        timeRange === TimeRange.YEAR_1
+                      }
                       role="menuitem"
                       onClick={() => setTimeRange(timeRange as TimeRange)}
                       key={timeRange}
-                      data-time-range={timeRange}
+                      data-te={timeRange}
                     >
                       {timeRange.toUpperCase()}
                     </button>
