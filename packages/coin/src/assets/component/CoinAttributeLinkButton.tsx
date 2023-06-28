@@ -10,7 +10,7 @@ type CoinAttributeLinkProps = {
   dropdownOptions?: DropdownOption[];
 };
 
-type DropdownOption = {
+export type DropdownOption = {
   title: string;
   icon: string;
   url: string;

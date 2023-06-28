@@ -12,7 +12,7 @@ import {
   processTokenData,
   sortTopCoins,
 } from '@el-cap/utilities';
-import { TopCoins } from '@el-cap/interfaces';
+import { ProcessedTokenData, TopCoins } from '@el-cap/interfaces';
 import { getPrices } from './el-cap-kit.js';
 
 import { RootState } from '../store';
@@ -23,14 +23,14 @@ export const FEED_FEATURE_KEY = 'feed';
  * Update these interfaces according to your requirements.
  */
 export interface FeedEntity {
-  [index: string]: { symbol: string } & Record<string, unknown>;
+ coin: string
 }
 
 export interface FeedState extends EntityState<FeedEntity> {
   loadingStatus: 'not loaded' | 'loading' | 'loaded' | 'error';
   error?: string | null;
   topLoadingStatus: 'not loaded' | 'loading' | 'loaded' | 'error';
-  topCoins: TopCoins;
+  topCoins?: TopCoins;
 }
 
 export const feedAdapter = createEntityAdapter<FeedEntity>({
@@ -94,6 +94,7 @@ export const getTopCoins = createAsyncThunk(
 export const initialFeedState: FeedState = feedAdapter.getInitialState({
   loadingStatus: 'not loaded',
   error: null,
+  topLoadingStatus: 'not loaded',
 });
 
 export const feedSlice = createSlice({
@@ -102,7 +103,6 @@ export const feedSlice = createSlice({
   reducers: {
     add: feedAdapter.addOne,
     remove: feedAdapter.removeOne,
-    // ...
   },
   extraReducers: (builder) => {
     builder
@@ -111,7 +111,7 @@ export const feedSlice = createSlice({
       })
       .addCase(
         fetchFeed.fulfilled,
-        (state: FeedState, action: PayloadAction<FeedEntity[]>) => {
+        (state: FeedState, action: PayloadAction<ProcessedTokenData[]>) => {
           console.log('loaded feed', action.payload);
           feedAdapter.setAll(state, action.payload);
           state.loadingStatus = 'loaded';
@@ -126,7 +126,7 @@ export const feedSlice = createSlice({
       })
       .addCase(
         getTopCoins.fulfilled,
-        (state: FeedState, action: PayloadAction<TopCoins[]>) => {
+        (state: FeedState, action: PayloadAction<TopCoins>) => {
           state.topCoins = action.payload;
           state.topLoadingStatus = 'loaded';
         }

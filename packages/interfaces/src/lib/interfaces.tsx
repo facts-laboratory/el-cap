@@ -11,11 +11,25 @@ export interface ProcessedTokenData {
   '7d': number;
 }
 
+export interface ContractCoin {
+  name: string;
+  symbol: string;
+}
+
 export interface TopCoins {
   '7d': ProcessedTokenData[];
   '24h': ProcessedTokenData[];
   '1h': ProcessedTokenData[];
 }
+export type HistoricalDataPoint = {
+  timestamp: number;
+  value: number;
+};
+
+export type ChartHistoricalDataPoint = {
+  time: number;
+  value: number;
+};
 
 export enum SortKey {
   NAME = 'name',
@@ -29,6 +43,24 @@ export enum SortKey {
   ONE_HOUR = '1h',
   TWENTY_FOUR_HOURS = '24h',
   SEVEN_DAYS = '7d',
+}
+
+export interface ChartData {
+  [timeRange: string]: HistoricalDataPoint[];
+}
+
+export enum LoadingStatus {
+  LOADED = 'loaded',
+  LOADING = 'loading',
+  NOT_LOADED = 'not loaded',
+}
+
+export enum TimeRange {
+  DAY_1 = '24h',
+  DAY_7 = '7d',
+  MONTH_1 = '1m',
+  MONTH_3 = '3m',
+  YEAR_1 = '1y',
 }
 
 export type RedstoneObject = { [ticker: string]: unknown };
