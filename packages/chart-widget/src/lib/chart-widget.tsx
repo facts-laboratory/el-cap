@@ -142,6 +142,8 @@ export function ChartWidget(props: CoinChartProps) {
         </div>
       </>
     );
+  } else {
+    return <></>;
   }
 }
 

@@ -56,7 +56,7 @@ export function HistoricalPriceTable(props: TableProps) {
     if (!coinTable && loadingStatus === 'not loaded') {
       fetch('1d');
     }
-  }, [coinTable, loadingStatus, fetch]);
+  }, [coinTable, loadingStatus, fetch, timeRange]);
 
   const handleSelect = (timeRange: SetStateAction<string>) => {
     setTimeRange(timeRange);
@@ -200,6 +200,8 @@ export function HistoricalPriceTable(props: TableProps) {
         </div>
       </div>
     );
+  } else {
+    return <></>;
   }
 }
 
