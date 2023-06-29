@@ -21,7 +21,7 @@ export const CONTRACTS_FEATURE_KEY = 'contracts';
 
 export interface ContractsEntity {
   id: number;
-  symbol: string;
+  coin: string;
 }
 
 export interface ContractsState extends EntityState<ContractsEntity> {
@@ -30,7 +30,7 @@ export interface ContractsState extends EntityState<ContractsEntity> {
 }
 
 export const contractsAdapter = createEntityAdapter<ContractsEntity>({
-  selectId: (entity) => entity.symbol,
+  selectId: (entity) => entity.coin,
 });
 
 export const fetchContractcoins = createAsyncThunk(

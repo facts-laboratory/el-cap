@@ -57,14 +57,16 @@ export function App(props: AppProps) {
     fetchUser: () => dispatch(fetchUser()),
     user: useAppSelector(selectUser),
     unsetUser: () => dispatch(unsetUser()),
+    fetchFeed: (key: string) => dispatch(fetchFeed(key)),
+    feedLoadingStatus: useAppSelector(selectFeedLoadingStatus),
   };
   const feedPage = {
     entities: useAppSelector(selectAllFeed),
     loadingStatus: useAppSelector(selectFeedLoadingStatus),
-    fetchFeed: (key: string) => dispatch(fetchFeed(key)),
     addToWatchlist: (input: string) => dispatch(addToWatchlist(input)),
     getTopCoins: () => dispatch(getTopCoins()),
     topCoins: useAppSelector(selectTopCoins),
+    fetchFeed: (key: string) => dispatch(fetchFeed(key)),
   };
   const coinPage = {
     loadingStatus: useAppSelector(selectCoinLoadingStatus),

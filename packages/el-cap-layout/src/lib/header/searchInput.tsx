@@ -20,7 +20,7 @@ enum LoadingStatus {
 
 interface SearchCoin {
   name: string;
-  symbol: string;
+  coin: string;
   ranking: number;
   image: string;
 }
@@ -104,10 +104,10 @@ export default function SearchInput(props: SearchInputProps) {
 
     return (
       <SearchBarItem
-        key={item.symbol}
+        key={item.coin}
         img={item.image}
         name={item.name}
-        symbol={item.symbol}
+        coin={item.coin}
         position={`#${item.ranking}`}
       />
     );
@@ -115,10 +115,10 @@ export default function SearchInput(props: SearchInputProps) {
 
   const searchItems = searchResults.map((item) => (
     <SearchBarItem
-      key={item.symbol}
+      key={item.coin}
       img={item.image}
       name={item.name}
-      symbol={item.symbol}
+      coin={item.coin}
       position={`#${item.ranking}`}
     />
   ));

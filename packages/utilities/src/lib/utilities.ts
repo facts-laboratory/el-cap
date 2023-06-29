@@ -151,19 +151,26 @@ export function mergeObjects(
   redstone: RedstoneObject,
   remaining: RemainingObject
 ): Array<unknown> {
-  const redstoneLowered: Record<string, unknown> = Object.keys(redstone).reduce<
-    Record<string, unknown>
-  >((c, k) => {
-    c[k.toLowerCase()] = redstone[k];
-    return c;
-  }, {});
+  if (remaining) {
+    const redstoneLowered: Record<string, unknown> = Object.keys(
+      redstone
+    ).reduce<Record<string, unknown>>((c, k) => {
+      c[k.toLowerCase()] = redstone[k];
+      return c;
+    }, {});
 
-  return Object.keys(remaining).map((key) => {
-    const symbolLower = remaining[key].symbol.toLowerCase();
-    if (Object.prototype.hasOwnProperty.call(redstoneLowered, symbolLower)) {
-      return { ...remaining[key], ...(redstoneLowered[symbolLower] as object) };
-    } else {
-      return remaining[key];
-    }
-  });
+    return Object.keys(remaining).map((key) => {
+      const symbolLower = remaining[key].symbol.toLowerCase();
+      if (Object.prototype.hasOwnProperty.call(redstoneLowered, symbolLower)) {
+        return {
+          ...remaining[key],
+          ...(redstoneLowered[symbolLower] as object),
+        };
+      } else {
+        return remaining[key];
+      }
+    });
+  } else {
+    return redstone;
+  }
 }

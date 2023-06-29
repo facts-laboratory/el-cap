@@ -18,6 +18,10 @@ export const orderByMarketCap = (data: ProcessedTokenData[]) => {
 export const TokenTable = memo((props: TokenTableProps) => {
   const { data, goToCoin, addToWatchlist } = props;
   const [tokenData, setTokenData] = useState<ProcessedTokenData[]>([]);
+  const [page, setPage] = useState(1);
+  const [displayEntities, setDisplayEntities] = useState<ProcessedTokenData[]>(
+    []
+  );
 
   const [watchlist, setWatchlist] = useState<
     Record<string, boolean | undefined>
@@ -26,6 +30,8 @@ export const TokenTable = memo((props: TokenTableProps) => {
   // Whenever data changes, update the watchlist state
   useEffect(() => {
     if (data) {
+      setPage(1);
+      setDisplayEntities(data.slice(0, 30));
       setTokenData(data);
 
       // Reset watchlist
@@ -46,12 +52,52 @@ export const TokenTable = memo((props: TokenTableProps) => {
     });
     addToWatchlist(coin);
   };
+
+  // Assumed existing state:
+  // const [loadingStatus, setLoadingStatus] = useState('idle');
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const distanceFromBottom =
+        document.body.scrollHeight - (window.innerHeight + window.pageYOffset);
+      const isBottomReached =
+        distanceFromBottom < document.body.scrollHeight * 0.2;
+
+      if (isBottomReached) {
+        // Start loading
+        // setLoadingStatus('loading'); // This line can be uncommented if you have a loading status state.
+
+        setTimeout(() => {
+          // After a delay of 500ms (0.5 seconds), increment the page.
+          // This will give a momentary effect of loading.
+          setPage((prevPage) => prevPage + 1);
+          // Stop loading
+          // setLoadingStatus('idle'); // This line can be uncommented if you have a loading status state.
+        }, 800);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
+  useEffect(() => {
+    const nextEntities = data.slice(page * 30, (page + 1) * 30);
+    setDisplayEntities((prevEntities) => [...prevEntities, ...nextEntities]);
+  }, [page]);
+
   return (
     <div className="mt-4 relative overflow-x-auto shadow-md sm:rounded-lg">
       <table className="w-full text-sm text-left text-gray-500">
         <thead className="text-gray-700 bg-white font-bold">
           <tr>
             <th scope="col" className="px-6 py-5"></th>
+            <th scope="col" className="px-6 py-5">
+              Rank
+            </th>
             <th scope="col" className="px-6 py-5">
               Coin
             </th>
@@ -82,8 +128,8 @@ export const TokenTable = memo((props: TokenTableProps) => {
           </tr>
         </thead>
         <tbody>
-          {tokenData &&
-            tokenData?.map((entity, key) => {
+          {displayEntities &&
+            displayEntities.map((entity, key) => {
               return (
                 <tr className="bg-gray-100 border-b font-bold" key={key}>
                   <th
@@ -98,6 +144,7 @@ export const TokenTable = memo((props: TokenTableProps) => {
                       height={24}
                     />
                   </th>
+                  <td className="px-6 py-4">{key + 1}</td>
                   <td
                     className="px-6 py-4 flex items-center my-4 cursor-pointer"
                     onClick={() => goToCoin(entity.coin, entity)}

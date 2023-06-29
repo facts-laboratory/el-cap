@@ -48,13 +48,25 @@ export const fetchFeed = createAsyncThunk(
       if (Object.keys(entities).length === 0) {
         // Run this if there are no entities
         const prices = await getPrices();
-        const combinedPrices = mergeObjects(prices.redstone, prices.remaining);
+        console.log('prices in feed', prices);
+        if (Object.keys(prices.remaining).length > 0) {
+          const combinedPrices = mergeObjects(
+            prices.redstone,
+            prices.remaining
+          );
 
-        const processedPrices = await processTokenData(combinedPrices);
+          console.log('combined prices', combinedPrices);
+          const processedPrices = await processTokenData(combinedPrices);
 
-        const sortedPrices = sortPrices(entriesToObj(processedPrices), key);
+          const sortedPrices = sortPrices(entriesToObj(processedPrices), key);
 
-        return sortedPrices;
+          console.log('ready to return in feed', sortedPrices);
+
+          return sortedPrices;
+        } else {
+          console.log('prices.redstone', prices.redstone);
+          return prices.redstone;
+        }
       } else {
         // If entities exist, sort them and also add watchlist flag
 
@@ -63,7 +75,7 @@ export const fetchFeed = createAsyncThunk(
         return sortedPrices;
       }
     } catch (error) {
-      console.log(error);
+      console.log('failing', error);
       return [];
     }
   }
@@ -108,6 +120,7 @@ export const feedSlice = createSlice({
       .addCase(
         fetchFeed.fulfilled,
         (state: FeedState, action: PayloadAction<ProcessedTokenData[]>) => {
+          console.log('feed thunk', action.payload);
           feedAdapter.setAll(state, action.payload);
           state.loadingStatus = 'loaded';
         }

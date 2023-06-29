@@ -94,7 +94,7 @@ const StatusBar = (props: StatusBarProps) => {
               <span>Connect Wallet</span>
             </button>
           ) : (
-            <div className="dropdown relative inline-block text-left">
+            <div className="cursor-pointer dropdown relative inline-block text-left ">
               <div
                 onClick={() => setDropdownOpen(!dropdownOpen)}
                 className="cursor-pointer font-bold mr-4 flex items-center"
@@ -108,7 +108,7 @@ const StatusBar = (props: StatusBarProps) => {
               </div>
               {dropdownOpen && (
                 <div
-                  className="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10"
+                  className="cursor=pointer origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10"
                   role="menu"
                   aria-orientation="vertical"
                   aria-labelledby="menu-button"
