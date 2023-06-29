@@ -22,6 +22,9 @@ import {
   selectCoinLoadingStatus,
   selectAllContracts,
   selectContractsLoadingStatus,
+  fetchUser,
+  selectUser,
+  unsetUser,
 } from '@el-cap/store';
 import { connect } from 'react-redux';
 import loadable from '@loadable/component';
@@ -51,6 +54,9 @@ export function App(props: AppProps) {
     fetchContractcoins: () => dispatch(fetchContractcoins()),
     coins: useAppSelector(selectAllContracts),
     loadingStatus: useAppSelector(selectContractsLoadingStatus),
+    fetchUser: () => dispatch(fetchUser()),
+    user: useAppSelector(selectUser),
+    unsetUser: () => dispatch(unsetUser()),
   };
   const feedPage = {
     entities: useAppSelector(selectAllFeed),
