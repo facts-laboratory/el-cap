@@ -7,12 +7,10 @@ import {
   PayloadAction,
 } from '@reduxjs/toolkit';
 import { RootState } from '../store';
-import { WarpFactory } from 'warp-contracts';
 import { writeContract } from 'arweavekit/contract';
 import {
   deploy,
   getCrewMemberContract,
-  CONTRACT_TX,
   readState,
 } from '@el-cap/contract-integrations';
 import { State } from '@el-cap/interfaces';

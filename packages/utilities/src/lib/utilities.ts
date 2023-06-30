@@ -9,9 +9,11 @@ import {
 import { Dictionary } from '@reduxjs/toolkit';
 import {
   getCrewMemberContract,
+  EL_CAP_RIGGING_TX,
   readState,
 } from '@el-cap/contract-integrations';
 import { FeedEntity } from '@el-cap/store';
+import { writeContract } from 'arweavekit/contract';
 
 export async function processTokenData(
   combinedTokenData: Record<string, any>
@@ -126,6 +128,45 @@ export function sortPrices(
 
   return sortedPrices;
 }
+
+export async function updateCoinsRecursive(
+  allCoins: ProcessedTokenData[] | undefined,
+  index = 0
+) {
+  if (index >= allCoins.length) return;
+
+  // Get the next 5 coins
+  const coins = allCoins.slice(index, index + 5);
+
+  // Call refreshCoins with the chunk of 5 coins
+  await writeContract({
+    environment: 'mainnet' as const,
+    contractTxId: EL_CAP_RIGGING_TX,
+    wallet: 'use_wallet' as const,
+    options: {
+      function: 'refreshCoins',
+      coins,
+    },
+  });
+
+  // Call updateCoinsRecursive with the next index
+  await updateCoinsRecursive(allCoins, index + 5);
+}
+
+export const getLastUpdatedState = async () => {
+  const state = await readState();
+  console.log('readState', state);
+  return state;
+};
+
+export const isLastUpdatedOverDay = (lastUpdated: number) => {
+  // Define the time threshold (24 hours)
+  const timeThreshold = 24 * 60 * 60 * 1000;
+  // Get the current time
+  const currentTime = Date.now();
+  // If lastUpdated is more than 24 hours ago, return true
+  return currentTime - lastUpdated > timeThreshold;
+};
 
 export function mergeSingleCoinObjects(
   redstone: RedstoneObject,

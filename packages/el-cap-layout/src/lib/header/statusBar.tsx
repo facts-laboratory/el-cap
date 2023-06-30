@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import StatusInfo from '../components/statusInfo';
 import { PortfolioIcon, WatchlistIcon, WalletIcon } from '../icons';
 import { Othent, useOthentReturnProps } from 'othent';
@@ -58,9 +58,40 @@ const StatusBar = (props: StatusBarProps) => {
     };
   }, []);
 
+  const marqueeRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const marqueeElem = marqueeRef.current;
+
+    if (marqueeElem) {
+      // Duplicate the contents of the marquee
+      marqueeElem.innerHTML += marqueeElem.innerHTML;
+
+      let scrollAmount = 0;
+
+      const scrollInterval = setInterval(() => {
+        scrollAmount++;
+        marqueeElem.scrollLeft = scrollAmount;
+
+        // Reset scrollAmount when halfway point is reached
+        if (scrollAmount >= marqueeElem.scrollWidth / 2) {
+          scrollAmount = 0;
+        }
+      }, 50);
+
+      // Cleanup interval on component unmount
+      return () => {
+        clearInterval(scrollInterval);
+      };
+    }
+  }, []);
+
   return (
     <div className="flex justify-between items-center py-2 px-10 border-b-2 h-16">
-      <div className="flex">
+      <div
+        ref={marqueeRef}
+        className="flex items-center overflow-x-hidden whitespace-nowrap py-2 px-10 border-b-2 h-16"
+      >
         <StatusInfo className="mr-4" text="Crypto Listed: " value="3" />
         <StatusInfo
           className="mr-4"

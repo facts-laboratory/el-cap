@@ -12,10 +12,18 @@ import {
   processTokenData,
   sortTopCoins,
   entriesToObj,
+  updateCoinsRecursive,
+  getMergedPrices,
+  getLastUpdatedState,
+  isLastUpdatedOverDay,
 } from '@el-cap/utilities';
+import { readState, EL_CAP_RIGGING_TX } from '@el-cap/contract-integrations';
 import { ProcessedTokenData, TopCoins } from '@el-cap/interfaces';
 import { getPrices } from './el-cap-kit.js';
 import { RootState } from '../store.js';
+import { writeContract } from 'arweavekit/contract';
+import { p } from 'vitest/dist/index-5aad25c1.js';
+import { stat } from 'fs';
 
 export const FEED_FEATURE_KEY = 'feed';
 
@@ -46,20 +54,28 @@ export const fetchFeed = createAsyncThunk(
       const { entities } = feed;
 
       if (Object.keys(entities).length === 0) {
-        // Run this if there are no entities
         const prices = await getPrices();
         console.log('prices in feed', prices);
         if (Object.keys(prices.remaining).length > 0) {
+          // Run this if there is no remaining data
           const combinedPrices = mergeObjects(
             prices.redstone,
             prices.remaining
           );
 
-          console.log('combined prices', combinedPrices);
           const processedPrices = await processTokenData(combinedPrices);
+          // Get the first 30 keys and values
+          const first30ProcessedPricesArray = Object.keys(processedPrices)
+            .slice(0, 30)
+            .map((key) => processedPrices[key]);
+
+          const state = await getLastUpdatedState();
+
+          if (isLastUpdatedOverDay(state.lastUpdated)) {
+            updateCoinsRecursive(first30ProcessedPricesArray);
+          }
 
           const sortedPrices = sortPrices(entriesToObj(processedPrices), key);
-
           console.log('ready to return in feed', sortedPrices);
 
           return sortedPrices;
@@ -69,10 +85,8 @@ export const fetchFeed = createAsyncThunk(
         }
       } else {
         // If entities exist, sort them and also add watchlist flag
-
-        const sortedPrices = sortPrices(entriesToObj(entities), key);
-
-        return sortedPrices;
+        console.log('returning with entities');
+        return sortPrices(entriesToObj(entities), key);
       }
     } catch (error) {
       console.log('failing', error);
