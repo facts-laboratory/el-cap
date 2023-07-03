@@ -7,19 +7,19 @@ export interface WatchlistProps {}
 
 export function Watchlist(props: WatchlistProps) {
   const onWatchlist = () => {
-    alert('comming soon');
+    alert('coming soon');
   };
 
   const onPortfolio = () => {
-    alert('comming soon');
+    alert('coming soon');
   };
 
   const onAddCoins = () => {
-    alert('comming soon');
+    alert('coming soon');
   };
 
   const onCustomize = () => {
-    alert('comming soon');
+    alert('coming soon');
   };
 
   return (
