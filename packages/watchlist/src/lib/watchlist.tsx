@@ -6,6 +6,22 @@ import { TokenTable } from '@el-cap/token-table';
 export interface WatchlistProps {}
 
 export function Watchlist(props: WatchlistProps) {
+  const onWatchlist = () => {
+    alert('comming soon');
+  };
+
+  const onPortfolio = () => {
+    alert('comming soon');
+  };
+
+  const onAddCoins = () => {
+    alert('comming soon');
+  };
+
+  const onCustomize = () => {
+    alert('comming soon');
+  };
+
   return (
     <div className="py-2">
       <div className="grid xl:grid-cols-5">
@@ -47,7 +63,10 @@ export function Watchlist(props: WatchlistProps) {
       <div className="py-4 h-80">
         <div className="flex justify-between">
           <div className="flex">
-            <button className="text-blue-700 font-semibold text-xs bg-gray-200 px-2 py-1 rounded-lg mr-2 flex items-center">
+            <button
+              className="text-blue-700 font-semibold text-xs bg-gray-200 px-2 py-1 rounded-lg mr-2 flex items-center"
+              onClick={onWatchlist}
+            >
               <svg
                 fill="#A6B0C3"
                 height="24px"
@@ -59,7 +78,10 @@ export function Watchlist(props: WatchlistProps) {
               </svg>
               Watchlist
             </button>
-            <button className="font-semibold text-xs bg-gray-300 px-2 py-1 rounded-lg flex items-center">
+            <button
+              className="font-semibold text-xs bg-gray-300 px-2 py-1 rounded-lg flex items-center"
+              onClick={onPortfolio}
+            >
               <svg
                 className="mr-1"
                 height="24px"
@@ -81,10 +103,16 @@ export function Watchlist(props: WatchlistProps) {
             </button>
           </div>
           <div className="flex">
-            <button className="font-semibold text-xs bg-gray-200 px-2 py-1 rounded-lg mr-2 flex items-center">
+            <button
+              className="font-semibold text-xs bg-gray-200 px-2 py-1 rounded-lg mr-2 flex items-center"
+              onClick={onAddCoins}
+            >
               Add coins
             </button>
-            <button className="font-semibold text-xs bg-gray-200 px-2 py-1 rounded-lg mr-2 flex items-center">
+            <button
+              className="font-semibold text-xs bg-gray-200 px-2 py-1 rounded-lg mr-2 flex items-center"
+              onClick={onCustomize}
+            >
               Customize
             </button>
           </div>
