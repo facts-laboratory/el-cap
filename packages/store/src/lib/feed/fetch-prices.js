@@ -21,7 +21,7 @@ export async function fetchRedstonePrices() {
 
 export async function fetchRemainingPrices(prices) {
   const url =
-    'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=30&page=1&sparkline=true&price_change_percentage=1h%2C24h%2C7d&locale=en';
+    'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&page=1&sparkline=true&price_change_percentage=1h%2C24h%2C7d&locale=en';
 
   try {
     const response = await fetchData(url);

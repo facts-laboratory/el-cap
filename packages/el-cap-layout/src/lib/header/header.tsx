@@ -15,6 +15,8 @@ export interface HeaderProps {
     fetchUser: () => void;
     user: User;
     unsetUser: () => void;
+    feedLoadingStatus: string;
+    fetchFeed: () => void;
   };
 }
 
@@ -28,6 +30,8 @@ export function Header(props: HeaderProps) {
     fetchUser,
     user,
     unsetUser,
+    feedLoadingStatus,
+    fetchFeed,
   } = header;
 
   useEffect(() => {
@@ -35,6 +39,10 @@ export function Header(props: HeaderProps) {
       fetchContractcoins();
     }
   }, [fetchContractcoins, loadingStatus]);
+
+  // useEffect(() => {
+  //   if ()
+  // })
 
   return (
     <div className="bg-white min-w-full">

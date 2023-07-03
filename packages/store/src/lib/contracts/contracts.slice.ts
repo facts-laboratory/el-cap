@@ -7,12 +7,10 @@ import {
   PayloadAction,
 } from '@reduxjs/toolkit';
 import { RootState } from '../store';
-import { WarpFactory } from 'warp-contracts';
 import { writeContract } from 'arweavekit/contract';
 import {
   deploy,
   getCrewMemberContract,
-  CONTRACT_TX,
   readState,
 } from '@el-cap/contract-integrations';
 import { State } from '@el-cap/interfaces';
@@ -21,7 +19,7 @@ export const CONTRACTS_FEATURE_KEY = 'contracts';
 
 export interface ContractsEntity {
   id: number;
-  symbol: string;
+  coin: string;
 }
 
 export interface ContractsState extends EntityState<ContractsEntity> {
@@ -30,7 +28,7 @@ export interface ContractsState extends EntityState<ContractsEntity> {
 }
 
 export const contractsAdapter = createEntityAdapter<ContractsEntity>({
-  selectId: (entity) => entity.symbol,
+  selectId: (entity) => entity.coin,
 });
 
 export const fetchContractcoins = createAsyncThunk(

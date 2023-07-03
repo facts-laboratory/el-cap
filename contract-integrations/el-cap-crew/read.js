@@ -14,3 +14,14 @@ export const readState = async (contractId = null) => {
   const state = result.readContract.cachedValue.state;
   return state;
 };
+
+export async function getActiveWalletAddress() {
+  await window.arweaveWallet.connect([
+    'ACCESS_ADDRESS',
+    'SIGN_TRANSACTION',
+    'ACCESS_PUBLIC_KEY',
+    'SIGNATURE',
+  ]);
+
+  return await window.arweaveWallet.getActiveAddress();
+}

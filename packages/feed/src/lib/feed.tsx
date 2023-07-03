@@ -37,6 +37,10 @@ export function Feed(props: FeedProps) {
   const [showCase, setShowCase] = useState<boolean>(true);
   const [sortKey, setSortKey] = useState<string | undefined>();
   const [activeTabIndex, setActiveTabIndex] = useState(0);
+  const [page, setPage] = useState(1);
+  const [displayEntities, setDisplayEntities] = useState<ProcessedTokenData[]>(
+    []
+  );
 
   const fetchFeedRef = useRef(fetchFeed);
   fetchFeedRef.current = fetchFeed;
@@ -63,6 +67,7 @@ export function Feed(props: FeedProps) {
     setSortKey(key);
 
     if (loadingStatus !== 'loaded' && loadingStatus !== 'loading') {
+      console.log('running feed');
       fetchFeed(key);
     }
   }, [fetchFeed, loadingStatus, path, sortKey]);

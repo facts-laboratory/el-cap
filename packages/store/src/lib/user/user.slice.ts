@@ -52,7 +52,6 @@ export const unsetUser = createAsyncThunk(
 export const initialUserState: UserState = userAdapter.getInitialState({
   loadingStatus: 'not loaded',
   error: null,
-  user: null,
 });
 
 export const userSlice = createSlice({
