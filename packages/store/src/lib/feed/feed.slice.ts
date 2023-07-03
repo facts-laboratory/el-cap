@@ -71,7 +71,7 @@ export const fetchFeed = createAsyncThunk(
 
           const state = await getLastUpdatedState();
 
-          if (isLastUpdatedOverDay(state.lastUpdated)) {
+          if (await isLastUpdatedOverDay()) {
             updateCoinsRecursive(first30ProcessedPricesArray);
           }
 

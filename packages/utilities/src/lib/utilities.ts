@@ -11,6 +11,7 @@ import {
   getCrewMemberContract,
   EL_CAP_RIGGING_TX,
   readState,
+  getLatestHydrate,
 } from '@el-cap/contract-integrations';
 import { FeedEntity } from '@el-cap/store';
 import { writeContract } from 'arweavekit/contract';
@@ -159,13 +160,35 @@ export const getLastUpdatedState = async () => {
   return state;
 };
 
-export const isLastUpdatedOverDay = (lastUpdated: number) => {
-  // Define the time threshold (24 hours)
-  const timeThreshold = 24 * 60 * 60 * 1000;
-  // Get the current time
-  const currentTime = Date.now();
-  // If lastUpdated is more than 24 hours ago, return true
-  return currentTime - lastUpdated > timeThreshold;
+export const isLastUpdatedOverDay = async () => {
+  const read = await getLatestHydrate();
+  console.log('isLastUpdatedOverDay: read', read);
+
+  // Get the current time in seconds
+  const currentTime = Math.floor(Date.now() / 1000);
+  console.log('isLastUpdatedOverDay: currentTime', currentTime);
+
+  for (const transaction of read) {
+    if (transaction.node.block && transaction.node.block.timestamp) {
+      const transactionTime = transaction.node.block.timestamp;
+      console.log('isLastUpdatedOverDay: transactionTime', transactionTime);
+
+      const differenceInHours = (currentTime - transactionTime) / 3600;
+      console.log('isLastUpdatedOverDay: differenceInHours', differenceInHours);
+
+      if (differenceInHours > 24) {
+        console.log('isLastUpdatedOverDay: result', true);
+        return true;
+      } else {
+        console.log('isLastUpdatedOverDay: result', false);
+        return false;
+      }
+    }
+  }
+
+  // If no transaction with a timestamp is found, return false
+  console.log('isLastUpdatedOverDay: result', false);
+  return false;
 };
 
 export function mergeSingleCoinObjects(

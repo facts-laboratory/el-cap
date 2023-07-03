@@ -1,7 +1,9 @@
+import { EL_CAP_RIGGING_TX } from '../constants';
+
 export async function getLatestHydrate() {
   const query = `
     {
-      transactions(first: 30, tags: [{name: "Contract", values: "zEPNRkjT_DDczYNaAyzdYVIl1wNhwKKegvJZw3dxVaA"}]) {
+      transactions(first: 30, tags: [{name: "Contract", values: "${EL_CAP_RIGGING_TX}"}]) {
         edges {
           node {
             id
