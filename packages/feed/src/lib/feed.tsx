@@ -37,10 +37,6 @@ export function Feed(props: FeedProps) {
   const [showCase, setShowCase] = useState<boolean>(true);
   const [sortKey, setSortKey] = useState<string | undefined>();
   const [activeTabIndex, setActiveTabIndex] = useState(0);
-  const [page, setPage] = useState(1);
-  const [displayEntities, setDisplayEntities] = useState<ProcessedTokenData[]>(
-    []
-  );
 
   const fetchFeedRef = useRef(fetchFeed);
   fetchFeedRef.current = fetchFeed;
@@ -68,9 +64,9 @@ export function Feed(props: FeedProps) {
 
     if (loadingStatus !== 'loaded' && loadingStatus !== 'loading') {
       console.log('running feed');
-      fetchFeed(key);
+      fetchFeedRef.current(key);
     }
-  }, [fetchFeed, loadingStatus, path, sortKey]);
+  }, [loadingStatus, path, sortKey]);
 
   useEffect(() => {
     const sortKeyMap: { [key: string]: SortKey } = {
