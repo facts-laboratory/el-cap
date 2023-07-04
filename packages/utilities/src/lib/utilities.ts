@@ -52,7 +52,8 @@ export function entriesToObj(
 }
 
 export const checkCoinsOnWatchlist = async (
-  entities: Dictionary<ProcessedTokenData>
+  entities: Dictionary<ProcessedTokenData>,
+  returnOnlyWatchlist = false
 ) => {
   const queryCrewState = await getCrewMemberContract();
   let watchlist: string[] = [];
@@ -63,14 +64,30 @@ export const checkCoinsOnWatchlist = async (
     watchlist = state.watchlist.map((item: string) => item.toLowerCase());
   }
 
+  let resultEntities = {} as Dictionary<ProcessedTokenData>;
+
   Object.keys(entities).forEach((coinKey) => {
     const coin = entities[coinKey];
     if (coin) {
-      coin.watchlist = watchlist.includes(coin.coin.toLowerCase());
+      resultEntities[coinKey] = {
+        ...coin,
+        watchlist: watchlist.includes(coin.coin.toLowerCase()),
+      };
     }
   });
 
-  return entities;
+  if (returnOnlyWatchlist) {
+    resultEntities = Object.keys(resultEntities)
+      .filter((coinKey) => resultEntities[coinKey].watchlist)
+      .reduce(
+        (res: Dictionary<ProcessedTokenData>, key) => (
+          (res[key] = resultEntities[key]), res
+        ),
+        {}
+      );
+  }
+
+  return resultEntities;
 };
 
 export function sortTopCoins(
@@ -101,8 +118,8 @@ export function sortTopCoins(
 }
 
 export function sortPrices(
-  prices: ProcessedTokenData[] | Record<string, ProcessedTokenData>,
-  key: string
+  prices: ProcessedTokenData[] | Dictionary<ProcessedTokenData>,
+  key: string | null = 'marketCap'
 ): ProcessedTokenData[] {
   console.log('sortkey in function', key);
   if (!Object.values(SortKey).includes(key as SortKey)) {

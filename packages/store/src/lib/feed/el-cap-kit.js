@@ -9,8 +9,8 @@ import {
 } from './fetch-prices.js';
 import { fetchHistoricalPrice } from '../coin-chart/fetch-historical-data.js';
 
-export async function getPrices() {
-  return of()
+export async function getPrices(input) {
+  return of(input)
     .chain((input) => fromPromise(fetchRedstonePrices)(input))
     .chain((input) => fromPromise(fetchRemainingPrices)(input))
     .fork(console.error, (combinedResult) => {

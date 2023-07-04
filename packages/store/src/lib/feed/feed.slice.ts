@@ -21,15 +21,9 @@ import { readState, EL_CAP_RIGGING_TX } from '@el-cap/contract-integrations';
 import { ProcessedTokenData, TopCoins } from '@el-cap/interfaces';
 import { getPrices } from './el-cap-kit.js';
 import { RootState } from '../store.js';
-import { writeContract } from 'arweavekit/contract';
-import { p } from 'vitest/dist/index-5aad25c1.js';
-import { stat } from 'fs';
 
 export const FEED_FEATURE_KEY = 'feed';
 
-/*
- * Update these interfaces according to your requirements.
- */
 export interface FeedEntity {
   coin: string;
 }
@@ -44,7 +38,6 @@ export interface FeedState extends EntityState<FeedEntity> {
 export const feedAdapter = createEntityAdapter<FeedEntity>({
   selectId: (entity) => entity.coin,
 });
-// Modify checkCoinsOnWatchlist function to work with Dictionary<ProcessedTokenData>
 
 export const fetchFeed = createAsyncThunk(
   'feed/fetchFeed',
@@ -71,19 +64,18 @@ export const fetchFeed = createAsyncThunk(
           console.log('fetchFeed: ProcessedPrices', processedPrices);
           const first30ProcessedPricesArray = Object.keys(processedPrices)
             .slice(0, 30)
-            .map((key) => processedPrices[key]);
+            .map((key) => processedPrices[key])
+            .filter((item): item is ProcessedTokenData => item !== undefined);
           console.log(
             'fetchFeed: First30ProcessedPricesArray',
             first30ProcessedPricesArray
           );
-
           if (await isLastUpdatedOverDay()) {
             console.log('fetchFeed: Last updated over a day ago');
             updateCoinsRecursive(first30ProcessedPricesArray);
           } else {
             console.log('fetchFeed: Last updated within a day');
           }
-
           const sortedPrices = sortPrices(entriesToObj(processedPrices), key);
           console.log('fetchFeed: SortedPrices', sortedPrices);
           console.log('fetchFeed: Ready to return sorted prices');

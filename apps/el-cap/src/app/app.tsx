@@ -25,6 +25,8 @@ import {
   fetchUser,
   selectUser,
   unsetUser,
+  fetchWatchlist,
+  selectAllWatchlist,
 } from '@el-cap/store';
 import { connect } from 'react-redux';
 import loadable from '@loadable/component';
@@ -76,7 +78,6 @@ export function App(props: AppProps) {
     fetchCoin: (input: { symbol: string; name: string }) =>
       dispatch(fetchCoin(input)),
     addToWatchlist: (input: string) => dispatch(addToWatchlist(input)),
-
     fetchedEntity: useAppSelector(selectAllCoin),
     coinChartProps: {
       fetch: (input: { symbol: string; interval: string }) =>
@@ -90,7 +91,11 @@ export function App(props: AppProps) {
       ),
     },
   };
-  const watchlistPage = {};
+  const watchlistPage = {
+    fetchWatchlist: () => dispatch(fetchWatchlist()),
+    watchlist: useAppSelector(selectAllWatchlist),
+    addToWatchlist: (input: string) => dispatch(addToWatchlist(input)),
+  };
   const Page = components[(page as keyof ObjectKeys) || 'Feed'];
   return (
     <div className="flex flex-col h-screen">

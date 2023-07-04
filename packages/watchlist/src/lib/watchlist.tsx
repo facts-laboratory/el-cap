@@ -1,11 +1,22 @@
 import { connect } from 'react-redux';
-import { mapStateToProps } from '@el-cap/store';
+import { fetchWatchlist, mapStateToProps } from '@el-cap/store';
 import { TokenTable } from '@el-cap/token-table';
+import { useEffect } from 'react';
+import { ProcessedTokenData } from '@el-cap/interfaces';
 
 /* eslint-disable-next-line */
-export interface WatchlistProps {}
+export interface WatchlistProps {
+  watchlistPage: {
+    fetchWatchlist: () => void;
+    watchlist: ProcessedTokenData[];
+    addToWatchlist: (coin: string) => void;
+  };
+}
 
 export function Watchlist(props: WatchlistProps) {
+  const { watchlistPage } = props;
+  const { fetchWatchlist, watchlist, addToWatchlist } = watchlistPage;
+
   const onWatchlist = () => {
     alert('coming soon');
   };
@@ -43,6 +54,10 @@ export function Watchlist(props: WatchlistProps) {
     },
   ];
 
+  useEffect(() => {
+    fetchWatchlist();
+  }, []);
+
   return (
     <div className="py-2">
       <div className="grid xl:grid-cols-5">
@@ -68,7 +83,7 @@ export function Watchlist(props: WatchlistProps) {
             </p>
             <div className="grid sm:grid-cols-4 grid-col-1 gap-2">
               <div className="col-span-3 text-gray-700">
-                Sign up for a CoinMarketCap account in a few clicks and discover
+                Sign up for a El Capitan account in a few clicks and discover
                 the rapidly growing cryptocurrency space on our world-class
                 price-tracking platform!
               </div>
@@ -139,9 +154,9 @@ export function Watchlist(props: WatchlistProps) {
           </div>
         </div>
         <TokenTable
-          data={dummyData}
+          data={watchlist}
           // goToCoin={goToCoin}
-          addToWatchlist={(coin: string) => console.log('addToWatchlist ')}
+          addToWatchlist={(coin: string) => addToWatchlist(coin)}
         />
       </div>
       <div className="grid xl:grid-cols-3">

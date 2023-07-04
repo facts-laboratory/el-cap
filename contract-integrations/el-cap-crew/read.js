@@ -16,12 +16,12 @@ export const readState = async (contractId = null) => {
 };
 
 export async function getActiveWalletAddress() {
-  await window.arweaveWallet.connect([
-    'ACCESS_ADDRESS',
-    'SIGN_TRANSACTION',
-    'ACCESS_PUBLIC_KEY',
-    'SIGNATURE',
-  ]);
+  // await window.arweaveWallet.connect([
+  //   'ACCESS_ADDRESS',
+  //   'SIGN_TRANSACTION',
+  //   'ACCESS_PUBLIC_KEY',
+  //   'SIGNATURE',
+  // ]);
 
   return await window.arweaveWallet.getActiveAddress();
 }
