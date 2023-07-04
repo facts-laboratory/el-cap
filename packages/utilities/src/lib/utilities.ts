@@ -4,30 +4,74 @@ import {
   RemainingObject,
   RedstoneObject,
   TopCoins,
+  State,
 } from '@el-cap/interfaces';
+import { Dictionary } from '@reduxjs/toolkit';
+import {
+  getCrewMemberContract,
+  EL_CAP_RIGGING_TX,
+  readState,
+  getLatestHydrate,
+} from '@el-cap/contract-integrations';
+import { FeedEntity } from '@el-cap/store';
+import { writeContract } from 'arweavekit/contract';
 
-export function processTokenData(
+export async function processTokenData(
   combinedTokenData: Record<string, any>
-): ProcessedTokenData[] {
-  return Object.keys(combinedTokenData).map((key) => {
+): Promise<Dictionary<ProcessedTokenData>> {
+  const processedData: Dictionary<ProcessedTokenData> = {};
+
+  Object.keys(combinedTokenData).forEach((key) => {
     const combinedTokenItem = combinedTokenData[key];
 
-    return {
+    processedData[key] = {
       name: combinedTokenItem.name || '',
       image: combinedTokenItem.image || '',
       coin: combinedTokenItem.symbol || '',
       price: combinedTokenItem.value || 0,
       marketCap: combinedTokenItem.market_cap || 0,
       volume: combinedTokenItem.total_volume || 0,
-      gainers: combinedTokenItem.price_change_percentage_7d_in_currency || 0,
       circulatingSupply: combinedTokenItem.circulating_supply || 0,
-      losers: combinedTokenItem.price_change_percentage_7d_in_currency || 0,
       '1h': combinedTokenItem.price_change_percentage_1h_in_currency || 0,
       '24h': combinedTokenItem.price_change_percentage_24h_in_currency || 0,
       '7d': combinedTokenItem.price_change_percentage_7d_in_currency || 0,
+      watchlist: false,
     };
   });
+
+  return await checkCoinsOnWatchlist(processedData);
 }
+
+export function entriesToObj(
+  entities: Dictionary<FeedEntity>
+): Record<string, ProcessedTokenData> {
+  return Object.entries(entities).reduce(
+    (acc, [key, value]) => ({ ...acc, [key]: value }),
+    {}
+  );
+}
+
+export const checkCoinsOnWatchlist = async (
+  entities: Dictionary<ProcessedTokenData>
+) => {
+  const queryCrewState = await getCrewMemberContract();
+  let watchlist: string[] = [];
+
+  if (queryCrewState.length > 0) {
+    const state: State = await readState(queryCrewState[0].node.id);
+    console.log('state in checkCoinsOnWatchlist', state);
+    watchlist = state.watchlist.map((item: string) => item.toLowerCase());
+  }
+
+  Object.keys(entities).forEach((coinKey) => {
+    const coin = entities[coinKey];
+    if (coin) {
+      coin.watchlist = watchlist.includes(coin.coin.toLowerCase());
+    }
+  });
+
+  return entities;
+};
 
 export function sortTopCoins(
   entities: Record<string, ProcessedTokenData>
@@ -57,7 +101,7 @@ export function sortTopCoins(
 }
 
 export function sortPrices(
-  prices: ProcessedTokenData[] | { [key: string]: ProcessedTokenData },
+  prices: ProcessedTokenData[] | Record<string, ProcessedTokenData>,
   key: string
 ): ProcessedTokenData[] {
   console.log('sortkey in function', key);
@@ -86,6 +130,67 @@ export function sortPrices(
   return sortedPrices;
 }
 
+export async function updateCoinsRecursive(
+  allCoins: ProcessedTokenData[] | undefined,
+  index = 0
+) {
+  if (index >= allCoins.length) return;
+
+  // Get the next 5 coins
+  const coins = allCoins.slice(index, index + 5);
+
+  // Call refreshCoins with the chunk of 5 coins
+  await writeContract({
+    environment: 'mainnet' as const,
+    contractTxId: EL_CAP_RIGGING_TX,
+    wallet: 'use_wallet' as const,
+    options: {
+      function: 'refreshCoins',
+      coins,
+    },
+  });
+
+  // Call updateCoinsRecursive with the next index
+  await updateCoinsRecursive(allCoins, index + 5);
+}
+
+export const getLastUpdatedState = async () => {
+  const state = await readState();
+  console.log('readState', state);
+  return state;
+};
+
+export const isLastUpdatedOverDay = async () => {
+  const read = await getLatestHydrate();
+  console.log('isLastUpdatedOverDay: read', read);
+
+  // Get the current time in seconds
+  const currentTime = Math.floor(Date.now() / 1000);
+  console.log('isLastUpdatedOverDay: currentTime', currentTime);
+
+  for (const transaction of read) {
+    if (transaction.node.block && transaction.node.block.timestamp) {
+      const transactionTime = transaction.node.block.timestamp;
+      console.log('isLastUpdatedOverDay: transactionTime', transactionTime);
+
+      const differenceInHours = (currentTime - transactionTime) / 3600;
+      console.log('isLastUpdatedOverDay: differenceInHours', differenceInHours);
+
+      if (differenceInHours > 24) {
+        console.log('isLastUpdatedOverDay: result', true);
+        return true;
+      } else {
+        console.log('isLastUpdatedOverDay: result', false);
+        return false;
+      }
+    }
+  }
+
+  // If no transaction with a timestamp is found, return false
+  console.log('isLastUpdatedOverDay: result', false);
+  return false;
+};
+
 export function mergeSingleCoinObjects(
   redstone: RedstoneObject,
   remaining: RemainingObject
@@ -110,19 +215,26 @@ export function mergeObjects(
   redstone: RedstoneObject,
   remaining: RemainingObject
 ): Array<unknown> {
-  const redstoneLowered: Record<string, unknown> = Object.keys(redstone).reduce<
-    Record<string, unknown>
-  >((c, k) => {
-    c[k.toLowerCase()] = redstone[k];
-    return c;
-  }, {});
+  if (remaining) {
+    const redstoneLowered: Record<string, unknown> = Object.keys(
+      redstone
+    ).reduce<Record<string, unknown>>((c, k) => {
+      c[k.toLowerCase()] = redstone[k];
+      return c;
+    }, {});
 
-  return Object.keys(remaining).map((key) => {
-    const symbolLower = remaining[key].symbol.toLowerCase();
-    if (Object.prototype.hasOwnProperty.call(redstoneLowered, symbolLower)) {
-      return { ...remaining[key], ...(redstoneLowered[symbolLower] as object) };
-    } else {
-      return remaining[key];
-    }
-  });
+    return Object.keys(remaining).map((key) => {
+      const symbolLower = remaining[key].symbol.toLowerCase();
+      if (Object.prototype.hasOwnProperty.call(redstoneLowered, symbolLower)) {
+        return {
+          ...remaining[key],
+          ...(redstoneLowered[symbolLower] as object),
+        };
+      } else {
+        return remaining[key];
+      }
+    });
+  } else {
+    return redstone;
+  }
 }

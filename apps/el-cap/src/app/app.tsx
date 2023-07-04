@@ -4,6 +4,7 @@ import {
   Footer,
 } from '@el-cap/el-cap-layout';
 import {
+  fetchContractcoins,
   fetch24PriceData,
   getTopCoins,
   selectTopCoins,
@@ -13,11 +14,17 @@ import {
   useAppSelector,
   selectAllFeed,
   selectFeedLoadingStatus,
+  addToWatchlist,
   selectAllCoin,
   fetchFeed,
   fetchCoin,
   fetchRemainingPriceData,
   selectCoinLoadingStatus,
+  selectAllContracts,
+  selectContractsLoadingStatus,
+  fetchUser,
+  selectUser,
+  unsetUser,
 } from '@el-cap/store';
 import { connect } from 'react-redux';
 import loadable from '@loadable/component';
@@ -46,17 +53,30 @@ export interface AppProps {
 export function App(props: AppProps) {
   const dispatch = useAppDispatch();
   const { page } = props;
+  const header = {
+    fetchContractcoins: () => dispatch(fetchContractcoins()),
+    coins: useAppSelector(selectAllContracts),
+    loadingStatus: useAppSelector(selectContractsLoadingStatus),
+    fetchUser: () => dispatch(fetchUser()),
+    user: useAppSelector(selectUser),
+    unsetUser: () => dispatch(unsetUser()),
+    fetchFeed: (key: string) => dispatch(fetchFeed(key)),
+    feedLoadingStatus: useAppSelector(selectFeedLoadingStatus),
+  };
   const feedPage = {
     entities: useAppSelector(selectAllFeed),
     loadingStatus: useAppSelector(selectFeedLoadingStatus),
-    fetchFeed: (key: string) => dispatch(fetchFeed(key)),
+    addToWatchlist: (input: string) => dispatch(addToWatchlist(input)),
     getTopCoins: () => dispatch(getTopCoins()),
     topCoins: useAppSelector(selectTopCoins),
+    fetchFeed: (key: string) => dispatch(fetchFeed(key)),
   };
   const coinPage = {
     loadingStatus: useAppSelector(selectCoinLoadingStatus),
     fetchCoin: (input: { symbol: string; name: string }) =>
       dispatch(fetchCoin(input)),
+    addToWatchlist: (input: string) => dispatch(addToWatchlist(input)),
+
     fetchedEntity: useAppSelector(selectAllCoin),
     coinChartProps: {
       fetch: (input: { symbol: string; interval: string }) =>
@@ -74,7 +94,7 @@ export function App(props: AppProps) {
   const Page = components[(page as keyof ObjectKeys) || 'Feed'];
   return (
     <div className="flex flex-col h-screen">
-      <ConnectedHeader />
+      <ConnectedHeader header={header} />
       <ContentContainer
         children={
           <Page

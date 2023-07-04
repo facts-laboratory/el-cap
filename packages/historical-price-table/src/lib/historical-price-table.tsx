@@ -1,20 +1,15 @@
 import { SetStateAction, useEffect, useRef, useState } from 'react';
 import ArrowDownIcon from 'packages/feed/src/lib/icons/arrowDown';
+import { LoadingStatus } from '@el-cap/interfaces';
 /* eslint-disable-next-line */
 export interface HistoricalPriceTableProps {}
 
 type TableProps = {
-  coinTable: CoinTable;
+  chartData: CoinTable;
   fetch: (symbol: string) => void;
-  loadingStatus: LoadingStatus;
+  loadingStatus: string;
   error: string | null;
 };
-
-enum LoadingStatus {
-  LOADED = 'loaded',
-  LOADING = 'loading',
-  NOT_LOADED = 'not loaded',
-}
 
 type CoinTable = {
   [timeRange: string]: HistoricalData[];
@@ -26,7 +21,7 @@ type HistoricalData = {
 };
 
 enum TimeRange {
-  DAY_1 = '1d',
+  DAY_1 = '24h',
   DAY_7 = '7d',
   MONTH_1 = '1m',
   MONTH_3 = '3m',
@@ -34,10 +29,10 @@ enum TimeRange {
 }
 
 export function HistoricalPriceTable(props: TableProps) {
-  const { coinTable, fetch, loadingStatus, error } = props;
-  const [timeRange, setTimeRange] = useState<string>('1D');
+  const { chartData, loadingStatus, error } = props;
+  const [timeRange, setTimeRange] = useState<string>('24h');
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const dropdownRef = useRef(null);
+  const dropdownRef = useRef<HTMLDivElement | null>(null);
 
   const handleClickOutside = (event: { target: any }) => {
     if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -51,17 +46,6 @@ export function HistoricalPriceTable(props: TableProps) {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   });
-
-  useEffect(() => {
-    if (!coinTable && loadingStatus === 'not loaded') {
-      fetch('1d');
-    }
-  }, [coinTable, loadingStatus, fetch, timeRange]);
-
-  const handleSelect = (timeRange: SetStateAction<string>) => {
-    setTimeRange(timeRange);
-    setIsOpen(false);
-  };
 
   if (loadingStatus !== LoadingStatus.LOADED) {
     return <p>Loading...</p>;
@@ -99,46 +83,28 @@ export function HistoricalPriceTable(props: TableProps) {
                   aria-orientation="vertical"
                   aria-labelledby="options-menu"
                 >
-                  <button
-                    type="button"
-                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 w-full"
-                    role="menuitem"
-                    onClick={() => handleSelect('1D')}
-                  >
-                    1D
-                  </button>
-                  <button
-                    type="button"
-                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 w-full"
-                    role="menuitem"
-                    onClick={() => handleSelect('7D')}
-                  >
-                    7D
-                  </button>
-                  <button
-                    type="button"
-                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 w-full"
-                    role="menuitem"
-                    onClick={() => handleSelect('1M')}
-                  >
-                    1M
-                  </button>
-                  <button
-                    type="button"
-                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 w-full"
-                    role="menuitem"
-                    onClick={() => handleSelect('3M')}
-                  >
-                    3M
-                  </button>
-                  <button
-                    type="button"
-                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 w-full"
-                    role="menuitem"
-                    onClick={() => handleSelect('1Y')}
-                  >
-                    1Y
-                  </button>
+                  {Object.values(TimeRange).map((timeRange) => (
+                    <button
+                      type="button"
+                      className={`block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 w-full ${
+                        timeRange === TimeRange.MONTH_3 ||
+                        timeRange === TimeRange.YEAR_1
+                          ? 'cursor-not-allowed bg-gray-300 text-gray-500'
+                          : ''
+                      }`}
+                      // disabled if it's 3m or 1y
+                      disabled={
+                        timeRange === TimeRange.MONTH_3 ||
+                        timeRange === TimeRange.YEAR_1
+                      }
+                      role="menuitem"
+                      onClick={() => setTimeRange(timeRange as TimeRange)}
+                      key={timeRange}
+                      data-te={timeRange}
+                    >
+                      {timeRange.toUpperCase()}
+                    </button>
+                  ))}
                 </div>
               </div>
             )}
@@ -173,7 +139,7 @@ export function HistoricalPriceTable(props: TableProps) {
               </tr>
             </thead>
             <tbody>
-              {coinTable[timeRange.toLowerCase()].map(
+              {chartData[timeRange.toLowerCase()].map(
                 (val: HistoricalData, idx: number) => {
                   return (
                     <tr key={idx}>

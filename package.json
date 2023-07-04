@@ -93,9 +93,11 @@
   },
   "dependencies": {
     "@angular-devkit/schematics": "^15.2.1",
+    "@facts-kit/contract-kit": "1.0.6",
     "@facts-kit/ui-kit": "^0.1.0",
     "@loadable/component": "^5.15.3",
     "@reduxjs/toolkit": "1.9.3",
+    "arweavekit": "1.2.11",
     "flowbite": "1.6.5",
     "flowbite-react": "0.4.4",
     "hyper-async": "1.1.1",
@@ -108,6 +110,7 @@
     "react-transition-group": "4.4.5",
     "redstone-api": "^0.4.11",
     "redux-first-router": "^2.1.5",
+    "redux-persist": "6.0.0",
     "tslib": "^2.3.0",
     "warp-contracts": "1.4.11"
   }

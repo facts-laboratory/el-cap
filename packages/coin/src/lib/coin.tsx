@@ -17,7 +17,14 @@ import {
   Broadcast,
 } from '../assets/svg/index';
 import Tag from '../assets/component/Tag';
-import { ProcessedTokenData } from '@el-cap/interfaces';
+import {
+  ReadContractResult,
+  State,
+  ChartData,
+  ContractCoin,
+  LoadingStatus,
+  ProcessedTokenData,
+} from '@el-cap/interfaces';
 import { ArrowDownIcon } from '@el-cap/top-coins-card';
 import CoinAttributeLinkButton from '../assets/component/CoinAttributeLinkButton';
 import ToggleComponent from '../assets/component/ToggleComponent';
@@ -30,36 +37,18 @@ interface CoinProps {
     fetchCoin: (input: { symbol: string; name: string }) => void;
     loadingStatus: string;
     fetchedEntity: ProcessedTokenData[];
+    addToWatchlist: (coin: string) => void;
     coinChartProps: {
       fetchRemaining: (input: { symbol: string; interval: string }) => void;
       fetchCoin: (input: { symbol: string; name: string }) => void;
       chart24hourData: PriceData | undefined;
+      loadingStatus: LoadingStatus;
+      chartData: ChartData;
+      fetch: () => void;
+      remainingLoadingStatus: string;
     };
   };
 }
-
-enum TimeRange {
-  DAY_1 = '1d',
-  DAY_7 = '7d',
-  MONTH_1 = '1m',
-  MONTH_3 = '3m',
-  YEAR_1 = '1y',
-}
-
-enum LoadingStatus {
-  LOADED = 'loaded',
-  LOADING = 'loading',
-  NOT_LOADED = 'not loaded',
-}
-
-type CoinTable = {
-  [timeRange: string]: HistoricalData[];
-};
-
-type HistoricalData = {
-  timestamp: number;
-  value: number;
-};
 
 const coinAttributeButtonData = [
   {
@@ -134,35 +123,24 @@ const coinAttributeButtonData = [
   },
 ];
 
-const coinTable: CoinTable = {
-  '1d': [
-    { value: 3000, timestamp: 1687442340000 },
-    { value: 3000, timestamp: 1687445940000 },
-  ],
-  '7d': [
-    { value: 6000, timestamp: 1686923940000 },
-    { value: 6000, timestamp: 1686929540000 },
-  ],
-  '1m': [
-    { value: 9000, timestamp: 1686953940000 },
-    { value: 9000, timestamp: 1686921540000 },
-  ],
-  '3m': [
-    { value: 12000, timestamp: 1686933940000 },
-    { value: 12000, timestamp: 1686937540000 },
-  ],
-  '1y': [
-    { value: 15000, timestamp: 1686983940000 },
-    { value: 15000, timestamp: 1686987540000 },
-  ],
-};
-
 export function Coin(props: CoinProps) {
+  console.log('coinpageprops', props);
   const { goToFeed, entity, ticker, coinPage } = props;
-  const { coinChartProps, fetchCoin, loadingStatus, fetchedEntity } = coinPage;
-  const [coins, setCoins] = useState<ProcessedTokenData[]>([]);
+  const {
+    coinChartProps,
+    fetchCoin,
+    loadingStatus,
+    fetchedEntity,
+    addToWatchlist,
+  } = coinPage;
+  const [coins, setCoins] = useState<ContractCoin[]>([]);
   const [shouldLoad, setShouldLoad] = useState(true);
   const [error, setError] = useState<string | undefined>();
+  const [isInWatchlist, setIsInWatchlist] = useState<boolean | undefined>(
+    false
+  );
+
+  const [onWatchList, setOnWatchList] = useState(false);
   const [viewType, setViewType] = useState<string>('Chart');
 
   const setView = (view: string) => {
@@ -179,9 +157,10 @@ export function Coin(props: CoinProps) {
     const contractId = 'MH-w8Sq6uw3Jwc_stPqyJT8fEcIhx4VrrE10NFgv-KY';
     const warp = WarpFactory.forMainnet();
     const contract = warp.contract(contractId);
-    const state = await contract.readState();
-    const coins = state.cachedValue.state.coins;
-    console.log('state running here', state);
+    const result: ReadContractResult = await contract.readState();
+    const state = result.cachedValue.state as State;
+
+    const coins = state.coins;
     setCoins(coins);
   };
 
@@ -193,27 +172,47 @@ export function Coin(props: CoinProps) {
     fetchState();
   }, []);
 
-  function findNameByTicker(ticker: string, coins: ProcessedTokenData[]) {
-    console.log('ticker', ticker, 'coins', coins);
+  function findNameByTicker(ticker: string, coins: ContractCoin[]) {
     const coin = coins.find(
       (c) => c.symbol.toLowerCase() === ticker.toLowerCase()
     );
     return coin ? coin.name : 'Ticker not found';
   }
-
   useEffect(() => {
     if (
       shouldLoad &&
       loadingStatus !== 'loaded' &&
-      ticker !== entity?.coin &&
+      ticker !== fetchedEntity[0]?.coin &&
       coins.length > 0
     ) {
       const name = findNameByTicker(ticker, coins);
-      console.log('name', name);
       fetchCoin({ symbol: ticker, name });
       setShouldLoad(false);
     }
-  }, [fetchCoin, loadingStatus, ticker, entity, coins]);
+  }, [
+    fetchCoin,
+    loadingStatus,
+    ticker,
+    entity,
+    coins,
+    shouldLoad,
+    fetchedEntity,
+  ]);
+
+  // Update the watchlist state whenever the coin data changes
+  useEffect(() => {
+    console.log('setting on watchlist', entity, fetchedEntity);
+    if (entity || fetchedEntity) {
+      console.log('setting on watchlist', entity, fetchedEntity);
+      setIsInWatchlist(entity?.watchlist || fetchedEntity[0]?.watchlist);
+    }
+  }, [entity, fetchedEntity]);
+
+  // Function to handle adding to watchlist
+  const handleAddToWatchlist = () => {
+    setIsInWatchlist(!isInWatchlist);
+    addToWatchlist(ticker); // assuming addToWatchlist function takes a ticker
+  };
 
   if (error) return <p>{error}</p>;
 
@@ -248,7 +247,14 @@ export function Coin(props: CoinProps) {
                 'Bitcoin'}
             </span>
             <Tag tagName="BTC" goToTag={goToTag} />
-            <WatchlistIcon className="ml-2" width={18} height={18} />
+            <div onClick={() => handleAddToWatchlist()}>
+              <WatchlistIcon
+                className="ml-2"
+                width={18}
+                height={18}
+                isOnWatchlist={isInWatchlist}
+              />
+            </div>
           </div>
           <div className="flex flex-wrap gap-4">
             {coinAttributeButtonData.map((item, key) => {
@@ -280,7 +286,7 @@ export function Coin(props: CoinProps) {
             <span className="md:text-[60px] text-3xl mr-2 p-2">
               $
               {(entity && entity.price) ||
-                (fetchedEntity[0] && fetchedEntity[0].price) ||
+                (fetchedEntity[0] && fetchedEntity[0].price.toFixed(4)) ||
                 '34,000'}
             </span>
             {entity &&
@@ -315,9 +321,10 @@ export function Coin(props: CoinProps) {
               <span className="text-[#7D7D7D]">Market Cap</span>
               <br />
               <span className="font-bold">
+                $
                 {(entity && entity.marketCap) ||
                   (fetchedEntity[0] && fetchedEntity[0].marketCap) ||
-                  '$535,170,972,845'}
+                  '535,170,972,845'}
               </span>
               <span className="flex items-center text-green-500">
                 <ArrowUpIcon
@@ -352,6 +359,7 @@ export function Coin(props: CoinProps) {
               <span className="text-[#7D7D7D]">Volume</span>
               <br />
               <span className="font-bold">
+                $
                 {(entity && entity.volume) ||
                   (fetchedEntity[0] && fetchedEntity[0].volume) ||
                   '$535,170,972,845'}
@@ -373,13 +381,12 @@ export function Coin(props: CoinProps) {
                 <span className="font-bold">
                   {(entity && entity.circulatingSupply) ||
                     (fetchedEntity[0] && fetchedEntity[0].circulatingSupply) ||
-                    '18,618,806.00'}
+                    '18,618,806.00'}{' '}
                   {(entity && entity.coin) ||
                     (fetchedEntity[0] && fetchedEntity[0].coin) ||
                     'BTC'}
                 </span>
-                <span className="font-bold">92%</span>
-              </div>
+              </div>{' '}
               <span className="flex items-center text-green-500">
                 <div className="w-full bg-gray-400 rounded-full h-2.5 dark:bg-gray-700">
                   <div
@@ -398,7 +405,7 @@ export function Coin(props: CoinProps) {
           <ChartWidget {...coinChartProps} ticker={ticker} />
         ) : (
           <HistoricalPriceTable
-            coinTable={coinTable}
+            {...coinChartProps}
             loadingStatus={LoadingStatus.LOADED}
             fetch={fetchHistoricalPrice}
             error={null}

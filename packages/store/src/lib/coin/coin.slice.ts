@@ -6,11 +6,15 @@ import {
   EntityState,
   PayloadAction,
 } from '@reduxjs/toolkit';
-import { ProcessedTokenData } from '@el-cap/interfaces';
-import { processTokenData } from '@el-cap/utilities';
+import { ProcessedTokenData, State } from '@el-cap/interfaces';
 import { getCoin } from '../feed/el-cap-kit.js';
+import {
+  getCrewMemberContract,
+  readState,
+} from '@el-cap/contract-integrations';
 
 import { RootState } from '../store';
+import { checkCoinsOnWatchlist } from '@el-cap/utilities';
 
 export const COIN_FEATURE_KEY = 'coin';
 
@@ -30,7 +34,6 @@ export const fetchCoin = createAsyncThunk(
   async (input: { symbol: string; name: string }, thunkAPI) => {
     const { symbol, name } = input;
 
-    console.log('fetching Coin', symbol, name);
     try {
       const coinData = await getCoin({ symbol, name });
       const processedCoin = {
@@ -52,9 +55,11 @@ export const fetchCoin = createAsyncThunk(
           coinData.remaining.market_data.price_change_percentage_7d_in_currency
             .usd || 0,
       };
-      return [processedCoin];
+      const coinWithWatchListFlag = await checkCoinsOnWatchlist([
+        processedCoin,
+      ]);
+      return coinWithWatchListFlag;
     } catch (error) {
-      console.log('fetching error', error);
       return [];
     }
   }
@@ -81,15 +86,10 @@ export const coinSlice = createSlice({
       .addCase(
         fetchCoin.fulfilled,
         (state: CoinState, action: PayloadAction<ProcessedTokenData[]>) => {
-          console.log('coin action', action);
           coinAdapter.setAll(state, action.payload);
           state.loadingStatus = 'loaded';
         }
-      )
-      .addCase(fetchCoin.rejected, (state: CoinState, action) => {
-        state.loadingStatus = 'error';
-        state.error = action.error.message;
-      });
+      );
   },
 });
 

@@ -10,9 +10,6 @@ import {
 } from '../icons';
 import SearchInput from './searchInput';
 import DropDownMenu from '../components/dropDownMenu';
-const contractId = 'MH-w8Sq6uw3Jwc_stPqyJT8fEcIhx4VrrE10NFgv-KY';
-const warp = WarpFactory.forMainnet();
-const contract = warp.contract(contractId);
 
 type DropDownOption = {
   value: string;
@@ -23,7 +20,7 @@ type DropDownOption = {
 
 type SearchCoin = {
   name: string;
-  symbol: string;
+  coin: string;
   ranking: number;
   image: string;
 };
@@ -36,12 +33,14 @@ enum LoadingStatus {
 
 export interface SearchBarProps {
   goToFeed: () => void;
+  coins: SearchCoin[];
+  loadingStatus: string;
 }
 
 const SearchBar = (props: SearchBarProps) => {
   const [menuStatus, setMenuStatus] = useState<boolean>(true);
-  console.log('searchbar props', props);
-  const { goToFeed } = props;
+  const { goToFeed, coins } = props;
+
   const groupedOptionsCommunity = [
     {
       groupLabel: '',
@@ -201,42 +200,42 @@ const SearchBar = (props: SearchBarProps) => {
       const trendingCoins = [
         {
           name: 'USD Coin',
-          symbol: 'usdc',
+          coin: 'usdc',
           ranking: 5,
           image:
             'https://assets.coingecko.com/coins/images/6319/large/USD_Coin_icon.png?1547042389',
         },
         {
           name: 'XRP',
-          symbol: 'xrp',
+          coin: 'xrp',
           ranking: 6,
           image:
             'https://assets.coingecko.com/coins/images/44/large/xrp-symbol-white-128.png?1605778731',
         },
         {
           name: 'Cardano',
-          symbol: 'ada',
+          coin: 'ada',
           ranking: 7,
           image:
             'https://assets.coingecko.com/coins/images/975/large/cardano.png?1547034860',
         },
         {
           name: 'Lido Staked Ether',
-          symbol: 'steth',
+          coin: 'steth',
           ranking: 8,
           image:
             'https://assets.coingecko.com/coins/images/13442/large/steth_logo.png?1608607546',
         },
         {
           name: 'Dogecoin',
-          symbol: 'doge',
+          coin: 'doge',
           ranking: 9,
           image:
             'https://assets.coingecko.com/coins/images/5/large/dogecoin.png?1547792256',
         },
         {
           name: 'Polygon',
-          symbol: 'matic',
+          coin: 'matic',
           ranking: 10,
           image:
             'https://assets.coingecko.com/coins/images/4713/large/matic-token-icon.png?1624446912',
@@ -255,17 +254,11 @@ const SearchBar = (props: SearchBarProps) => {
     // Fetch search results from API or other data source
 
     try {
-      //example fetch
-      // const response = await fetch(`https://api.example.com/search?query=${query}`);
-      // const searchResults = await response.json();
-      const state = await contract.readState();
-      const searchResults = state.cachedValue.state.coins;
-      console.log('state running here', state);
-
+      console.log('coins in search', coins);
       const regex = new RegExp(query, 'i');
-      const filteredItems = searchResults.filter((item) =>
-        item.name.match(regex)
-      );
+      const filteredItems = coins
+        .filter((item) => item.name.match(regex))
+        .slice(0, 6);
 
       setSearchResults(filteredItems);
     } catch (err) {

@@ -1,17 +1,21 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import StatusInfo from '../components/statusInfo';
 import { PortfolioIcon, WatchlistIcon, WalletIcon } from '../icons';
-import { LogInReturnProps } from 'othent/src/types';
 import { Othent, useOthentReturnProps } from 'othent';
+import { User } from '@el-cap/interfaces';
 
 interface StatusBarProps {
   goToWatchlist: () => void;
+  fetchUser: () => void;
+  user: User;
+  unsetUser: () => void;
 }
 
 const StatusBar = (props: StatusBarProps) => {
-  const { goToWatchlist } = props;
-  const [user, setUser] = useState<LogInReturnProps | null>(null);
+  const { fetchUser, user, unsetUser, goToWatchlist } = props;
+  const [localUser, setLocalUser] = useState<User | undefined>();
   const [othent, setOthent] = useState<useOthentReturnProps | null>(null);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
 
   useEffect(() => {
     console.log('running');
@@ -26,20 +30,69 @@ const StatusBar = (props: StatusBarProps) => {
     initOthent();
   }, []);
 
-  const handleLogin = async () => {
-    console.log('user', user, 'othent', othent);
-    if (othent) {
-      const wallet = await othent.logIn();
-      setUser(wallet);
-      console.log('wallet', wallet);
-    } else {
-      console.error('Othent is not initialized');
+  useEffect(() => {
+    if (user) {
+      setLocalUser(user);
     }
+  }, [user, localUser]);
+
+  const handleLogin = async () => {
+    fetchUser();
   };
 
+  const handleLogout = async () => {
+    console.log('localUser', localUser, 'othent', othent);
+    unsetUser();
+  };
+
+  useEffect(() => {
+    const handleOutsideClick = (event: MouseEvent) => {
+      if (!(event.target as Element).closest('.dropdown')) {
+        setDropdownOpen(false);
+      }
+    };
+
+    window.addEventListener('click', handleOutsideClick);
+
+    return () => {
+      window.removeEventListener('click', handleOutsideClick);
+    };
+  }, []);
+
+  const marqueeRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const marqueeElem = marqueeRef.current;
+
+    if (marqueeElem) {
+      // Duplicate the contents of the marquee
+      marqueeElem.innerHTML += marqueeElem.innerHTML;
+
+      let scrollAmount = 0;
+
+      const scrollInterval = setInterval(() => {
+        scrollAmount++;
+        marqueeElem.scrollLeft = scrollAmount;
+
+        // Reset scrollAmount when halfway point is reached
+        if (scrollAmount >= marqueeElem.scrollWidth / 2) {
+          scrollAmount = 0;
+        }
+      }, 50);
+
+      // Cleanup interval on component unmount
+      return () => {
+        clearInterval(scrollInterval);
+      };
+    }
+  }, []);
+
   return (
-    <div className="flex justify-between items-center py-2 px-10 border-b-2 h-16 overflow-auto">
-      <div className="flex">
+    <div className="flex justify-between items-center py-2 px-10 border-b-2 h-16">
+      <div
+        ref={marqueeRef}
+        className="flex items-center overflow-x-hidden whitespace-nowrap py-2 px-10 border-b-2 h-16"
+      >
         <StatusInfo className="mr-4" text="Crypto Listed: " value="3" />
         <StatusInfo
           className="mr-4"
@@ -67,7 +120,7 @@ const StatusBar = (props: StatusBarProps) => {
             <PortfolioIcon className="mr-1" width={24} height={24} />
             Portfolio
           </span>
-          {!user ? (
+          {!localUser ? (
             <button
               onClick={handleLogin}
               className="bg-gray-300 hover:bg-gray-400 text-black font-bold py-2 px-4 inline-flex items-center rounded-full"
@@ -76,14 +129,37 @@ const StatusBar = (props: StatusBarProps) => {
               <span>Connect Wallet</span>
             </button>
           ) : (
-            <span className="cursor-pointer font-bold mr-4 flex items-center">
-              <img
-                alt="profile"
-                src={user.picture}
-                className="w-8 h-8 rounded-full mr-2"
-              />
-              {user.name}
-            </span>
+            <div className="cursor-pointer dropdown relative inline-block text-left ">
+              <div
+                onClick={() => setDropdownOpen(!dropdownOpen)}
+                className="cursor-pointer font-bold mr-4 flex items-center"
+              >
+                <img
+                  alt="profile"
+                  src={localUser.picture}
+                  className="w-8 h-8 rounded-full mr-2"
+                />
+                {localUser.name}
+              </div>
+              {dropdownOpen && (
+                <div
+                  className="cursor=pointer origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10"
+                  role="menu"
+                  aria-orientation="vertical"
+                  aria-labelledby="menu-button"
+                >
+                  <div className="py-1" role="none">
+                    <div
+                      className="text-gray-700 block px-4 py-2 text-sm"
+                      role="menuitem"
+                      onClick={handleLogout}
+                    >
+                      Logout
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
           )}
         </div>
       </div>

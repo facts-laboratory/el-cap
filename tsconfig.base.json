@@ -18,6 +18,9 @@
       "@el-cap/chart-widget": ["packages/chart-widget/src/index.ts"],
       "@el-cap/chat": ["packages/chat/src/index.ts"],
       "@el-cap/coin": ["packages/coin/src/index.ts"],
+      "@el-cap/contract-integrations": [
+        "contract-integrations/el-cap-crew/index.js"
+      ],
       "@el-cap/el-cap-layout": ["packages/el-cap-layout/src/index.ts"],
       "@el-cap/feed": ["packages/feed/src/index.ts"],
       "@el-cap/historical-price-table": [
