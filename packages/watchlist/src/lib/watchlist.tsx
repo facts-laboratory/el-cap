@@ -26,6 +26,23 @@ export function Watchlist(props: WatchlistProps) {
     alert('coming soon');
   };
 
+  const dummyData = [
+    {
+      '1h': 0.061427811215565675,
+      '24h': 0.4190680067314381,
+      '7d': 1.2789614044332254,
+      circulatingSupply: 19418731,
+      coin: 'BTC',
+      image:
+        'https://assets.coingecko.com/coins/images/1/large/bitcoin.png?1547033579',
+      marketCap: 595176053787,
+      name: 'Bitcoin',
+      price: 30641.910141204382,
+      volume: 10560728706,
+      watchlist: true,
+    },
+  ];
+
   return (
     <div className="py-2">
       <div className="grid xl:grid-cols-5">
@@ -122,7 +139,7 @@ export function Watchlist(props: WatchlistProps) {
           </div>
         </div>
         <TokenTable
-          // data={entities}
+          data={dummyData}
           // goToCoin={goToCoin}
           addToWatchlist={(coin: string) => console.log('addToWatchlist ')}
         />
