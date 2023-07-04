@@ -55,7 +55,7 @@ export const fetchWatchlist = createAsyncThunk(
     const riggingState = thunkAPI.getState();
     const coins = riggingState.contracts.entities;
 
-    const coinsOnWatchlist = await processTokenData(coins);
+    const coinsOnWatchlist = await checkCoinsOnWatchlist(coins, true);
     const sortedPrices = sortPrices(coinsOnWatchlist);
     return sortedPrices;
   }

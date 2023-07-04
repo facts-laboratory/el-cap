@@ -39,6 +39,8 @@ export async function processTokenData(
     };
   });
 
+  console.log('combibedTokenData', combinedTokenData);
+
   return await checkCoinsOnWatchlist(processedData);
 }
 
