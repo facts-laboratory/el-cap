@@ -1,0 +1,16 @@
+{
+  "name": "watchlist",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/watchlist/src",
+  "projectType": "library",
+  "tags": [],
+  "targets": {
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["packages/watchlist/**/*.{ts,tsx,js,jsx}"]
+      }
+    }
+  }
+}

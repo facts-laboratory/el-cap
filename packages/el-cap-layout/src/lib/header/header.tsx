@@ -8,6 +8,7 @@ import { useEffect } from 'react';
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface HeaderProps {
   goToFeed: () => void;
+  goToWatchlist: () => void;
   header: {
     fetchContractcoins: () => void;
     coins: SearchCoin[];
@@ -22,7 +23,9 @@ export interface HeaderProps {
 
 export function Header(props: HeaderProps) {
   // const ref: React.RefObject<HTMLDivElement> = useRef(null);
-  const { header, goToFeed } = props;
+
+
+  const { header, goToFeed , goToWatchlist } = props;
   const {
     fetchContractcoins,
     coins,
@@ -46,7 +49,7 @@ export function Header(props: HeaderProps) {
 
   return (
     <div className="bg-white min-w-full">
-      <StatusBar fetchUser={fetchUser} user={user} unsetUser={unsetUser} />
+      <StatusBar  goToWatchlist={goToWatchlist} fetchUser={fetchUser} user={user} unsetUser={unsetUser} />
       <SearchBar
         goToFeed={() => goToFeed()}
         coins={coins}
@@ -60,4 +63,5 @@ export default Header;
 
 export const ConnectedHeader = connect(mapStateToProps, (dispatch) => ({
   goToFeed: (key: string) => dispatch({ type: 'FEED', payload: { key } }),
+  goToWatchlist: () => dispatch({ type: 'WATCHLIST' }),
 }))(Header);

@@ -85,9 +85,11 @@ export const TokenTable = memo((props: TokenTableProps) => {
   }, []);
 
   useEffect(() => {
-    const nextEntities = data.slice(page * 30, (page + 1) * 30);
-    setDisplayEntities((prevEntities) => [...prevEntities, ...nextEntities]);
-  }, [page]);
+    if (data) {
+      const nextEntities = data.slice(page * 30, (page + 1) * 30);
+      setDisplayEntities((prevEntities) => [...prevEntities, ...nextEntities]);
+    }
+  }, [page, data]);
 
   return (
     <div className="mt-4 relative overflow-x-auto shadow-md sm:rounded-lg">
