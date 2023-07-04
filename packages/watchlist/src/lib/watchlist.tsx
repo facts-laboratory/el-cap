@@ -22,6 +22,10 @@ export function Watchlist(props: WatchlistProps) {
     alert('coming soon');
   };
 
+  const onSubscribe = () => {
+    alert('coming soon');
+  };
+
   return (
     <div className="py-2">
       <div className="grid xl:grid-cols-5">
@@ -133,7 +137,10 @@ export function Watchlist(props: WatchlistProps) {
             Get crypto analysis, news and updates right to your inbox! Sign up
             here so you don't miss a single newsletter.
           </p>
-          <button className="bg-blue-700 text-white font-semibold p-4 rounded-xl my-14">
+          <button
+            onClick={() => onSubscribe()}
+            className="bg-blue-700 text-white font-semibold p-4 rounded-xl my-14"
+          >
             Subscribe now
           </button>
         </div>
