@@ -35,11 +35,13 @@ export interface SearchBarProps {
   goToFeed: () => void;
   coins: SearchCoin[];
   loadingStatus: string;
+  goToFaq: () => void;
 }
 
 const SearchBar = (props: SearchBarProps) => {
   const [menuStatus, setMenuStatus] = useState<boolean>(true);
-  const { goToFeed, coins } = props;
+  const { goToFeed, coins, goToFaq } = props;
+  console.log('goToFaq', goToFaq);
 
   const groupedOptionsCommunity = [
     {
@@ -300,7 +302,10 @@ const SearchBar = (props: SearchBarProps) => {
             goToFeed={goToFeed}
           />
 
-          <span className="font-bold mr-10 hover:text-blue-500 hover:cursor-pointer">
+          <span
+            onClick={() => goToFaq()}
+            className="font-bold mr-10 hover:text-blue-500 hover:cursor-pointer"
+          >
             FAQ
           </span>
         </div>

@@ -45,8 +45,10 @@ const components: ObjectKeys = {
   Watchlist: loadable(() => import('@el-cap/watchlist'), {
     resolveComponent: (components) => components.ConnectedWatchlist,
   }),
+  Faq: loadable(() => import('@el-cap/faq'), {
+    resolveComponent: (components) => components.ConnectedFaq,
+  }),
 };
-
 export interface AppProps {
   page?: string;
 }
@@ -90,6 +92,7 @@ export function App(props: AppProps) {
       ),
     },
   };
+  const faqPage = {};
   const watchlistPage = {};
   const Page = components[(page as keyof ObjectKeys) || 'Feed'];
   return (
@@ -101,6 +104,7 @@ export function App(props: AppProps) {
             coinPage={coinPage}
             feedPage={feedPage}
             watchlistPage={watchlistPage}
+            faqPage={faqPage}
           />
         }
       />

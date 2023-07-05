@@ -9,6 +9,7 @@ import { useEffect } from 'react';
 export interface HeaderProps {
   goToFeed: () => void;
   goToWatchlist: () => void;
+  goToFaq: () => void;
   header: {
     fetchContractcoins: () => void;
     coins: SearchCoin[];
@@ -24,8 +25,7 @@ export interface HeaderProps {
 export function Header(props: HeaderProps) {
   // const ref: React.RefObject<HTMLDivElement> = useRef(null);
 
-
-  const { header, goToFeed , goToWatchlist } = props;
+  const { header, goToFeed, goToWatchlist, goToFaq } = props;
   const {
     fetchContractcoins,
     coins,
@@ -49,11 +49,17 @@ export function Header(props: HeaderProps) {
 
   return (
     <div className="bg-white min-w-full">
-      <StatusBar  goToWatchlist={goToWatchlist} fetchUser={fetchUser} user={user} unsetUser={unsetUser} />
+      <StatusBar
+        goToWatchlist={goToWatchlist}
+        fetchUser={fetchUser}
+        user={user}
+        unsetUser={unsetUser}
+      />
       <SearchBar
         goToFeed={() => goToFeed()}
         coins={coins}
         loadingStatus={loadingStatus}
+        goToFaq={goToFaq}
       />
     </div>
   );
@@ -64,4 +70,5 @@ export default Header;
 export const ConnectedHeader = connect(mapStateToProps, (dispatch) => ({
   goToFeed: (key: string) => dispatch({ type: 'FEED', payload: { key } }),
   goToWatchlist: () => dispatch({ type: 'WATCHLIST' }),
+  goToFaq: () => dispatch({ type: 'FAQ' }),
 }))(Header);

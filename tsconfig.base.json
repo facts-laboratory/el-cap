@@ -33,7 +33,8 @@
       "@el-cap/top-coins-card": ["packages/top-coins-card/src/index.ts"],
       "@el-cap/utilities": ["packages/utilities/src/index.ts"],
       "@el-cap/widget-coin-card": ["packages/widget-coin-card/src/index.ts"],
-      "@el-cap/watchlist": ["packages/watchlist/src/index.ts"]
+      "@el-cap/watchlist": ["packages/watchlist/src/index.ts"],
+      "@el-cap/faq": ["packages/faq/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

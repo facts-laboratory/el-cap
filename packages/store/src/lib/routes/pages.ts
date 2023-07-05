@@ -7,6 +7,7 @@ const components: ObjectKeys = {
   FEED: 'Feed',
   COIN: 'Coin',
   WATCHLIST: 'Watchlist',
+  FAQ: 'Faq',
   [NOT_FOUND]: 'Feed',
 };
 
@@ -27,6 +28,12 @@ export const routesMap: RoutesMap = {
     path: '/watchlist',
     thunk: async (dispatch, getState) => {
       console.log('Watchlist thunk.');
+    },
+  },
+  FAQ: {
+    path: '/faq',
+    thunk: async (dispatch, getState) => {
+      console.log('Faq thunk.');
     },
   },
   NOT_FOUND: {
