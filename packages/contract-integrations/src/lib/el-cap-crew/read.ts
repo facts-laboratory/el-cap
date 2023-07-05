@@ -4,7 +4,7 @@ import { CONTRACT_PARAMS } from './constants.js'; // Import your constants
 
 const warp = WarpFactory.forMainnet();
 
-export const readState = async (contractId = null) => {
+export const readState = async (contractId = null)=> {
   // Use provided contractId, if available
   const params = contractId
     ? { ...CONTRACT_PARAMS, contractTxId: contractId }

@@ -73,7 +73,7 @@ export const checkCoinsOnWatchlist = async (
   let watchlist: string[] = [];
 
   if (queryCrewState.length > 0) {
-    const state: State = await readState(queryCrewState[0].node.id);
+    const state: any= await readState(queryCrewState[0].node.id);
     console.log('state in checkCoinsOnWatchlist', state);
     watchlist = state.watchlist.map((item: string) => item.toLowerCase());
   }
