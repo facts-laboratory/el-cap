@@ -2,18 +2,18 @@ import { useEffect, useRef, useState } from 'react';
 import StatusInfo from '../components/statusInfo';
 import { PortfolioIcon, WatchlistIcon, WalletIcon } from '../icons';
 import { Othent, useOthentReturnProps } from 'othent';
-import { User } from '@el-cap/interfaces';
+import { ArAccount } from 'arweave-account';
 
 interface StatusBarProps {
   goToWatchlist: () => void;
-  fetchUser: () => void;
-  user: User;
+  setUser: () => void;
+  user: ArAccount;
   unsetUser: () => void;
 }
 
 const StatusBar = (props: StatusBarProps) => {
-  const { fetchUser, user, unsetUser, goToWatchlist } = props;
-  const [localUser, setLocalUser] = useState<User | undefined>();
+  const { setUser, user, unsetUser, goToWatchlist } = props;
+  const [localUser, setLocalUser] = useState<ArAccount | undefined>();
   const [othent, setOthent] = useState<useOthentReturnProps | null>(null);
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
@@ -31,13 +31,11 @@ const StatusBar = (props: StatusBarProps) => {
   }, []);
 
   useEffect(() => {
-    if (user) {
-      setLocalUser(user);
-    }
+    setLocalUser(user);
   }, [user, localUser]);
 
   const handleLogin = async () => {
-    fetchUser();
+    setUser();
   };
 
   const handleLogout = async () => {
@@ -136,10 +134,10 @@ const StatusBar = (props: StatusBarProps) => {
               >
                 <img
                   alt="profile"
-                  src={localUser.picture}
+                  src={localUser.profile.avatarURL}
                   className="w-8 h-8 rounded-full mr-2"
                 />
-                {localUser.name}
+                {localUser.profile.handleName || localUser.addr.substring(0, 9)}
               </div>
               {dropdownOpen && (
                 <div

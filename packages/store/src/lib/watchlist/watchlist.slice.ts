@@ -3,15 +3,9 @@ import {
   createEntityAdapter,
   createSelector,
   createSlice,
-  Dictionary,
   EntityState,
   PayloadAction,
 } from '@reduxjs/toolkit';
-import {
-  deploy,
-  getCrewMemberContract,
-  readState,
-} from '@el-cap/contract-integrations';
 import { RootState } from '../store';
 import { ProcessedTokenData, State } from '@el-cap/interfaces';
 import {

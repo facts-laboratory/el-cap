@@ -3,6 +3,7 @@ import { fetchWatchlist, mapStateToProps } from '@el-cap/store';
 import { TokenTable } from '@el-cap/token-table';
 import { useEffect } from 'react';
 import { ProcessedTokenData } from '@el-cap/interfaces';
+import { ArAccount } from 'arweave-account';
 
 /* eslint-disable-next-line */
 export interface WatchlistProps {
@@ -10,11 +11,12 @@ export interface WatchlistProps {
     fetchWatchlist: () => void;
     watchlist: ProcessedTokenData[];
     addToWatchlist: (coin: string) => void;
+    user: ArAccount;
   };
 }
 
 export function Watchlist(props: WatchlistProps) {
-  const { watchlistPage } = props;
+  const { watchlistPage, user } = props;
   const { fetchWatchlist, watchlist, addToWatchlist } = watchlistPage;
 
   const onWatchlist = () => {
@@ -140,6 +142,7 @@ export function Watchlist(props: WatchlistProps) {
           data={watchlist}
           // goToCoin={goToCoin}
           addToWatchlist={(coin: string) => addToWatchlist(coin)}
+          user={user}
         />
       </div>
       <div className="grid xl:grid-cols-3">

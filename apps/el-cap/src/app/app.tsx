@@ -22,7 +22,7 @@ import {
   selectCoinLoadingStatus,
   selectAllContracts,
   selectContractsLoadingStatus,
-  fetchUser,
+  setUser,
   selectUser,
   unsetUser,
   fetchWatchlist,
@@ -59,7 +59,7 @@ export function App(props: AppProps) {
     fetchContractcoins: () => dispatch(fetchContractcoins()),
     coins: useAppSelector(selectAllContracts),
     loadingStatus: useAppSelector(selectContractsLoadingStatus),
-    fetchUser: () => dispatch(fetchUser()),
+    setUser: () => dispatch(setUser()),
     user: useAppSelector(selectUser),
     unsetUser: () => dispatch(unsetUser()),
     fetchFeed: (key: string) => dispatch(fetchFeed(key)),
@@ -72,6 +72,7 @@ export function App(props: AppProps) {
     getTopCoins: () => dispatch(getTopCoins()),
     topCoins: useAppSelector(selectTopCoins),
     fetchFeed: (key: string) => dispatch(fetchFeed(key)),
+    user: useAppSelector(selectUser),
   };
   const coinPage = {
     loadingStatus: useAppSelector(selectCoinLoadingStatus),
@@ -79,6 +80,7 @@ export function App(props: AppProps) {
       dispatch(fetchCoin(input)),
     addToWatchlist: (input: string) => dispatch(addToWatchlist(input)),
     fetchedEntity: useAppSelector(selectAllCoin),
+    user: useAppSelector(selectUser),
     coinChartProps: {
       fetch: (input: { symbol: string; interval: string }) =>
         dispatch(fetch24PriceData(input)),
@@ -95,6 +97,7 @@ export function App(props: AppProps) {
     fetchWatchlist: () => dispatch(fetchWatchlist()),
     watchlist: useAppSelector(selectAllWatchlist),
     addToWatchlist: (input: string) => dispatch(addToWatchlist(input)),
+    user: useAppSelector(selectUser),
   };
   const Page = components[(page as keyof ObjectKeys) || 'Feed'];
   return (

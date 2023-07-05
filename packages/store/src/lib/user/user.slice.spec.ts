@@ -1,4 +1,4 @@
-import { fetchUser, userAdapter, userReducer } from './user.slice';
+import { setUser, userAdapter, userReducer } from './user.slice';
 
 describe('user reducer', () => {
   it('should handle initial state', () => {
@@ -10,8 +10,8 @@ describe('user reducer', () => {
     expect(userReducer(undefined, { type: '' })).toEqual(expected);
   });
 
-  it('should handle fetchUsers', () => {
-    let state = userReducer(undefined, fetchUser.pending(null, null));
+  it('should handle setUsers', () => {
+    let state = userReducer(undefined, setUser.pending(null, null));
 
     expect(state).toEqual(
       expect.objectContaining({
@@ -21,7 +21,7 @@ describe('user reducer', () => {
       })
     );
 
-    state = userReducer(state, fetchUser.fulfilled([{ id: 1 }], null, null));
+    state = userReducer(state, setUser.fulfilled([{ id: 1 }], null, null));
 
     expect(state).toEqual(
       expect.objectContaining({
@@ -33,7 +33,7 @@ describe('user reducer', () => {
 
     state = userReducer(
       state,
-      fetchUser.rejected(new Error('Uh oh'), null, null)
+      setUser.rejected(new Error('Uh oh'), null, null)
     );
 
     expect(state).toEqual(

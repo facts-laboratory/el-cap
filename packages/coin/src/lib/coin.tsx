@@ -28,6 +28,7 @@ import {
 import { ArrowDownIcon } from '@el-cap/top-coins-card';
 import CoinAttributeLinkButton from '../assets/component/CoinAttributeLinkButton';
 import ToggleComponent from '../assets/component/ToggleComponent';
+import { ArAccount } from 'arweave-account';
 
 interface CoinProps {
   goToFeed: () => void;
@@ -38,6 +39,7 @@ interface CoinProps {
     loadingStatus: string;
     fetchedEntity: ProcessedTokenData[];
     addToWatchlist: (coin: string) => void;
+    user: ArAccount;
     coinChartProps: {
       fetchRemaining: (input: { symbol: string; interval: string }) => void;
       fetchCoin: (input: { symbol: string; name: string }) => void;
@@ -125,13 +127,14 @@ const coinAttributeButtonData = [
 
 export function Coin(props: CoinProps) {
   console.log('coinpageprops', props);
-  const { goToFeed, entity, ticker, coinPage } = props;
+  const { entity, ticker, coinPage } = props;
   const {
     coinChartProps,
     fetchCoin,
     loadingStatus,
     fetchedEntity,
     addToWatchlist,
+    user,
   } = coinPage;
   const [coins, setCoins] = useState<ContractCoin[]>([]);
   const [shouldLoad, setShouldLoad] = useState(true);
@@ -140,7 +143,6 @@ export function Coin(props: CoinProps) {
     false
   );
 
-  const [onWatchList, setOnWatchList] = useState(false);
   const [viewType, setViewType] = useState<string>('Chart');
 
   const setView = (view: string) => {
@@ -247,7 +249,13 @@ export function Coin(props: CoinProps) {
                 'Bitcoin'}
             </span>
             <Tag tagName="BTC" goToTag={goToTag} />
-            <div onClick={() => handleAddToWatchlist()}>
+            <div
+              onClick={
+                user
+                  ? () => handleAddToWatchlist()
+                  : () => alert('Please Connect Wallet')
+              }
+            >
               <WatchlistIcon
                 className="ml-2"
                 width={18}

@@ -3,12 +3,14 @@ import styles from './token-table.module.css';
 import BitcoinSVG from '../assets/svg/bitcoin.svg';
 import { WatchlistIcon } from '../assets/icons';
 import { ProcessedTokenData } from '@el-cap/interfaces';
+import { ArAccount } from 'arweave-account';
 
 /* eslint-disable-next-line */
 export interface TokenTableProps {
   data: ProcessedTokenData[];
   goToCoin: (coin: string, entity: ProcessedTokenData) => void;
   addToWatchlist: (coin: string) => void;
+  user?: ArAccount;
 }
 
 export const orderByMarketCap = (data: ProcessedTokenData[]) => {
@@ -16,7 +18,7 @@ export const orderByMarketCap = (data: ProcessedTokenData[]) => {
 };
 
 export const TokenTable = memo((props: TokenTableProps) => {
-  const { data, goToCoin, addToWatchlist } = props;
+  const { data, goToCoin, addToWatchlist, user } = props;
   const [tokenData, setTokenData] = useState<ProcessedTokenData[]>([]);
   const [page, setPage] = useState(1);
   const [displayEntities, setDisplayEntities] = useState<ProcessedTokenData[]>(
@@ -135,7 +137,11 @@ export const TokenTable = memo((props: TokenTableProps) => {
               return (
                 <tr className="bg-gray-100 border-b font-bold" key={key}>
                   <th
-                    onClick={() => handleAddToWatchlist(entity.coin)}
+                    onClick={
+                      user
+                        ? () => handleAddToWatchlist(entity.coin)
+                        : () => alert('please connect wallet')
+                    }
                     scope="row"
                     className="px-6 py-4"
                   >

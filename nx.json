@@ -15,6 +15,11 @@
       }
     }
   },
+  "pluginsConfig": {
+    "@nrwl/js": {
+      "analyzeSourceFiles": true
+    }
+  },
   "targetDefaults": {
     "build": {
       "dependsOn": ["^build"],

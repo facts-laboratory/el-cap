@@ -1,13 +1,12 @@
-import { Warp, WarpFactory } from 'warp-contracts';
+import { WarpFactory } from 'warp-contracts';
 import {
   DeployPlugin,
-  ArweaveSigner,
   InjectedArweaveSigner,
 } from 'warp-contracts-plugin-deploy';
 import { stateFromFile } from './initial-state';
 import { EL_CAP_CREW_SRC } from './constants';
 
-export async function deploy(coin) {
+export async function deploy(coin: string) {
   const warp = WarpFactory.forMainnet().use(new DeployPlugin());
 
   await window.arweaveWallet.connect([
@@ -29,18 +28,17 @@ export async function deploy(coin) {
   const userSigner = new InjectedArweaveSigner(window.arweaveWallet);
   await userSigner.setPublicKey();
 
-  const deployFromSourceTx = await warp.deployFromSourceTx({
-    initState: JSON.stringify({
-      ...initialState,
-    }),
-    srcTxId: EL_CAP_CREW_SRC,
-    wallet: userSigner,
-    tags: [{ name: 'El-Cap-Version', value: 'MVP-21' }],
-  });
+  const deployFromSourceTx = async () => {
+    return await warp.deployFromSourceTx({
+      initState: JSON.stringify({ ...initialState }),
+      srcTxId: EL_CAP_CREW_SRC,
+      wallet: userSigner,
+      tags: [{ name: 'El-Cap-Version', value: 'MVP-21' }],
+    });
+  };
 
+  const result = await deployFromSourceTx();
   console.log(
-    `Contract ${deployFromSourceTx.contractTxId} deployed from contract source ${deployFromSourceTx.srcTxId}`
+    `Contract ${result.contractTxId} deployed from contract source ${result.srcTxId}`
   );
-
-  deployFromSourceTx();
 }

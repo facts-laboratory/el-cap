@@ -18,9 +18,7 @@
       "@el-cap/chart-widget": ["packages/chart-widget/src/index.ts"],
       "@el-cap/chat": ["packages/chat/src/index.ts"],
       "@el-cap/coin": ["packages/coin/src/index.ts"],
-      "@el-cap/contract-integrations": [
-        "contract-integrations/el-cap-crew/index.js"
-      ],
+
       "@el-cap/el-cap-layout": ["packages/el-cap-layout/src/index.ts"],
       "@el-cap/feed": ["packages/feed/src/index.ts"],
       "@el-cap/historical-price-table": [
@@ -33,7 +31,10 @@
       "@el-cap/top-coins-card": ["packages/top-coins-card/src/index.ts"],
       "@el-cap/utilities": ["packages/utilities/src/index.ts"],
       "@el-cap/watchlist": ["packages/watchlist/src/index.ts"],
-      "@el-cap/widget-coin-card": ["packages/widget-coin-card/src/index.ts"]
+      "@el-cap/widget-coin-card": ["packages/widget-coin-card/src/index.ts"],
+      "@el-cap/contract-integrations": [
+        "packages/contract-integrations/src/index.ts"
+      ]
     }
   },
   "exclude": ["node_modules", "tmp"]
