@@ -13,7 +13,7 @@ export interface HeaderProps {
     fetchContractcoins: () => void;
     coins: SearchCoin[];
     loadingStatus: string;
-    fetchUser: () => void;
+    setUser: () => void;
     user: User;
     unsetUser: () => void;
     feedLoadingStatus: string;
@@ -24,13 +24,12 @@ export interface HeaderProps {
 export function Header(props: HeaderProps) {
   // const ref: React.RefObject<HTMLDivElement> = useRef(null);
 
-
-  const { header, goToFeed , goToWatchlist } = props;
+  const { header, goToFeed, goToWatchlist } = props;
   const {
     fetchContractcoins,
     coins,
     loadingStatus,
-    fetchUser,
+    setUser,
     user,
     unsetUser,
     feedLoadingStatus,
@@ -49,7 +48,12 @@ export function Header(props: HeaderProps) {
 
   return (
     <div className="bg-white min-w-full">
-      <StatusBar  goToWatchlist={goToWatchlist} fetchUser={fetchUser} user={user} unsetUser={unsetUser} />
+      <StatusBar
+        goToWatchlist={goToWatchlist}
+        setUser={setUser}
+        user={user}
+        unsetUser={unsetUser}
+      />
       <SearchBar
         goToFeed={() => goToFeed()}
         coins={coins}

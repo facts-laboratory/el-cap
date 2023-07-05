@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 
 import { connect } from 'react-redux';
@@ -9,6 +9,7 @@ import { TokenTable } from '@el-cap/token-table';
 import TabComponent from './components/TabComponent';
 import DropDownFeedOptions from './components/DropDownFeed';
 import { SortKey, TopCoins } from '@el-cap/interfaces';
+import { ArAccount } from 'arweave-account';
 
 export interface FeedProps {
   goToCoin: (ticker: string) => void;
@@ -21,6 +22,7 @@ export interface FeedProps {
     topCoins: TopCoins;
     addToWatchlist: (coin: string) => void;
     checkCoinsOnWatchlist: () => void;
+    user: ArAccount;
   };
 }
 
@@ -32,6 +34,7 @@ export function Feed(props: FeedProps) {
     getTopCoins,
     topCoins,
     addToWatchlist,
+    user,
   } = props.feedPage;
   const { goToCoin, goToFeed } = props;
   const [showCase, setShowCase] = useState<boolean>(true);
@@ -208,6 +211,7 @@ export function Feed(props: FeedProps) {
                 data={entities}
                 goToCoin={goToCoin}
                 addToWatchlist={(coin: string) => addToWatchlist(coin)}
+                user={user}
               />
             )}
           </div>

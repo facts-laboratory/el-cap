@@ -13,7 +13,6 @@ import {
   readState,
   getLatestHydrate,
 } from '@el-cap/contract-integrations';
-import { FeedEntity } from '@el-cap/store';
 import { writeContract } from 'arweavekit/contract';
 
 export async function processTokenData(
@@ -24,28 +23,41 @@ export async function processTokenData(
   Object.keys(combinedTokenData).forEach((key) => {
     const combinedTokenItem = combinedTokenData[key];
 
-    processedData[key] = {
-      name: combinedTokenItem.name || '',
-      image: combinedTokenItem.image || '',
-      coin: combinedTokenItem.symbol || '',
-      price: combinedTokenItem.value || 0,
-      marketCap: combinedTokenItem.market_cap || 0,
-      volume: combinedTokenItem.total_volume || 0,
-      circulatingSupply: combinedTokenItem.circulating_supply || 0,
-      '1h': combinedTokenItem.price_change_percentage_1h_in_currency || 0,
-      '24h': combinedTokenItem.price_change_percentage_24h_in_currency || 0,
-      '7d': combinedTokenItem.price_change_percentage_7d_in_currency || 0,
-      watchlist: false,
-    };
+    try {
+      processedData[key] = {
+        name: combinedTokenItem.name || '',
+        image: combinedTokenItem.image || combinedTokenItem.image.thumb || '',
+        coin: combinedTokenItem.symbol || '',
+        price: combinedTokenItem.value || 0,
+        marketCap: combinedTokenItem.market_cap || 0,
+        volume: combinedTokenItem.total_volume || 0,
+        circulatingSupply: combinedTokenItem.circulating_supply || 0,
+        '1h':
+          combinedTokenItem.price_change_percentage_1h_in_currency ||
+          combinedTokenItem.market.price_change_percentage_1h_in_currency.usd ||
+          0,
+        '24h': combinedTokenItem.price_change_percentage_24h_in_currency || 0,
+        '7d': combinedTokenItem.price_change_percentage_7d_in_currency || 0,
+        watchlist: false,
+      };
+    } catch (error) {
+      console.log('error here', error);
+    }
   });
 
   console.log('combibedTokenData', combinedTokenData);
 
-  return await checkCoinsOnWatchlist(processedData);
+  try {
+    await window.arweaveWallet.getActiveAddress();
+
+    return await checkCoinsOnWatchlist(processedData);
+  } catch {
+    return processedData;
+  }
 }
 
 export function entriesToObj(
-  entities: Dictionary<FeedEntity>
+  entities: Dictionary<ProcessedTokenData>
 ): Record<string, ProcessedTokenData> {
   return Object.entries(entities).reduce(
     (acc, [key, value]) => ({ ...acc, [key]: value }),
@@ -80,7 +92,7 @@ export const checkCoinsOnWatchlist = async (
 
   if (returnOnlyWatchlist) {
     resultEntities = Object.keys(resultEntities)
-      .filter((coinKey) => resultEntities[coinKey].watchlist)
+      .filter((coinKey) => resultEntities[coinKey]?.watchlist)
       .reduce(
         (res: Dictionary<ProcessedTokenData>, key) => (
           (res[key] = resultEntities[key]), res
@@ -118,11 +130,10 @@ export function sortTopCoins(
 
   return result;
 }
-
 export function sortPrices(
-  prices: ProcessedTokenData[] | Dictionary<ProcessedTokenData>,
-  key: string | null = 'marketCap'
-): ProcessedTokenData[] {
+  prices: Dictionary<ProcessedTokenData>,
+  key: string | undefined = 'marketCap'
+): ProcessedTokenData[] | undefined {
   console.log('sortkey in function', key);
   if (!Object.values(SortKey).includes(key as SortKey)) {
     key = SortKey.MARKET_CAP; // Fallback to sorting by marketCap
@@ -131,7 +142,9 @@ export function sortPrices(
   // Define keys for which the sorting order should be reversed
   const reverseOrderKeys = [SortKey.LOSERS];
 
-  const pricesArray = Array.isArray(prices) ? prices : Object.values(prices);
+  const pricesArray = (
+    Array.isArray(prices) ? prices : Object.values(prices)
+  ).filter((price) => price !== undefined);
   const sortedPrices = [...pricesArray];
 
   sortedPrices.sort((a, b) => {
@@ -153,24 +166,26 @@ export async function updateCoinsRecursive(
   allCoins: ProcessedTokenData[] | undefined,
   index = 0
 ) {
-  if (index >= allCoins.length) return;
+  if (allCoins) {
+    if (index >= allCoins.length) return;
 
-  // Get the next 5 coins
-  const coins = allCoins.slice(index, index + 5);
+    // Get the next 5 coins
+    const coins = allCoins.slice(index, index + 5);
 
-  // Call refreshCoins with the chunk of 5 coins
-  await writeContract({
-    environment: 'mainnet' as const,
-    contractTxId: EL_CAP_RIGGING_TX,
-    wallet: 'use_wallet' as const,
-    options: {
-      function: 'refreshCoins',
-      coins,
-    },
-  });
+    // Call refreshCoins with the chunk of 5 coins
+    await writeContract({
+      environment: 'mainnet' as const,
+      contractTxId: EL_CAP_RIGGING_TX,
+      wallet: 'use_wallet' as const,
+      options: {
+        function: 'refreshCoins',
+        coins,
+      },
+    });
 
-  // Call updateCoinsRecursive with the next index
-  await updateCoinsRecursive(allCoins, index + 5);
+    // Call updateCoinsRecursive with the next index
+    await updateCoinsRecursive(allCoins, index + 5);
+  }
 }
 
 export const getLastUpdatedState = async () => {
@@ -181,32 +196,25 @@ export const getLastUpdatedState = async () => {
 
 export const isLastUpdatedOverDay = async () => {
   const read = await getLatestHydrate();
-  console.log('isLastUpdatedOverDay: read', read);
 
   // Get the current time in seconds
   const currentTime = Math.floor(Date.now() / 1000);
-  console.log('isLastUpdatedOverDay: currentTime', currentTime);
 
   for (const transaction of read) {
     if (transaction.node.block && transaction.node.block.timestamp) {
       const transactionTime = transaction.node.block.timestamp;
-      console.log('isLastUpdatedOverDay: transactionTime', transactionTime);
 
       const differenceInHours = (currentTime - transactionTime) / 3600;
-      console.log('isLastUpdatedOverDay: differenceInHours', differenceInHours);
 
       if (differenceInHours > 24) {
-        console.log('isLastUpdatedOverDay: result', true);
         return true;
       } else {
-        console.log('isLastUpdatedOverDay: result', false);
         return false;
       }
     }
   }
 
   // If no transaction with a timestamp is found, return false
-  console.log('isLastUpdatedOverDay: result', false);
   return false;
 };
 
@@ -230,10 +238,12 @@ export function mergeSingleCoinObjects(
     }
   });
 }
+
 export function mergeObjects(
   redstone: RedstoneObject,
   remaining: RemainingObject
-): Array<unknown> {
+): Array<unknown> | RedstoneObject {
+  console.log('merge here', redstone, remaining);
   if (remaining) {
     const redstoneLowered: Record<string, unknown> = Object.keys(
       redstone
@@ -243,6 +253,7 @@ export function mergeObjects(
     }, {});
 
     return Object.keys(remaining).map((key) => {
+      console.log('key here', key);
       const symbolLower = remaining[key].symbol.toLowerCase();
       if (Object.prototype.hasOwnProperty.call(redstoneLowered, symbolLower)) {
         return {

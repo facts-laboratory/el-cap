@@ -7,6 +7,7 @@
     "moduleResolution": "node",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
+
     "importHelpers": true,
     "target": "es2015",
     "module": "esnext",
@@ -19,7 +20,7 @@
       "@el-cap/chat": ["packages/chat/src/index.ts"],
       "@el-cap/coin": ["packages/coin/src/index.ts"],
       "@el-cap/contract-integrations": [
-        "contract-integrations/el-cap-crew/index.js"
+        "packages/contract-integrations/index.js"
       ],
       "@el-cap/el-cap-layout": ["packages/el-cap-layout/src/index.ts"],
       "@el-cap/feed": ["packages/feed/src/index.ts"],
