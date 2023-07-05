@@ -5,17 +5,19 @@ import storage from 'redux-persist/lib/storage';
 import page, { routesMap } from './routes/pages';
 import {
   COIN_CHART_FEATURE_KEY,
-  coinChartSlice,
+  coinChartReducer,
 } from './coin-chart/coin-chart.slice';
-
 import { feedReducer, FEED_FEATURE_KEY } from './feed/feed.slice';
-
 import { coinReducer, COIN_FEATURE_KEY } from './coin/coin.slice';
 import {
   CONTRACTS_FEATURE_KEY,
   contractsReducer,
 } from './contracts/contracts.slice';
 import { USER_FEATURE_KEY, userReducer } from './user/user.slice';
+import {
+  WATCHLIST_FEATURE_KEY,
+  watchlistReducer,
+} from './watchlist/watchlist.slice';
 
 const { reducer, middleware, enhancer } = connectRoutes(routesMap, {
   basename: '#',
@@ -31,12 +33,13 @@ const persistedReducer = persistReducer(persistConfig, userReducer);
 
 export const store = configureStore({
   reducer: {
-    [COIN_CHART_FEATURE_KEY]: coinChartSlice.reducer,
     location: reducer,
     [FEED_FEATURE_KEY]: feedReducer,
     [COIN_FEATURE_KEY]: coinReducer,
     [CONTRACTS_FEATURE_KEY]: contractsReducer,
     [USER_FEATURE_KEY]: persistedReducer,
+    [COIN_CHART_FEATURE_KEY]: coinChartReducer,
+    [WATCHLIST_FEATURE_KEY]: watchlistReducer,
     page,
   },
   // Additional middleware can be passed to this array

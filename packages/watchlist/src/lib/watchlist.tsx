@@ -1,11 +1,22 @@
 import { connect } from 'react-redux';
-import { mapStateToProps } from '@el-cap/store';
+import { fetchWatchlist, mapStateToProps } from '@el-cap/store';
 import { TokenTable } from '@el-cap/token-table';
+import { useEffect } from 'react';
+import { ProcessedTokenData } from '@el-cap/interfaces';
 
 /* eslint-disable-next-line */
-export interface WatchlistProps {}
+export interface WatchlistProps {
+  watchlistPage: {
+    fetchWatchlist: () => void;
+    watchlist: ProcessedTokenData[];
+    addToWatchlist: (coin: string) => void;
+  };
+}
 
 export function Watchlist(props: WatchlistProps) {
+  const { watchlistPage } = props;
+  const { fetchWatchlist, watchlist, addToWatchlist } = watchlistPage;
+
   const onWatchlist = () => {
     alert('coming soon');
   };
@@ -26,22 +37,9 @@ export function Watchlist(props: WatchlistProps) {
     alert('coming soon');
   };
 
-  const dummyData = [
-    {
-      '1h': 0.061427811215565675,
-      '24h': 0.4190680067314381,
-      '7d': 1.2789614044332254,
-      circulatingSupply: 19418731,
-      coin: 'BTC',
-      image:
-        'https://assets.coingecko.com/coins/images/1/large/bitcoin.png?1547033579',
-      marketCap: 595176053787,
-      name: 'Bitcoin',
-      price: 30641.910141204382,
-      volume: 10560728706,
-      watchlist: true,
-    },
-  ];
+  useEffect(() => {
+    fetchWatchlist();
+  }, []);
 
   return (
     <div className="py-2">
@@ -68,7 +66,7 @@ export function Watchlist(props: WatchlistProps) {
             </p>
             <div className="grid sm:grid-cols-4 grid-col-1 gap-2">
               <div className="col-span-3 text-gray-700">
-                Sign up for a CoinMarketCap account in a few clicks and discover
+                Sign up for a El Capitan account in a few clicks and discover
                 the rapidly growing cryptocurrency space on our world-class
                 price-tracking platform!
               </div>
@@ -139,9 +137,9 @@ export function Watchlist(props: WatchlistProps) {
           </div>
         </div>
         <TokenTable
-          data={dummyData}
+          data={watchlist}
           // goToCoin={goToCoin}
-          addToWatchlist={(coin: string) => console.log('addToWatchlist ')}
+          addToWatchlist={(coin: string) => addToWatchlist(coin)}
         />
       </div>
       <div className="grid xl:grid-cols-3">
