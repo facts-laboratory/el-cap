@@ -10,6 +10,7 @@ import {
 } from '../icons';
 import SearchInput from './searchInput';
 import DropDownMenu from '../components/dropDownMenu';
+import { ProcessedTokenData } from '@el-cap/interfaces';
 
 type DropDownOption = {
   value: string;
@@ -33,7 +34,7 @@ enum LoadingStatus {
 
 export interface SearchBarProps {
   goToFeed: () => void;
-  coins: SearchCoin[];
+  coins: ProcessedTokenData[];
   loadingStatus: string;
 }
 

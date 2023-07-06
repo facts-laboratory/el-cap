@@ -27,7 +27,7 @@ export async function fetchRemainingPrices(input = {}) {
   const { prices = {}, names = ['bitcoin, ethereum, tether'] } = input;
   const namesQuery =
     names.length > 0 ? `ids=${names.join(',').replace(/\s/g, '')}&` : '';
-  const url = `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&${namesQuery}order=market_cap_desc&page=1&sparkline=true&price_change_percentage=1h%2C24h%2C7d&locale=en`;
+  const url = `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&${namesQuery}order=market_cap_desc&page=4&sparkline=true&price_change_percentage=1h%2C24h%2C7d&locale=en`;
 
   try {
     const response = await fetchData(url);

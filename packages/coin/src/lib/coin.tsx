@@ -40,6 +40,7 @@ interface CoinProps {
     fetchedEntity: ProcessedTokenData[];
     addToWatchlist: (coin: string) => void;
     user: ArAccount;
+    coins: ProcessedTokenData[];
     coinChartProps: {
       fetchRemaining: (input: { symbol: string; interval: string }) => void;
       fetchCoin: (input: { symbol: string; name: string }) => void;
@@ -135,8 +136,8 @@ export function Coin(props: CoinProps) {
     fetchedEntity,
     addToWatchlist,
     user,
+    coins,
   } = coinPage;
-  const [coins, setCoins] = useState<ContractCoin[]>([]);
   const [shouldLoad, setShouldLoad] = useState(true);
   const [error, setError] = useState<string | undefined>();
   const [isInWatchlist, setIsInWatchlist] = useState<boolean | undefined>(
@@ -155,28 +156,13 @@ export function Coin(props: CoinProps) {
     window.location.href = tagName.replace(/\s/g, '-');
   };
 
-  const fetchState = async () => {
-    const contractId = 'MH-w8Sq6uw3Jwc_stPqyJT8fEcIhx4VrrE10NFgv-KY';
-    const warp = WarpFactory.forMainnet();
-    const contract = warp.contract(contractId);
-    const result: ReadContractResult = await contract.readState();
-    const state = result.cachedValue.state as State;
-
-    const coins = state.coins;
-    setCoins(coins);
-  };
-
   const fetchHistoricalPrice = (symbol: string) => {
     console.log(symbol);
   };
 
-  useEffect(() => {
-    fetchState();
-  }, []);
-
-  function findNameByTicker(ticker: string, coins: ContractCoin[]) {
+  function findNameByTicker(ticker: string, coins: ProcessedTokenData[]) {
     const coin = coins.find(
-      (c) => c.symbol.toLowerCase() === ticker.toLowerCase()
+      (c) => c.coin.toLowerCase() === ticker.toLowerCase()
     );
     return coin ? coin.name : 'Ticker not found';
   }
@@ -184,8 +170,7 @@ export function Coin(props: CoinProps) {
     if (
       shouldLoad &&
       loadingStatus !== 'loaded' &&
-      ticker !== fetchedEntity[0]?.coin &&
-      coins.length > 0
+      ticker !== fetchedEntity[0]?.coin
     ) {
       const name = findNameByTicker(ticker, coins);
       fetchCoin({ symbol: ticker, name });

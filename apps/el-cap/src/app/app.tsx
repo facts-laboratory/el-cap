@@ -81,6 +81,7 @@ export function App(props: AppProps) {
     addToWatchlist: (input: string) => dispatch(addToWatchlist(input)),
     fetchedEntity: useAppSelector(selectAllCoin),
     user: useAppSelector(selectUser),
+    coins: useAppSelector(selectAllContracts),
     coinChartProps: {
       fetch: (input: { symbol: string; interval: string }) =>
         dispatch(fetch24PriceData(input)),

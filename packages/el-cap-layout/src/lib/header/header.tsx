@@ -42,10 +42,6 @@ export function Header(props: HeaderProps) {
     }
   }, [fetchContractcoins, loadingStatus]);
 
-  // useEffect(() => {
-  //   if ()
-  // })
-
   return (
     <div className="bg-white min-w-full">
       <StatusBar
