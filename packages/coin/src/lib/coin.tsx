@@ -29,6 +29,7 @@ import { ArrowDownIcon } from '@el-cap/top-coins-card';
 import CoinAttributeLinkButton from '../assets/component/CoinAttributeLinkButton';
 import ToggleComponent from '../assets/component/ToggleComponent';
 import { ArAccount } from 'arweave-account';
+import { checkCoinsOnWatchlist } from '@el-cap/utilities';
 
 interface CoinProps {
   goToFeed: () => void;
@@ -170,9 +171,12 @@ export function Coin(props: CoinProps) {
     if (
       shouldLoad &&
       loadingStatus !== 'loaded' &&
-      ticker !== fetchedEntity[0]?.coin
+      ticker !== fetchedEntity[0]?.coin &&
+      Object.keys(coins).length > 0
     ) {
+      console.log('testing working');
       const name = findNameByTicker(ticker, coins);
+      console.log('name', name);
       fetchCoin({ symbol: ticker, name });
       setShouldLoad(false);
     }
@@ -185,6 +189,24 @@ export function Coin(props: CoinProps) {
     shouldLoad,
     fetchedEntity,
   ]);
+
+  useEffect(() => {
+    if (fetchedEntity && user) {
+      const checkEntityInWatchlist = async () => {
+        try {
+          const entitiesOnWatchlist = await checkCoinsOnWatchlist(
+            fetchedEntity,
+            true
+          );
+          console.log('entitiesOnWatchlist', entitiesOnWatchlist);
+          setIsInWatchlist(Object.keys(entitiesOnWatchlist).length > 0);
+        } catch (error) {
+          setIsInWatchlist(false);
+        }
+      };
+      checkEntityInWatchlist();
+    }
+  }, [user, entity, fetchedEntity]);
 
   // Update the watchlist state whenever the coin data changes
   useEffect(() => {
