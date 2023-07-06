@@ -13,7 +13,7 @@ import { ArAccount } from 'arweave-account';
 
 export interface FeedProps {
   goToCoin: (ticker: string) => void;
-  goToFeed: (key: string) => void;
+  goToFeed: (key?: string) => void;
   feedPage: {
     entities: any;
     loadingStatus: string;
@@ -69,7 +69,11 @@ export function Feed(props: FeedProps) {
       console.log('running feed');
       fetchFeedRef.current(key);
     }
-  }, [loadingStatus, path, sortKey]);
+  }, [loadingStatus, path, sortKey, user]);
+
+  useEffect(() => {
+    fetchFeedRef.current();
+  }, [user]);
 
   useEffect(() => {
     const sortKeyMap: { [key: string]: SortKey } = {

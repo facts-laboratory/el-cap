@@ -66,42 +66,51 @@ export function entriesToObj(
 }
 
 export const checkCoinsOnWatchlist = async (
-  entities: Dictionary<ProcessedTokenData>,
+  entities: Dictionary<ProcessedTokenData> | ProcessedTokenData[],
   returnOnlyWatchlist = false
 ) => {
-  const queryCrewState = await getCrewMemberContract();
-  let watchlist: string[] = [];
+  try {
+    const queryCrewState = await getCrewMemberContract();
+    let watchlist: string[] = [];
 
-  if (queryCrewState.length > 0) {
-    const state: any= await readState(queryCrewState[0].node.id);
-    console.log('state in checkCoinsOnWatchlist', state);
-    watchlist = state.watchlist.map((item: string) => item.toLowerCase());
-  }
-
-  let resultEntities = {} as Dictionary<ProcessedTokenData>;
-
-  Object.keys(entities).forEach((coinKey) => {
-    const coin = entities[coinKey];
-    if (coin) {
-      resultEntities[coinKey] = {
-        ...coin,
-        watchlist: watchlist.includes(coin.coin.toLowerCase()),
-      };
+    if (queryCrewState.length > 0) {
+      const state = (await readState(queryCrewState[0].node.id)) as State;
+      console.log('state in checkCoinsOnWatchlist', state);
+      watchlist = state.watchlist.map((item: string) => item.toLowerCase());
     }
-  });
 
-  if (returnOnlyWatchlist) {
-    resultEntities = Object.keys(resultEntities)
-      .filter((coinKey) => resultEntities[coinKey]?.watchlist)
-      .reduce(
-        (res: Dictionary<ProcessedTokenData>, key) => (
-          (res[key] = resultEntities[key]), res
-        ),
-        {}
-      );
+    let resultEntities = {} as Dictionary<ProcessedTokenData>;
+
+    console.log('entities here', entities);
+    Object.keys(entities).forEach((coinKey: string) => {
+      const coin = entities[coinKey];
+      if (coin) {
+        console.log('coin here', coin);
+        resultEntities[coinKey] = {
+          ...coin,
+          watchlist: watchlist.includes(coin.coin.toLowerCase()),
+        };
+      }
+    });
+
+    console.log('resultEntities', resultEntities, entities);
+
+    if (returnOnlyWatchlist) {
+      resultEntities = Object.keys(resultEntities)
+        .filter((coinKey) => resultEntities[coinKey]?.watchlist)
+        .reduce(
+          (res: Dictionary<ProcessedTokenData>, key) => (
+            (res[key] = resultEntities[key]), res
+          ),
+          {}
+        );
+    }
+
+    console.log('return result entities', resultEntities);
+    return resultEntities;
+  } catch {
+    return entities;
   }
-
-  return resultEntities;
 };
 
 export function sortTopCoins(

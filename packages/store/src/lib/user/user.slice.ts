@@ -54,6 +54,7 @@ export const unsetUser = createAsyncThunk(
   async (_, thunkAPI) => {
     console.log('logging out');
     const disconnected = await ArConnect.disconnect();
+    console.log('disconnected', disconnected);
     return [];
     // const othent = await Othent({
     //   API_ID: '2384f84424a36b36ede2873be3e0c7e9',

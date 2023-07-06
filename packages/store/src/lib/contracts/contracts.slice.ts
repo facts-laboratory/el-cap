@@ -34,7 +34,7 @@ export const contractsAdapter = createEntityAdapter<ContractsEntity>({
 export const fetchContractcoins = createAsyncThunk(
   'contracts/fetchContractcoins',
   async (_, thunkAPI) => {
-    const state: State = await readState();
+    const state: State = (await readState()) as State;
     const coins = state.coins;
     return coins;
   }
@@ -49,7 +49,7 @@ export const addToWatchlist = createAsyncThunk(
       console.log('queryCrewState', queryCrewState[0]);
 
       try {
-        const state: State = await readState(queryCrewState[0].node.id);
+        const state = (await readState(queryCrewState[0].node.id)) as State;
         console.log('state in addToWatchlist', state);
         await writeContract({
           environment: 'mainnet' as const,
