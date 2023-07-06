@@ -146,7 +146,7 @@ export const TokenTable = memo((props: TokenTableProps) => {
                     className="px-6 py-4"
                   >
                     <WatchlistIcon
-                      isOnWatchlist={watchlist[entity.coin]}
+                      isOnWatchlist={user ? watchlist[entity.coin] : false}
                       className="mr-1"
                       width={24}
                       height={24}
