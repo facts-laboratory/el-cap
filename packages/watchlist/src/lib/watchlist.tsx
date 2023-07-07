@@ -2,22 +2,25 @@ import { connect } from 'react-redux';
 import { fetchWatchlist, mapStateToProps } from '@el-cap/store';
 import { TokenTable } from '@el-cap/token-table';
 import { useEffect } from 'react';
-import { ProcessedTokenData } from '@el-cap/interfaces';
+import { LoadingStatus, ProcessedTokenData } from '@el-cap/interfaces';
 import { ArAccount } from 'arweave-account';
 
 /* eslint-disable-next-line */
 export interface WatchlistProps {
+  goToCoin: (coin: string) => void;
   watchlistPage: {
     fetchWatchlist: () => void;
     watchlist: ProcessedTokenData[];
     addToWatchlist: (coin: string) => void;
     user: ArAccount;
+    loadingStatus: LoadingStatus;
   };
 }
 
 export function Watchlist(props: WatchlistProps) {
-  const { watchlistPage, user } = props;
-  const { fetchWatchlist, watchlist, addToWatchlist } = watchlistPage;
+  const { watchlistPage, goToCoin } = props;
+  const { fetchWatchlist, watchlist, addToWatchlist, user, loadingStatus } =
+    watchlistPage;
 
   const onWatchlist = () => {
     alert('coming soon');
@@ -140,9 +143,10 @@ export function Watchlist(props: WatchlistProps) {
         </div>
         <TokenTable
           data={watchlist}
-          // goToCoin={goToCoin}
+          goToCoin={goToCoin}
           addToWatchlist={(coin: string) => addToWatchlist(coin)}
           user={user}
+          loadingStatus={loadingStatus}
         />
       </div>
       <div className="grid xl:grid-cols-3">

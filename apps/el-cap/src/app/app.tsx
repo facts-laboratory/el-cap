@@ -27,6 +27,7 @@ import {
   unsetUser,
   fetchWatchlist,
   selectAllWatchlist,
+  selectWatchlistLoadingStatus,
 } from '@el-cap/store';
 import { connect } from 'react-redux';
 import loadable from '@loadable/component';
@@ -101,6 +102,7 @@ export function App(props: AppProps) {
     watchlist: useAppSelector(selectAllWatchlist),
     addToWatchlist: (input: string) => dispatch(addToWatchlist(input)),
     user: useAppSelector(selectUser),
+    loadingStatus: useAppSelector(selectWatchlistLoadingStatus),
   };
   const Page = components[(page as keyof ObjectKeys) || 'Feed'];
   return (

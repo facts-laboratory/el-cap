@@ -97,42 +97,42 @@ export const TokenTable = memo((props: TokenTableProps) => {
   }, [page, data]);
 
   return (
-    <div className="mt-4 relative overflow-x-auto shadow-md sm:rounded-lg">
+    <div className="mt-4 relative overflow-x-auto sm:rounded-lg">
       <table className="w-full text-sm text-left text-gray-500">
         <thead
           onClick={() => setShow(!show)}
           className="text-gray-700 bg-white font-bold"
         >
           <tr>
-            <th scope="col" className="px-6 py-5"></th>
-            <th scope="col" className="px-6 py-5">
+            <th scope="col" className="px-6 py-4"></th>
+            <th scope="col" className="px-6 py-4">
               Rank
             </th>
-            <th scope="col" className="px-6 py-5">
+            <th scope="col" className="px-6 py-4">
               Coin
             </th>
-            <th scope="col" className="px-6 py-5">
+            <th scope="col" className="px-6 py-4">
               Price
             </th>
-            <th scope="col" className="px-6 py-5">
+            <th scope="col" className="px-6 py-4">
               1h%
             </th>
-            <th scope="col" className="px-6 py-5">
+            <th scope="col" className="px-6 py-4">
               24h%
             </th>
-            <th scope="col" className="px-6 py-5">
+            <th scope="col" className="px-6 py-4">
               7d%
             </th>
-            <th scope="col" className="px-6 py-5">
+            <th scope="col" className="px-6 py-4">
               Market Cap
             </th>
-            <th scope="col" className="px-6 py-5">
+            <th scope="col" className="px-6 py-4">
               Volume (24hr)
             </th>
-            <th scope="col" className="px-6 py-5">
+            <th scope="col" className="px-6 py-4">
               Circulating Supply
             </th>
-            <th scope="col" className="px-6 py-5 min-w-[200px]">
+            <th scope="col" className="px-6 py-4 min-w-[200px]">
               Last 7 Days
             </th>
           </tr>
@@ -144,7 +144,10 @@ export const TokenTable = memo((props: TokenTableProps) => {
             {displayEntities &&
               displayEntities.map((entity, key) => {
                 return (
-                  <tr className="bg-gray-100 border-b font-bold" key={key}>
+                  <tr
+                    className="bg-gray-100 border-b font-bold hover:bg-gray-200 transition-colors duration-200 ease-in-out"
+                    key={key}
+                  >
                     <th
                       onClick={
                         user
@@ -152,7 +155,7 @@ export const TokenTable = memo((props: TokenTableProps) => {
                           : () => alert('please connect wallet')
                       }
                       scope="row"
-                      className="px-6 py-4"
+                      className="px-6 py- "
                     >
                       <WatchlistIcon
                         isOnWatchlist={user ? watchlist[entity.coin] : false}
