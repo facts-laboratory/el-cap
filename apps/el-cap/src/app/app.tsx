@@ -27,9 +27,14 @@ import {
   unsetUser,
   fetchWatchlist,
   selectAllWatchlist,
+  selectWatchlistLoadingStatus,
+  fetchMarketData,
+  selectMarketData,
 } from '@el-cap/store';
 import { connect } from 'react-redux';
 import loadable from '@loadable/component';
+
+import './global.css';
 
 interface ObjectKeys {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -64,6 +69,8 @@ export function App(props: AppProps) {
     unsetUser: () => dispatch(unsetUser()),
     fetchFeed: (key: string) => dispatch(fetchFeed(key)),
     feedLoadingStatus: useAppSelector(selectFeedLoadingStatus),
+    fetchMarketData: () => dispatch(fetchMarketData()),
+    marketData: useAppSelector(selectMarketData),
   };
   const feedPage = {
     entities: useAppSelector(selectAllFeed),
@@ -99,6 +106,7 @@ export function App(props: AppProps) {
     watchlist: useAppSelector(selectAllWatchlist),
     addToWatchlist: (input: string) => dispatch(addToWatchlist(input)),
     user: useAppSelector(selectUser),
+    loadingStatus: useAppSelector(selectWatchlistLoadingStatus),
   };
   const Page = components[(page as keyof ObjectKeys) || 'Feed'];
   return (

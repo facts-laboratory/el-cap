@@ -8,6 +8,7 @@ import {
   fetchRemainingPrices,
 } from './fetch-prices.js';
 import { fetchHistoricalPrice } from '../coin-chart/fetch-historical-data.js';
+import { fetchMarketData } from './fetch-market-data.js';
 
 export async function getPrices(input) {
   return of(input)
@@ -67,4 +68,12 @@ export async function getRemainingPriceHistory(input) {
       // })
       .fork(console.error, (result) => result)
   );
+}
+
+export async function getMarketData() {
+  return of()
+    .chain(() => fromPromise(fetchMarketData)())
+    .fork(console.error, (result) => {
+      return result;
+    });
 }

@@ -46,12 +46,13 @@ export const fetchWatchlist = createAsyncThunk(
   'watchlist/fetchStatus',
   async (_, thunkAPI) => {
     console.log('==addToWatchlist==');
-    const riggingState = thunkAPI.getState();
+    const riggingState = thunkAPI.getState() as RootState;
+    console.log('riggingState', riggingState);
     const coins = riggingState.contracts.entities;
 
     const coinsOnWatchlist = await checkCoinsOnWatchlist(coins, true);
     const sortedPrices = sortPrices(coinsOnWatchlist);
-    return sortedPrices;
+    return sortedPrices || [];
   }
 );
 
@@ -135,6 +136,11 @@ export const getWatchlistState = (rootState: RootState): WatchlistState =>
   rootState[WATCHLIST_FEATURE_KEY];
 
 export const selectAllWatchlist = createSelector(getWatchlistState, selectAll);
+
+export const selectWatchlistLoadingStatus = createSelector(
+  getWatchlistState,
+  (state) => state.loadingStatus
+);
 
 export const selectWatchlistEntities = createSelector(
   getWatchlistState,

@@ -45,7 +45,10 @@ const CoinAttributeLinkButton: React.FC<CoinAttributeLinkProps> = (props) => {
       {props.type === 'link' ? (
         <div
           className={`cursor-pointer text-sm flex items-center justify-center bg-[#D9D9D9] hover:bg-gray-300 rounded-xl py-1 px-2`}
-          onClick={() => goToPage(props.url ? props.url : '')}
+          onClick={() => {
+            alert('Coming Soon!');
+            // goToPage(props.url ? props.url : '');
+          }}
         >
           <img className="w-6" src={props.icon} alt="svg" />
           <span className="mx-1">{props.title}</span>
@@ -84,7 +87,10 @@ const CoinAttributeLinkButton: React.FC<CoinAttributeLinkProps> = (props) => {
                     <div
                       key={key}
                       className="px-2 py-2 cursor-pointer text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 flex justify-start items-center w-[max-content]"
-                      onClick={() => goToPage(item.url)}
+                      onClick={() => {
+                        alert('Coming Soon!');
+                        // goToPage(props.url ? props.url : '');
+                      }}
                     >
                       <img className="w-6 mr-2" src={item.icon} alt="icon" />
                       <div className="whitespace-nowrap mr-2">{item.title}</div>

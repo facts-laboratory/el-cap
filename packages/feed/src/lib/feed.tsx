@@ -8,16 +8,17 @@ import { TopCoinsCard } from '@el-cap/top-coins-card';
 import { TokenTable } from '@el-cap/token-table';
 import TabComponent from './components/TabComponent';
 import DropDownFeedOptions from './components/DropDownFeed';
-import { SortKey, TopCoins } from '@el-cap/interfaces';
+import { LoadingStatus, SortKey, TopCoins } from '@el-cap/interfaces';
 import { ArAccount } from 'arweave-account';
+import { TopCoinsCardSkeleton } from '@el-cap/skeleton';
 
 export interface FeedProps {
   goToCoin: (ticker: string) => void;
   goToFeed: (key?: string) => void;
   feedPage: {
     entities: any;
-    loadingStatus: string;
-    fetchFeed: (key: string | undefined) => void;
+    loadingStatus: LoadingStatus;
+    fetchFeed: (key?: string) => void;
     getTopCoins: () => void;
     topCoins: TopCoins;
     addToWatchlist: (coin: string) => void;
@@ -117,15 +118,7 @@ export function Feed(props: FeedProps) {
 
   return (
     <div>
-      {loadingStatus === 'loading' ? (
-        <div className="min-h-[calc(100vh-217px)] flex items-center justify-center">
-          <iframe
-            className="min-h-[calc(100vh-217px)]"
-            src="https://arweave.net/IkMJRqi_0Xx_QhstK4WE3rsQqQxC07n84UagPgqGXfc"
-            title="loading"
-          />
-        </div>
-      ) : (
+      <div>
         <div className="mx-auto p-4">
           <div className="mb-8 sm:flex justify-between items-center">
             <div>
@@ -160,42 +153,56 @@ export function Feed(props: FeedProps) {
               </div>
             )}
           </div>
+
           {showCase && !sortKey && (
             <div className="flex flex-wrap gap-5 my-6">
-              {topCoins && topCoins['7d'] && topCoins['7d'].length > 0 && (
-                <TopCoinsCard
-                  title="Biggest Gainers"
-                  type="Percentage"
-                  dataKey="7d"
-                  data={topCoins['7d']}
-                  goToCoin={goToCoin}
-                  goToFeed={goToFeed}
-                />
-              )}
-              {topCoins && topCoins['24h'] && topCoins['24h'].length > 0 && (
-                <TopCoinsCard
-                  title="Trending Coins"
-                  key="trending"
-                  type="Percentage"
-                  dataKey="24h"
-                  data={topCoins['24h']}
-                  goToCoin={goToCoin}
-                  goToFeed={goToFeed}
-                />
-              )}
-              {topCoins && topCoins['1h'] && topCoins['1h'].length > 0 && (
-                <TopCoinsCard
-                  title="Moving"
-                  type="Percentage"
-                  dataKey="1h"
-                  data={topCoins['1h']}
-                  goToCoin={goToCoin}
-                  goToFeed={goToFeed}
-                />
+              {loadingStatus === 'loading' || loadingStatus === 'not loaded' ? (
+                <>
+                  <TopCoinsCardSkeleton />
+
+                  <TopCoinsCardSkeleton />
+
+                  <TopCoinsCardSkeleton />
+                </>
+              ) : (
+                <>
+                  {topCoins && topCoins['7d'] && topCoins['7d'].length > 0 && (
+                    <TopCoinsCard
+                      title="Biggest Gainers"
+                      type="Percentage"
+                      dataKey="7d"
+                      data={topCoins['7d']}
+                      goToCoin={goToCoin}
+                      goToFeed={goToFeed}
+                    />
+                  )}
+                  {topCoins &&
+                    topCoins['24h'] &&
+                    topCoins['24h'].length > 0 && (
+                      <TopCoinsCard
+                        title="Trending Coins"
+                        key="trending"
+                        type="Percentage"
+                        dataKey="24h"
+                        data={topCoins['24h']}
+                        goToCoin={goToCoin}
+                        goToFeed={goToFeed}
+                      />
+                    )}
+                  {topCoins && topCoins['1h'] && topCoins['1h'].length > 0 && (
+                    <TopCoinsCard
+                      title="Moving"
+                      type="Percentage"
+                      dataKey="1h"
+                      data={topCoins['1h']}
+                      goToCoin={goToCoin}
+                      goToFeed={goToFeed}
+                    />
+                  )}
+                </>
               )}
             </div>
           )}
-
           <div className="flex justify-between items-center">
             {!sortKey && (
               <TabComponent
@@ -215,10 +222,11 @@ export function Feed(props: FeedProps) {
               goToCoin={goToCoin}
               addToWatchlist={(coin: string) => addToWatchlist(coin)}
               user={user}
+              loadingStatus={loadingStatus}
             />
           )}
         </div>
-      )}
+      </div>
     </div>
   );
 }
