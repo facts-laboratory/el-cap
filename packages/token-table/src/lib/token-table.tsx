@@ -2,8 +2,9 @@ import { memo, useEffect, useState } from 'react';
 import styles from './token-table.module.css';
 import BitcoinSVG from '../assets/svg/bitcoin.svg';
 import { WatchlistIcon } from '../assets/icons';
-import { ProcessedTokenData } from '@el-cap/interfaces';
+import { LoadingStatus, ProcessedTokenData } from '@el-cap/interfaces';
 import { ArAccount } from 'arweave-account';
+import { TokenTableSkeleton } from '@el-cap/skeleton';
 
 /* eslint-disable-next-line */
 export interface TokenTableProps {
@@ -11,6 +12,7 @@ export interface TokenTableProps {
   goToCoin: (coin: string, entity: ProcessedTokenData) => void;
   addToWatchlist: (coin: string) => void;
   user?: ArAccount;
+  loadingStatus: LoadingStatus;
 }
 
 export const orderByMarketCap = (data: ProcessedTokenData[]) => {
@@ -18,7 +20,7 @@ export const orderByMarketCap = (data: ProcessedTokenData[]) => {
 };
 
 export const TokenTable = memo((props: TokenTableProps) => {
-  const { data, goToCoin, addToWatchlist, user } = props;
+  const { data, goToCoin, addToWatchlist, user, loadingStatus } = props;
   const [tokenData, setTokenData] = useState<ProcessedTokenData[]>([]);
   const [show, setShow] = useState(false);
   const [page, setPage] = useState(1);
@@ -135,8 +137,8 @@ export const TokenTable = memo((props: TokenTableProps) => {
             </th>
           </tr>
         </thead>
-        {show ? (
-          <div></div>
+        {loadingStatus === 'loading' || loadingStatus === 'not loaded' ? (
+          <TokenTableSkeleton />
         ) : (
           <tbody>
             {displayEntities &&
