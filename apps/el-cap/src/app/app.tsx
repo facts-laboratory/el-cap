@@ -31,6 +31,8 @@ import {
 import { connect } from 'react-redux';
 import loadable from '@loadable/component';
 
+import './global.css';
+
 interface ObjectKeys {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: any;

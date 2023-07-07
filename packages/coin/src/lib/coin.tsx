@@ -225,195 +225,237 @@ export function Coin(props: CoinProps) {
 
   if (error) return <p>{error}</p>;
 
+  function Skeleton({ className }) {
+    return <div className={`skeleton h-4 ${className}`}></div>;
+  }
+
   console.log(coinChartProps);
 
   return (
     <div className="bg-gray-100 min-h-screen">
-      <div className="flex">
-        <div className="text-gray-400 hover:text-gray-600 cursor-pointer font-medium text-sm py-2 inline-flex mr-2">
-          Cryptocurrencies &gt;
-        </div>
-        <div className="text-gray-400 hover:text-gray-600 cursor-pointer font-medium text-sm py-2 inline-flex mr-2">
-          Coins &gt;
-        </div>
-        <div className="text-black hover:text-gray-600 cursor-pointer font-medium text-sm py-2 inline-flex mr-2"></div>
-      </div>
-      <div className="grid md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-x-8 gap-y-4">
-        <div className="col-span-1">
-          <div className="flex items-center my-4">
-            <img
-              className="w-10 mr-2"
-              src={
-                (entity && entity.image) ||
-                (fetchedEntity[0] && fetchedEntity[0].image) ||
-                BitcoinSVG
-              }
-              alt="bitcoin"
-            />
-            <span className="font-bold text-lg mr-2">
-              {(entity && entity.name) ||
-                (fetchedEntity[0] && fetchedEntity[0].name) ||
-                'Bitcoin'}
-            </span>
-            <Tag tagName="BTC" goToTag={goToTag} />
-            <div
-              onClick={
-                user
-                  ? () => handleAddToWatchlist()
-                  : () => alert('Please Connect Wallet')
-              }
-            >
-              <WatchlistIcon
-                className="ml-2"
-                width={18}
-                height={18}
-                isOnWatchlist={isInWatchlist}
-              />
+      {loadingStatus === 'loading' ? (
+        <>
+          <div className="flex">
+            <Skeleton className="text-gray-400 hover:text-gray-600 cursor-pointer font-medium text-sm py-2 inline-flex mr-2 min-w-[100px]" />
+            <Skeleton className="text-gray-400 hover:text-gray-600 cursor-pointer font-medium text-sm py-2 inline-flex mr-2 min-w-[100px]" />
+            <Skeleton className="text-black hover:text-gray-600 cursor-pointer font-medium text-sm py-2 inline-flex mr-2 min-w-[100px]" />
+          </div>
+          <div className="grid md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-x-8 gap-y-4">
+            <div className="col-span-1">
+              <div className="flex items-center my-4">
+                <Skeleton className="w-10 h-10 min-w-[10px] mr-2" />
+                <Skeleton className="font-bold text-lg mr-2 min-w-[100px]" />
+                {/* Skeleton for Tag and WatchlistIcon */}
+              </div>
+              {/* Skeletons for CoinAttributeLinkButton */}
+              <p className="my-2">Tags</p>
+              <div className="flex gap-4 flex-wrap">
+                {/* Skeletons for Tag */}
+                <Skeleton className="text-blue-500 hover:cursor-pointer min-w-[50px]" />
+              </div>
+            </div>
+            <div className="md:col-span-2 col-span-1">
+              {/* Skeletons for rest of the content */}
             </div>
           </div>
-          <div className="flex flex-wrap gap-4">
-            {coinAttributeButtonData.map((item, key) => {
-              return (
-                <CoinAttributeLinkButton
-                  key={key}
-                  icon={item.icon}
-                  title={item.title}
-                  type={item.type === 'link' ? 'link' : 'dropdown'}
-                  url={item.url}
-                  dropdownOptions={
-                    item.dropdownOptions ? item.dropdownOptions : []
+          {/* Skeleton for ToggleComponent, ChartWidget, and HistoricalPriceTable */}
+        </>
+      ) : (
+        <>
+          <div className="flex">
+            <div className="text-gray-400 hover:text-gray-600 cursor-pointer font-medium text-sm py-2 inline-flex mr-2">
+              Cryptocurrencies &gt;
+            </div>
+            <div className="text-gray-400 hover:text-gray-600 cursor-pointer font-medium text-sm py-2 inline-flex mr-2">
+              Coins &gt;
+            </div>
+            <div className="text-black hover:text-gray-600 cursor-pointer font-medium text-sm py-2 inline-flex mr-2"></div>
+          </div>
+          <div className="grid md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-x-8 gap-y-4">
+            <div className="col-span-1">
+              <div className="flex items-center my-4">
+                <img
+                  className="w-10 mr-2"
+                  src={
+                    (entity && entity.image) ||
+                    (fetchedEntity[0] && fetchedEntity[0].image) ||
+                    BitcoinSVG
                   }
+                  alt="bitcoin"
                 />
-              );
-            })}
-          </div>
-          <p className="my-2">Tags</p>
-          <div className="flex gap-4 flex-wrap">
-            <Tag tagName="PoW" goToTag={goToTag} />
-            <Tag tagName="SHA-256" goToTag={goToTag} />
-            <Tag tagName="Store Of Value" goToTag={goToTag} />
-            <Tag tagName="Mineable" goToTag={goToTag} />
-            <span className="text-blue-500 hover:cursor-pointer">View All</span>
-          </div>
-        </div>
-        <div className="md:col-span-2 col-span-1">
-          <div className="font-bold flex items-center mb-8">
-            <span className="md:text-[60px] text-3xl mr-2 p-2">
-              $
-              {(entity && entity.price) ||
-                (fetchedEntity[0] && fetchedEntity[0].price.toFixed(4)) ||
-                '34,000'}
-            </span>
-            {entity &&
-              (entity['24h'] < 0 ? (
-                <span className="p-2 text-white bg-red-500 rounded-2xl flex items-center md:text-2xl text-md">
-                  <ArrowDownIcon
-                    className="mt-2"
-                    color="white"
-                    width={15}
-                    height={15}
+                <Skeleton className="w-10 h-10 min-w-[10px] mr-2" />
+                {'      '}
+                <Tag
+                  tagName={entity?.coin || fetchedEntity[0]?.coin}
+                  goToTag={goToTag}
+                />
+                <div
+                  onClick={
+                    user
+                      ? () => handleAddToWatchlist()
+                      : () => alert('Please Connect Wallet')
+                  }
+                >
+                  <WatchlistIcon
+                    className="ml-2"
+                    width={18}
+                    height={18}
+                    isOnWatchlist={isInWatchlist}
                   />
-                  {(entity && (entity['24h'] * -1).toFixed(4)) ||
-                    (fetchedEntity[0] && fetchedEntity[0]['24h'].toFixed(4)) ||
-                    '0.02%'}
-                </span>
-              ) : (
-                <span className="p-2 text-white bg-green-500 rounded-2xl flex items-center md:text-2xl text-md">
-                  <ArrowUpIcon
-                    className="mt-2"
-                    color="white"
-                    width={15}
-                    height={15}
-                  />
-                  {(entity && entity['24h'].toFixed(4)) ||
-                    (fetchedEntity[0] && fetchedEntity[0]['24h'].toFixed(4)) ||
-                    '0.02%'}
-                </span>
-              ))}
-          </div>
-          <div className="grid lg:grid-cols-4 grid-cols-2 gap-2">
-            <div className="flex-col">
-              <span className="text-[#7D7D7D]">Market Cap</span>
-              <br />
-              <span className="font-bold">
-                $
-                {(entity && entity.marketCap) ||
-                  (fetchedEntity[0] && fetchedEntity[0].marketCap) ||
-                  '535,170,972,845'}
-              </span>
-              <span className="flex items-center text-green-500">
-                <ArrowUpIcon
-                  className="mt-2 mr-1"
-                  color="green"
-                  width={15}
-                  height={15}
-                />
-                0.02%
-              </span>
-            </div>
-            <div className="flex-col">
-              <span className="text-[#7D7D7D]">Fully Diluted Market Cap</span>
-              <br />
-              <span className="font-bold">
-                $
-                {(entity && entity.marketCap) ||
-                  (fetchedEntity[0] && fetchedEntity[0].marketCap) ||
-                  '535,170,972,845'}
-              </span>
-              <span className="flex items-center text-green-500">
-                <ArrowUpIcon
-                  className="mt-2 mr-1"
-                  color="green"
-                  width={15}
-                  height={15}
-                />
-                0.02%
-              </span>
-            </div>
-            <div className="flex-col">
-              <span className="text-[#7D7D7D]">Volume</span>
-              <br />
-              <span className="font-bold">
-                $
-                {(entity && entity.volume) ||
-                  (fetchedEntity[0] && fetchedEntity[0].volume) ||
-                  '$535,170,972,845'}
-              </span>
-              <span className="flex items-center text-green-500">
-                <ArrowUpIcon
-                  className="mt-2 mr-1"
-                  color="green"
-                  width={15}
-                  height={15}
-                />
-                0.02%
-              </span>
-            </div>
-            <div className="flex-col">
-              <span className="text-[#7D7D7D]">Circulating Supply</span>
-              <br />
-              <div className="flex justify-between">
-                <span className="font-bold">
-                  {(entity && entity.circulatingSupply) ||
-                    (fetchedEntity[0] && fetchedEntity[0].circulatingSupply) ||
-                    '18,618,806.00'}{' '}
-                  {(entity && entity.coin) ||
-                    (fetchedEntity[0] && fetchedEntity[0].coin) ||
-                    'BTC'}
-                </span>
-              </div>{' '}
-              <span className="flex items-center text-green-500">
-                <div className="w-full bg-gray-400 rounded-full h-2.5 dark:bg-gray-700">
-                  <div
-                    className="bg-gray-700 h-2.5 rounded-full"
-                    style={{ width: '92%' }}
-                  ></div>
                 </div>
-              </span>
+              </div>
+              <div className="flex flex-wrap gap-4">
+                {coinAttributeButtonData.map((item, key) => {
+                  return (
+                    <CoinAttributeLinkButton
+                      key={key}
+                      icon={item.icon}
+                      title={item.title}
+                      type={item.type === 'link' ? 'link' : 'dropdown'}
+                      url={item.url}
+                      dropdownOptions={
+                        item.dropdownOptions ? item.dropdownOptions : []
+                      }
+                    />
+                  );
+                })}
+              </div>
+              <p className="my-2">Tags</p>
+              <div className="flex gap-4 flex-wrap">
+                <Tag tagName="PoW" goToTag={goToTag} />
+                <Tag tagName="SHA-256" goToTag={goToTag} />
+                <Tag tagName="Store Of Value" goToTag={goToTag} />
+                <Tag tagName="Mineable" goToTag={goToTag} />
+                <span className="text-blue-500 hover:cursor-pointer">
+                  View All
+                </span>
+              </div>
+            </div>
+            <div className="md:col-span-2 col-span-1">
+              <div className="font-bold flex items-center mb-8">
+                <span className="md:text-[60px] text-3xl mr-2 p-2">
+                  $
+                  {(entity && entity.price) ||
+                    (fetchedEntity[0] && fetchedEntity[0].price.toFixed(4)) ||
+                    '34,000'}
+                </span>
+                {entity &&
+                  (entity['24h'] < 0 ? (
+                    <span className="p-2 text-white bg-red-500 rounded-2xl flex items-center md:text-2xl text-md">
+                      <ArrowDownIcon
+                        className="mt-2"
+                        color="white"
+                        width={15}
+                        height={15}
+                      />
+                      {(entity && (entity['24h'] * -1).toFixed(4)) ||
+                        (fetchedEntity[0] &&
+                          fetchedEntity[0]['24h'].toFixed(4)) ||
+                        '0.02%'}
+                    </span>
+                  ) : (
+                    <span className="p-2 text-white bg-green-500 rounded-2xl flex items-center md:text-2xl text-md">
+                      <ArrowUpIcon
+                        className="mt-2"
+                        color="white"
+                        width={15}
+                        height={15}
+                      />
+                      {(entity && entity['24h'].toFixed(4)) ||
+                        (fetchedEntity[0] &&
+                          fetchedEntity[0]['24h'].toFixed(4)) ||
+                        '0.02%'}
+                    </span>
+                  ))}
+              </div>
+              <div className="grid lg:grid-cols-4 grid-cols-2 gap-2">
+                <div className="flex-col">
+                  <span className="text-[#7D7D7D]">Market Cap</span>
+                  <br />
+                  <span className="font-bold">
+                    $
+                    {(entity && entity.marketCap) ||
+                      (fetchedEntity[0] && fetchedEntity[0].marketCap) ||
+                      '535,170,972,845'}
+                  </span>
+                  <span className="flex items-center text-green-500">
+                    <ArrowUpIcon
+                      className="mt-2 mr-1"
+                      color="green"
+                      width={15}
+                      height={15}
+                    />
+                    0.02%
+                  </span>
+                </div>
+                <div className="flex-col">
+                  <span className="text-[#7D7D7D]">
+                    Fully Diluted Market Cap
+                  </span>
+                  <br />
+                  <span className="font-bold">
+                    $
+                    {(entity && entity.marketCap) ||
+                      (fetchedEntity[0] && fetchedEntity[0].marketCap) ||
+                      '535,170,972,845'}
+                  </span>
+                  <span className="flex items-center text-green-500">
+                    <ArrowUpIcon
+                      className="mt-2 mr-1"
+                      color="green"
+                      width={15}
+                      height={15}
+                    />
+                    0.02%
+                  </span>
+                </div>
+                <div className="flex-col">
+                  <span className="text-[#7D7D7D]">Volume</span>
+                  <br />
+                  <span className="font-bold">
+                    $
+                    {(entity && entity.volume) ||
+                      (fetchedEntity[0] && fetchedEntity[0].volume) ||
+                      '$535,170,972,845'}
+                  </span>
+                  <span className="flex items-center text-green-500">
+                    <ArrowUpIcon
+                      className="mt-2 mr-1"
+                      color="green"
+                      width={15}
+                      height={15}
+                    />
+                    0.02%
+                  </span>
+                </div>
+                <div className="flex-col">
+                  <span className="text-[#7D7D7D]">Circulating Supply</span>
+                  <br />
+                  <div className="flex justify-between">
+                    <span className="font-bold">
+                      {(entity && entity.circulatingSupply) ||
+                        (fetchedEntity[0] &&
+                          fetchedEntity[0].circulatingSupply) ||
+                        '18,618,806.00'}{' '}
+                      {(entity && entity.coin) ||
+                        (fetchedEntity[0] && fetchedEntity[0].coin) ||
+                        'BTC'}
+                    </span>
+                  </div>{' '}
+                  <span className="flex items-center text-green-500">
+                    <div className="w-full bg-gray-400 rounded-full h-2.5 dark:bg-gray-700">
+                      <div
+                        className="bg-gray-700 h-2.5 rounded-full"
+                        style={{ width: '92%' }}
+                      ></div>
+                    </div>
+                  </span>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-      </div>
+        </>
+      )}
       <div className="my-4">
         <ToggleComponent view={toggleView} setView={setView} />
         {viewType === 'Chart' ? (

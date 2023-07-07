@@ -29,6 +29,16 @@ module.exports = {
         primary: '#293241',
         secondary: '#FF8500',
       },
+      animation: {
+        shimmer: 'shimmer 1.25s infinite linear',
+      },
+      backgroundImage: (theme) => ({
+        skeleton:
+          'linear-gradient(to right, #eeeeee 8%, #dddddd 18%, #eeeeee 33%)',
+      }),
+      backgroundSize: {
+        skeleton: '800px 104px',
+      },
     },
   },
   plugins: [],
