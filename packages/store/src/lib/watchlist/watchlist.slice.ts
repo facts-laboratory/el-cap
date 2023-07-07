@@ -52,7 +52,7 @@ export const fetchWatchlist = createAsyncThunk(
 
     const coinsOnWatchlist = await checkCoinsOnWatchlist(coins, true);
     const sortedPrices = sortPrices(coinsOnWatchlist);
-    return sortedPrices;
+    return sortedPrices || [];
   }
 );
 
@@ -76,7 +76,10 @@ export const watchlistSlice = createSlice({
       })
       .addCase(
         fetchWatchlist.fulfilled,
-        (state: WatchlistState, action: PayloadAction<[]>) => {
+        (
+          state: WatchlistState,
+          action: PayloadAction<ProcessedTokenData[]>
+        ) => {
           watchlistAdapter.setAll(state, action.payload);
           state.loadingStatus = 'loaded';
         }
