@@ -13,9 +13,9 @@ import './components/slideranimations.css';
 interface CoinChartProps {
   chartData: ChartData;
   fetch: (input: { symbol: string; interval: string }) => void;
-  loadingStatus: LoadingStatus;
+  loadingStatus: string;
   error?: string | null;
-  remainingLoadingStatus: LoadingStatus;
+  remainingLoadingStatus: string;
   ticker: string;
   fetchRemaining: (input: { symbol: string; interval: string }) => void;
 }

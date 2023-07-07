@@ -13,7 +13,9 @@ import {
   getCrewMemberContract,
   readState,
 } from '@el-cap/contract-integrations';
-import { State } from '@el-cap/interfaces';
+import { getMarketData } from '../feed/el-cap-kit.js';
+import { MarketData, State } from '@el-cap/interfaces';
+import { extractMarketData } from '@el-cap/utilities';
 
 export const CONTRACTS_FEATURE_KEY = 'contracts';
 
@@ -25,6 +27,8 @@ export interface ContractsEntity {
 export interface ContractsState extends EntityState<ContractsEntity> {
   loadingStatus: 'not loaded' | 'loading' | 'loaded' | 'error';
   error?: string | null;
+  marketData?: MarketData[];
+  marketDataLoadingStatus: 'not loaded' | 'loading' | 'loaded' | 'error';
 }
 
 export const contractsAdapter = createEntityAdapter<ContractsEntity>({
@@ -37,6 +41,16 @@ export const fetchContractcoins = createAsyncThunk(
     const state: State = (await readState()) as State;
     const coins = state.coins;
     return coins;
+  }
+);
+
+export const fetchMarketData = createAsyncThunk(
+  'contracts/fetchMarketData',
+  async (_, thunkAPI) => {
+    const data = await getMarketData();
+    const marketData = extractMarketData(data);
+    console.log('marketData', marketData);
+    return marketData;
   }
 );
 
@@ -73,6 +87,7 @@ export const initialContractsState: ContractsState =
   contractsAdapter.getInitialState({
     loadingStatus: 'not loaded',
     error: null,
+    marketDataLoadingStatus: 'not loaded',
   });
 
 export const contractsSlice = createSlice({
@@ -108,6 +123,20 @@ export const contractsSlice = createSlice({
       .addCase(addToWatchlist.rejected, (state: ContractsState, action) => {
         state.loadingStatus = 'error';
         state.error = action.error.message;
+      })
+      .addCase(fetchMarketData.pending, (state: ContractsState) => {
+        state.marketDataLoadingStatus = 'loading';
+      })
+      .addCase(
+        fetchMarketData.fulfilled,
+        (state: ContractsState, action: PayloadAction<any>) => {
+          state.marketData = action.payload;
+          state.marketDataLoadingStatus = 'loaded';
+        }
+      )
+      .addCase(fetchMarketData.rejected, (state: ContractsState, action) => {
+        state.marketDataLoadingStatus = 'error';
+        state.error = action.error.message;
       });
   },
 });
@@ -126,6 +155,11 @@ export const selectAllContracts = createSelector(getContractsState, selectAll);
 export const selectContractsLoadingStatus = createSelector(
   getContractsState,
   (state: ContractsState) => state.loadingStatus
+);
+
+export const selectMarketData = createSelector(
+  getContractsState,
+  (state: ContractsState) => state.marketData
 );
 
 export const selectContractsEntities = createSelector(

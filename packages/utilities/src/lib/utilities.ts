@@ -5,6 +5,7 @@ import {
   RedstoneObject,
   TopCoins,
   State,
+  MarketData,
 } from '@el-cap/interfaces';
 import { Dictionary } from '@reduxjs/toolkit';
 import {
@@ -276,4 +277,31 @@ export function mergeObjects(
   } else {
     return redstone;
   }
+}
+
+export function extractMarketData(data: MarketData) {
+  if (!data) {
+    throw new Error('Data is required');
+  }
+
+  const marketCapInUSD = data.total_market_cap
+    ? data.total_market_cap.usd
+    : null;
+  const volumeInUSD = data.total_volume ? data.total_volume.usd : null;
+  const marketCapChangePercentage =
+    data.market_cap_change_percentage_24h_usd || null;
+  const marketCapBtcPercentage = data.market_cap_percentage
+    ? data.market_cap_percentage.btc
+    : null;
+  const marketCapEthPercentage = data.market_cap_percentage
+    ? data.market_cap_percentage.eth
+    : null;
+
+  return {
+    marketCapInUSD,
+    volumeInUSD,
+    marketCapChangePercentage,
+    marketCapBtcPercentage,
+    marketCapEthPercentage,
+  };
 }

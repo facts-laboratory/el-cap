@@ -28,6 +28,8 @@ import {
   fetchWatchlist,
   selectAllWatchlist,
   selectWatchlistLoadingStatus,
+  fetchMarketData,
+  selectMarketData,
 } from '@el-cap/store';
 import { connect } from 'react-redux';
 import loadable from '@loadable/component';
@@ -67,6 +69,8 @@ export function App(props: AppProps) {
     unsetUser: () => dispatch(unsetUser()),
     fetchFeed: (key: string) => dispatch(fetchFeed(key)),
     feedLoadingStatus: useAppSelector(selectFeedLoadingStatus),
+    fetchMarketData: () => dispatch(fetchMarketData()),
+    marketData: useAppSelector(selectMarketData),
   };
   const feedPage = {
     entities: useAppSelector(selectAllFeed),

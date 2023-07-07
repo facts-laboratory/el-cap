@@ -61,36 +61,59 @@ export function Watchlist(props: WatchlistProps) {
             Register to keep your watchlist
           </p>
         </div>
-        <div className="my-2 col-span-3">
-          <div className="bg-white rounded-2xl p-6">
-            <p className="font-bold text-xl my-1">
-              You can keep the Watchlist, but first…
-              <span role="img" aria-label="star">
-                🤭
-              </span>
-            </p>
-            <div className="grid sm:grid-cols-4 grid-col-1 gap-2">
-              <div className="col-span-3 text-gray-700">
-                Sign up for a El Capitan account in a few clicks and discover
-                the rapidly growing cryptocurrency space on our world-class
-                price-tracking platform!
-              </div>
-              <div className="col-span-1">
-                <button className="bg-blue-600 text-white font-semibold px-4 py-2 rounded-xl">
-                  Create an account
-                </button>
+        {!user ? (
+          <div className="my-2 col-span-3">
+            <div className="bg-white rounded-2xl p-6">
+              <p className="font-bold text-xl my-1">
+                You can keep the Watchlist, but first…
+                <span role="img" aria-label="star">
+                  🤭
+                </span>
+              </p>
+              <div className="grid sm:grid-cols-4 grid-col-1 gap-2">
+                <div className="col-span-3 text-gray-700">
+                  Sign up for a El Capitan account in a few clicks and discover
+                  the rapidly growing cryptocurrency space on our tryly
+                  decentralised price-tracking platform!
+                </div>
+
+                <div className="col-span-1">
+                  <button className="bg-blue-600 text-white font-semibold px-4 py-2 rounded-xl">
+                    Create an account
+                  </button>
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        ) : (
+          <div className="my-2 col-span-3">
+            <div className="bg-white rounded-2xl p-6">
+              <p className="font-bold text-xl my-1">
+                Welcome back to El Capitan, {user.addr.substring(0, 9)}{' '}
+                <span role="img" aria-label="star">
+                  🥳
+                </span>
+              </p>
+              <div className="grid sm:grid-cols-4 grid-col-1 gap-2">
+                <div className="col-span-3 text-gray-700">
+                  Continue exploring the rapidly growing cryptocurrency space on
+                  our truly decentralised price-tracking platform!
+                </div>
+
+                <div className="col-span-1">
+                  <button className="bg-blue-600 text-white font-semibold px-4 py-2 rounded-xl">
+                    View your portfolio
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
       <div className="py-4 h-80">
         <div className="flex justify-between">
           <div className="flex">
-            <button
-              className="text-blue-700 font-semibold text-xs bg-gray-200 px-2 py-1 rounded-lg mr-2 flex items-center"
-              onClick={onWatchlist}
-            >
+            <button className="text-blue-700 font-semibold text-xs bg-gray-200 px-2 py-1 rounded-lg mr-2 flex items-center">
               <svg
                 fill="#A6B0C3"
                 height="24px"
