@@ -81,7 +81,7 @@ export function Watchlist(props: WatchlistProps) {
           </div>
         </div>
       </div>
-      <div className="py-4 h-80">
+      <div className="py-4">
         <div className="flex justify-between">
           <div className="flex">
             <button
