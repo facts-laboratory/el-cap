@@ -3,19 +3,23 @@ import StatusInfo from '../components/statusInfo';
 import { PortfolioIcon, WatchlistIcon, WalletIcon } from '../icons';
 import { Othent, useOthentReturnProps } from 'othent';
 import { ArAccount } from 'arweave-account';
+import { ProcessedMarketData } from '@el-cap/interfaces';
 
 interface StatusBarProps {
   goToWatchlist: () => void;
   setUser: () => void;
   user: ArAccount;
   unsetUser: () => void;
+  marketData: ProcessedMarketData;
 }
 
 const StatusBar = (props: StatusBarProps) => {
-  const { setUser, user, unsetUser, goToWatchlist } = props;
+  const { setUser, user, unsetUser, goToWatchlist, marketData } = props;
   const [localUser, setLocalUser] = useState<ArAccount | undefined>();
   const [othent, setOthent] = useState<useOthentReturnProps | null>(null);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+
+  console.log('marketdata in component', marketData);
 
   useEffect(() => {
     console.log('running');
@@ -83,28 +87,56 @@ const StatusBar = (props: StatusBarProps) => {
         clearInterval(scrollInterval);
       };
     }
-  }, []);
+  }, [marketData]);
 
   return (
     <div className="flex justify-between items-center py-2 px-10 border-b-2 h-16">
-      <div
-        ref={marqueeRef}
-        className="flex items-center overflow-x-hidden whitespace-nowrap py-2 px-10 border-b-2 h-16"
-      >
-        <StatusInfo className="mr-4" text="Crypto Listed: " value="3" />
-        <StatusInfo
-          className="mr-4"
-          text="Total Market Cap: "
-          value="$1,000,000,000,000"
-        />
-        <StatusInfo className="mr-4" text="24hr Vol: " value="$1,000,000,000" />
-        <StatusInfo
-          className="mr-4"
-          text="Dominance BTC: "
-          value="46% ETH 18.6%"
-        />
-        <StatusInfo className="mr-4" text="ETH BTC: " value="46% ETH 18.6%" />
-      </div>
+      {marketData && (
+        <div
+          ref={marqueeRef}
+          className="flex items-center overflow-x-hidden whitespace-nowrap py-2 px-10 border-b-2 h-16"
+        >
+          <StatusInfo className="mr-4" text="Crypto Listed: " value="388" />
+          <StatusInfo
+            className="mr-4"
+            text="Total Market Cap: "
+            value={
+              marketData
+                ? `$${marketData.marketCapInUSD.toLocaleString()}`
+                : 'N/A'
+            }
+          />
+          <StatusInfo
+            className="mr-4"
+            text="24hr Vol: "
+            value={
+              marketData ? `$${marketData.volumeInUSD.toLocaleString()}` : 'N/A'
+            }
+          />
+          <StatusInfo
+            className="mr-4"
+            text="Dominance BTC: "
+            value={
+              marketData
+                ? `BTC ${marketData.marketCapBtcPercentage.toFixed(
+                    2
+                  )}% ETH ${marketData.marketCapEthPercentage.toFixed(2)}%`
+                : 'N/A'
+            }
+          />
+          <StatusInfo
+            className="mr-4"
+            text="ETH BTC: "
+            value={
+              marketData
+                ? `BTC ${marketData.marketCapBtcPercentage.toFixed(
+                    2
+                  )}% ETH ${marketData.marketCapEthPercentage.toFixed(2)}%`
+                : 'N/A'
+            }
+          />
+        </div>
+      )}
       <div className="hidden xl:block">
         <div className="flex items-center text-sm">
           <span
@@ -114,7 +146,10 @@ const StatusBar = (props: StatusBarProps) => {
             <WatchlistIcon className="mr-1" width={24} height={24} />
             Watchlist
           </span>
-          <span className="cursor-pointer font-bold mr-4 flex items-center">
+          <span
+            onClick={() => alert('Coming Soon!')}
+            className="cursor-pointer font-bold mr-4 flex items-center"
+          >
             <PortfolioIcon className="mr-1" width={24} height={24} />
             Portfolio
           </span>

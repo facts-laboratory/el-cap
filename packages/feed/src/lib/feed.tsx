@@ -18,7 +18,7 @@ export interface FeedProps {
   feedPage: {
     entities: any;
     loadingStatus: LoadingStatus;
-    fetchFeed: (key: string | undefined) => void;
+    fetchFeed: (key?: string) => void;
     getTopCoins: () => void;
     topCoins: TopCoins;
     addToWatchlist: (coin: string) => void;

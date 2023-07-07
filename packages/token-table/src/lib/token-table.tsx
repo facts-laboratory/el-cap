@@ -21,7 +21,6 @@ export const orderByMarketCap = (data: ProcessedTokenData[]) => {
 
 export const TokenTable = memo((props: TokenTableProps) => {
   const { data, goToCoin, addToWatchlist, user, loadingStatus } = props;
-  const [tokenData, setTokenData] = useState<ProcessedTokenData[]>([]);
   const [show, setShow] = useState(false);
   const [page, setPage] = useState(1);
   const [displayEntities, setDisplayEntities] = useState<ProcessedTokenData[]>(
@@ -37,7 +36,6 @@ export const TokenTable = memo((props: TokenTableProps) => {
     if (data) {
       setPage(1);
       setDisplayEntities(data.slice(0, 30));
-      setTokenData(data);
 
       // Reset watchlist
       const newWatchlist: Record<string, boolean | undefined> = {};

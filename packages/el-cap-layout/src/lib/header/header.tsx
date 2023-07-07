@@ -2,8 +2,9 @@ import { mapStateToProps } from '@el-cap/store';
 import { connect } from 'react-redux';
 import StatusBar from './statusBar';
 import SearchBar from './searchBar';
-import { SearchCoin, User } from '@el-cap/interfaces';
+import { ProcessedMarketData, ProcessedTokenData } from '@el-cap/interfaces';
 import { useEffect } from 'react';
+import { ArAccount } from 'arweave-account';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface HeaderProps {
@@ -11,13 +12,15 @@ export interface HeaderProps {
   goToWatchlist: () => void;
   header: {
     fetchContractcoins: () => void;
-    coins: SearchCoin[];
+    coins: ProcessedTokenData[];
     loadingStatus: string;
     setUser: () => void;
-    user: User;
+    user: ArAccount;
     unsetUser: () => void;
     feedLoadingStatus: string;
     fetchFeed: () => void;
+    fetchMarketData: () => void;
+    marketData: ProcessedMarketData;
   };
 }
 
@@ -32,8 +35,8 @@ export function Header(props: HeaderProps) {
     setUser,
     user,
     unsetUser,
-    feedLoadingStatus,
-    fetchFeed,
+    fetchMarketData,
+    marketData,
   } = header;
 
   useEffect(() => {
@@ -42,6 +45,10 @@ export function Header(props: HeaderProps) {
     }
   }, [fetchContractcoins, loadingStatus]);
 
+  useEffect(() => {
+    fetchMarketData();
+  }, []);
+
   return (
     <div className="bg-white min-w-full">
       <StatusBar
@@ -49,6 +56,7 @@ export function Header(props: HeaderProps) {
         setUser={setUser}
         user={user}
         unsetUser={unsetUser}
+        marketData={marketData}
       />
       <SearchBar
         goToFeed={() => goToFeed()}

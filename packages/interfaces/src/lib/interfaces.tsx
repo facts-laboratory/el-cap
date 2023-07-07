@@ -12,12 +12,6 @@ export interface ProcessedTokenData {
   watchlist?: boolean;
 }
 
-export type SearchCoin = {
-  name: string;
-  symbol: string;
-  ranking: number;
-  image: string;
-};
 export interface ContractCoin {
   name: string;
   symbol: string;
@@ -117,4 +111,43 @@ export interface ReadContractStateResult {
 export interface State {
   coins: ProcessedTokenData[];
   watchlist: any;
+}
+
+export interface ProcessedMarketData {
+  marketCapInUSD: number;
+  volumeInUSD: number;
+  marketCapChangePercentage: number;
+  marketCapBtcPercentage: number;
+  marketCapEthPercentage: number;
+}
+
+export interface MarketData {
+  active_cryptocurrencies?: number;
+  ended_icos?: number;
+  market_cap_change_percentage_24h_usd?: number;
+  market_cap_percentage?: MarketCapPercentage;
+  markets?: number;
+  ongoing_icos?: number;
+  total_market_cap?: MarketCap;
+  total_volume?: MarketCap;
+}
+
+interface MarketCapPercentage {
+  ada?: number;
+  bnb?: number;
+  btc?: number;
+  doge?: number;
+  eth?: number;
+  sol?: number;
+  steth?: number;
+  usdc?: number;
+  usdt?: number;
+  xrp?: number;
+}
+
+interface MarketCap {
+  aed?: number;
+  usd?: number;
+  btc?: number;
+  eth?: number;
 }
