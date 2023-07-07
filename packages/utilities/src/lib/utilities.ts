@@ -66,7 +66,7 @@ export function entriesToObj(
 }
 
 export const checkCoinsOnWatchlist = async (
-  entities: Dictionary<ProcessedTokenData> | ProcessedTokenData[],
+  entities: Dictionary<ProcessedTokenData>,
   returnOnlyWatchlist = false
 ) => {
   try {
