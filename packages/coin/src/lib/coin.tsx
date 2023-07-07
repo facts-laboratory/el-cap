@@ -1,13 +1,12 @@
 import { useEffect, useState } from 'react';
-import { WarpFactory } from 'warp-contracts';
 import { mapStateToProps } from '@el-cap/store';
 import { ChartWidget } from '@el-cap/chart-widget';
 import { HistoricalPriceTable } from '@el-cap/historical-price-table';
 import { connect } from 'react-redux';
 import { PriceData } from 'redstone-api/lib/types';
 import { ArrowUpIcon, WatchlistIcon } from '../assets/icons';
+import { Skeleton } from '@el-cap/skeleton';
 import {
-  BitcoinSVG,
   SearchSVG,
   UserSVG,
   CodeSVG,
@@ -18,10 +17,7 @@ import {
 } from '../assets/svg/index';
 import Tag from '../assets/component/Tag';
 import {
-  ReadContractResult,
-  State,
   ChartData,
-  ContractCoin,
   LoadingStatus,
   ProcessedTokenData,
 } from '@el-cap/interfaces';
@@ -225,10 +221,6 @@ export function Coin(props: CoinProps) {
 
   if (error) return <p>{error}</p>;
 
-  function Skeleton({ className }) {
-    return <div className={`skeleton h-4 ${className}`}></div>;
-  }
-
   console.log(coinChartProps);
 
   return (
@@ -242,7 +234,7 @@ export function Coin(props: CoinProps) {
         </div>
         <div className="text-black hover:text-gray-600 cursor-pointer font-medium text-sm py-2 inline-flex mr-2"></div>
       </div>
-      {loadingStatus === ('loading' || 'not loaded') ? (
+      {loadingStatus === 'loading' || loadingStatus === 'not loaded' ? (
         <>
           <div className="flex items-center mt-5">
             <Skeleton className="text-gray-400 hover:text-gray-600 cursor-pointer font-medium text-xl py-2 inline-flex mr-2 min-w-[40px] min-h-[40px]" />

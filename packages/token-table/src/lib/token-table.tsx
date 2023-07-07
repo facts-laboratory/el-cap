@@ -20,6 +20,7 @@ export const orderByMarketCap = (data: ProcessedTokenData[]) => {
 export const TokenTable = memo((props: TokenTableProps) => {
   const { data, goToCoin, addToWatchlist, user } = props;
   const [tokenData, setTokenData] = useState<ProcessedTokenData[]>([]);
+  const [show, setShow] = useState(false);
   const [page, setPage] = useState(1);
   const [displayEntities, setDisplayEntities] = useState<ProcessedTokenData[]>(
     []
@@ -96,7 +97,10 @@ export const TokenTable = memo((props: TokenTableProps) => {
   return (
     <div className="mt-4 relative overflow-x-auto shadow-md sm:rounded-lg">
       <table className="w-full text-sm text-left text-gray-500">
-        <thead className="text-gray-700 bg-white font-bold">
+        <thead
+          onClick={() => setShow(!show)}
+          className="text-gray-700 bg-white font-bold"
+        >
           <tr>
             <th scope="col" className="px-6 py-5"></th>
             <th scope="col" className="px-6 py-5">
@@ -131,89 +135,95 @@ export const TokenTable = memo((props: TokenTableProps) => {
             </th>
           </tr>
         </thead>
-        <tbody>
-          {displayEntities &&
-            displayEntities.map((entity, key) => {
-              return (
-                <tr className="bg-gray-100 border-b font-bold" key={key}>
-                  <th
-                    onClick={
-                      user
-                        ? () => handleAddToWatchlist(entity.coin)
-                        : () => alert('please connect wallet')
-                    }
-                    scope="row"
-                    className="px-6 py-4"
-                  >
-                    <WatchlistIcon
-                      isOnWatchlist={user ? watchlist[entity.coin] : false}
-                      className="mr-1"
-                      width={24}
-                      height={24}
-                    />
-                  </th>
-                  <td className="px-6 py-4">{key + 1}</td>
-                  <td
-                    className="px-6 py-4 flex items-center my-4 cursor-pointer"
-                    onClick={() => goToCoin(entity.coin, entity)}
-                  >
-                    <img
-                      src={entity.image}
-                      alt={entity.name}
-                      className="w-8 h-8 mr-2"
-                    />
-                    {entity.name}
-                    <span className="text-gray-400 ml-2">{entity.coin}</span>
-                  </td>
-                  <td className="px-6 py-4">{entity.price.toLocaleString()}</td>
-                  <td
-                    className={`px-6 py-4 ${
-                      entity['1h'] < 0 ? 'text-red-500' : 'text-green-500'
-                    }`}
-                  >
-                    {entity['1h'].toFixed(4)}%
-                  </td>
-                  <td
-                    className={`px-6 py-4 ${
-                      entity['24h'] < 0 ? 'text-red-500' : 'text-green-500'
-                    }`}
-                  >
-                    {entity['24h'].toFixed(4)}%
-                  </td>
-                  <td
-                    className={`px-6 py-4 ${
-                      entity['7d'] < 0 ? 'text-red-500' : 'text-green-500'
-                    }`}
-                  >
-                    {entity['7d'].toFixed(4)}%
-                  </td>
-
-                  <td className="px-6 py-4">
-                    ${entity.marketCap.toLocaleString()}
-                  </td>
-                  <td className="px-6 py-4">
-                    ${entity.volume.toLocaleString()}
-                  </td>
-                  <td className="px-6 py-4">
-                    {entity.circulatingSupply.toLocaleString()}
-                  </td>
-                  <td className="px-6 py-4 cursor-pointer">
-                    <img
-                      className="text-teal-400"
-                      style={{
-                        filter:
-                          'hue-rotate(85deg) saturate(80%) brightness(0.85)',
-                      }}
-                      src={
-                        'https://s3.coinmarketcap.com/generated/sparklines/web/7d/2781/1.svg'
+        {show ? (
+          <div></div>
+        ) : (
+          <tbody>
+            {displayEntities &&
+              displayEntities.map((entity, key) => {
+                return (
+                  <tr className="bg-gray-100 border-b font-bold" key={key}>
+                    <th
+                      onClick={
+                        user
+                          ? () => handleAddToWatchlist(entity.coin)
+                          : () => alert('please connect wallet')
                       }
-                      alt=""
-                    />
-                  </td>
-                </tr>
-              );
-            })}
-        </tbody>
+                      scope="row"
+                      className="px-6 py-4"
+                    >
+                      <WatchlistIcon
+                        isOnWatchlist={user ? watchlist[entity.coin] : false}
+                        className="mr-1"
+                        width={24}
+                        height={24}
+                      />
+                    </th>
+                    <td className="px-6 py-4">{key + 1}</td>
+                    <td
+                      className="px-6 py-4 flex items-center my-4 cursor-pointer"
+                      onClick={() => goToCoin(entity.coin, entity)}
+                    >
+                      <img
+                        src={entity.image}
+                        alt={entity.name}
+                        className="w-8 h-8 mr-2"
+                      />
+                      {entity.name}
+                      <span className="text-gray-400 ml-2">{entity.coin}</span>
+                    </td>
+                    <td className="px-6 py-4">
+                      {entity.price.toLocaleString()}
+                    </td>
+                    <td
+                      className={`px-6 py-4 ${
+                        entity['1h'] < 0 ? 'text-red-500' : 'text-green-500'
+                      }`}
+                    >
+                      {entity['1h'].toFixed(4)}%
+                    </td>
+                    <td
+                      className={`px-6 py-4 ${
+                        entity['24h'] < 0 ? 'text-red-500' : 'text-green-500'
+                      }`}
+                    >
+                      {entity['24h'].toFixed(4)}%
+                    </td>
+                    <td
+                      className={`px-6 py-4 ${
+                        entity['7d'] < 0 ? 'text-red-500' : 'text-green-500'
+                      }`}
+                    >
+                      {entity['7d'].toFixed(4)}%
+                    </td>
+
+                    <td className="px-6 py-4">
+                      ${entity.marketCap.toLocaleString()}
+                    </td>
+                    <td className="px-6 py-4">
+                      ${entity.volume.toLocaleString()}
+                    </td>
+                    <td className="px-6 py-4">
+                      {entity.circulatingSupply.toLocaleString()}
+                    </td>
+                    <td className="px-6 py-4 cursor-pointer">
+                      <img
+                        className="text-teal-400"
+                        style={{
+                          filter:
+                            'hue-rotate(85deg) saturate(80%) brightness(0.85)',
+                        }}
+                        src={
+                          'https://s3.coinmarketcap.com/generated/sparklines/web/7d/2781/1.svg'
+                        }
+                        alt=""
+                      />
+                    </td>
+                  </tr>
+                );
+              })}
+          </tbody>
+        )}
       </table>
     </div>
   );
