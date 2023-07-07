@@ -233,25 +233,45 @@ export function Coin(props: CoinProps) {
 
   return (
     <div className="bg-gray-100 min-h-screen">
-      {loadingStatus === 'loading' ? (
+      <div className="flex">
+        <div className="text-gray-400 hover:text-gray-600 cursor-pointer font-medium text-sm py-2 inline-flex mr-2">
+          Cryptocurrencies &gt;
+        </div>
+        <div className="text-gray-400 hover:text-gray-600 cursor-pointer font-medium text-sm py-2 inline-flex mr-2">
+          Coins &gt;
+        </div>
+        <div className="text-black hover:text-gray-600 cursor-pointer font-medium text-sm py-2 inline-flex mr-2"></div>
+      </div>
+      {loadingStatus === ('loading' || 'not loaded') ? (
         <>
-          <div className="flex">
-            <Skeleton className="text-gray-400 hover:text-gray-600 cursor-pointer font-medium text-sm py-2 inline-flex mr-2 min-w-[100px]" />
-            <Skeleton className="text-gray-400 hover:text-gray-600 cursor-pointer font-medium text-sm py-2 inline-flex mr-2 min-w-[100px]" />
-            <Skeleton className="text-black hover:text-gray-600 cursor-pointer font-medium text-sm py-2 inline-flex mr-2 min-w-[100px]" />
+          <div className="flex items-center mt-5">
+            <Skeleton className="text-gray-400 hover:text-gray-600 cursor-pointer font-medium text-xl py-2 inline-flex mr-2 min-w-[40px] min-h-[40px]" />
+            <Skeleton className="text-black hover:text-gray-600 cursor-pointer font-medium text-xl py-2 inline-flex mr-2 min-w-[55px] min-h-[40px]" />
+            <WatchlistIcon
+              className="ml-2"
+              width={18}
+              height={18}
+              isOnWatchlist={false}
+            />
           </div>
+
           <div className="grid md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-x-8 gap-y-4">
             <div className="col-span-1">
               <div className="flex items-center my-4">
-                <Skeleton className="w-10 h-10 min-w-[10px] mr-2" />
-                <Skeleton className="font-bold text-lg mr-2 min-w-[100px]" />
+                <Skeleton className="h-20 min-w-[80px] mr-2" />
+                <Skeleton className="font-bold text-2xl mr-2 min-w-[150px]" />
+                <Skeleton className="w-20 h-20 min-w-[20px] mr-2" />
+                <Skeleton className="font-bold text-2xl mr-2 min-w-[150px]" />
                 {/* Skeleton for Tag and WatchlistIcon */}
               </div>
               {/* Skeletons for CoinAttributeLinkButton */}
               <p className="my-2">Tags</p>
               <div className="flex gap-4 flex-wrap">
                 {/* Skeletons for Tag */}
-                <Skeleton className="text-blue-500 hover:cursor-pointer min-w-[50px]" />
+                <Skeleton className="text-blue-500 hover:cursor-pointer min-w-[70px]" />
+                <Skeleton className="text-blue-500 hover:cursor-pointer min-w-[70px]" />
+                <Skeleton className="text-blue-500 hover:cursor-pointer min-w-[70px]" />
+                <Skeleton className="text-blue-500 hover:cursor-pointer min-w-[70px]" />
               </div>
             </div>
             <div className="md:col-span-2 col-span-1">
@@ -261,200 +281,185 @@ export function Coin(props: CoinProps) {
           {/* Skeleton for ToggleComponent, ChartWidget, and HistoricalPriceTable */}
         </>
       ) : (
-        <>
-          <div className="flex">
-            <div className="text-gray-400 hover:text-gray-600 cursor-pointer font-medium text-sm py-2 inline-flex mr-2">
-              Cryptocurrencies &gt;
-            </div>
-            <div className="text-gray-400 hover:text-gray-600 cursor-pointer font-medium text-sm py-2 inline-flex mr-2">
-              Coins &gt;
-            </div>
-            <div className="text-black hover:text-gray-600 cursor-pointer font-medium text-sm py-2 inline-flex mr-2"></div>
-          </div>
-          <div className="grid md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-x-8 gap-y-4">
-            <div className="col-span-1">
-              <div className="flex items-center my-4">
-                <img
-                  className="w-10 mr-2"
-                  src={
-                    (entity && entity.image) ||
-                    (fetchedEntity[0] && fetchedEntity[0].image) ||
-                    BitcoinSVG
-                  }
-                  alt="bitcoin"
+        <div className="grid md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-x-8 gap-y-4">
+          <div className="col-span-1">
+            <div className="flex items-center my-4">
+              <img
+                className="w-10 mr-2"
+                src={
+                  (entity && entity.image) ||
+                  (fetchedEntity[0] && fetchedEntity[0].image)
+                }
+                alt="bitcoin"
+              />
+
+              <Tag
+                tagName={entity?.coin || fetchedEntity[0]?.coin}
+                goToTag={goToTag}
+              />
+              <div
+                onClick={
+                  user
+                    ? () => handleAddToWatchlist()
+                    : () => alert('Please Connect Wallet')
+                }
+              >
+                <WatchlistIcon
+                  className="ml-2"
+                  width={18}
+                  height={18}
+                  isOnWatchlist={isInWatchlist}
                 />
-                <Skeleton className="w-10 h-10 min-w-[10px] mr-2" />
-                {'      '}
-                <Tag
-                  tagName={entity?.coin || fetchedEntity[0]?.coin}
-                  goToTag={goToTag}
-                />
-                <div
-                  onClick={
-                    user
-                      ? () => handleAddToWatchlist()
-                      : () => alert('Please Connect Wallet')
-                  }
-                >
-                  <WatchlistIcon
-                    className="ml-2"
-                    width={18}
-                    height={18}
-                    isOnWatchlist={isInWatchlist}
+              </div>
+            </div>
+            <div className="flex flex-wrap gap-4">
+              {coinAttributeButtonData.map((item, key) => {
+                return (
+                  <CoinAttributeLinkButton
+                    key={key}
+                    icon={item.icon}
+                    title={item.title}
+                    type={item.type === 'link' ? 'link' : 'dropdown'}
+                    url={item.url}
+                    dropdownOptions={
+                      item.dropdownOptions ? item.dropdownOptions : []
+                    }
                   />
-                </div>
-              </div>
-              <div className="flex flex-wrap gap-4">
-                {coinAttributeButtonData.map((item, key) => {
-                  return (
-                    <CoinAttributeLinkButton
-                      key={key}
-                      icon={item.icon}
-                      title={item.title}
-                      type={item.type === 'link' ? 'link' : 'dropdown'}
-                      url={item.url}
-                      dropdownOptions={
-                        item.dropdownOptions ? item.dropdownOptions : []
-                      }
-                    />
-                  );
-                })}
-              </div>
-              <p className="my-2">Tags</p>
-              <div className="flex gap-4 flex-wrap">
-                <Tag tagName="PoW" goToTag={goToTag} />
-                <Tag tagName="SHA-256" goToTag={goToTag} />
-                <Tag tagName="Store Of Value" goToTag={goToTag} />
-                <Tag tagName="Mineable" goToTag={goToTag} />
-                <span className="text-blue-500 hover:cursor-pointer">
-                  View All
-                </span>
-              </div>
+                );
+              })}
             </div>
-            <div className="md:col-span-2 col-span-1">
-              <div className="font-bold flex items-center mb-8">
-                <span className="md:text-[60px] text-3xl mr-2 p-2">
+            <p className="my-2">Tags</p>
+            <div className="flex gap-4 flex-wrap">
+              <Tag tagName="PoW" goToTag={goToTag} />
+              <Tag tagName="SHA-256" goToTag={goToTag} />
+              <Tag tagName="Store Of Value" goToTag={goToTag} />
+              <Tag tagName="Mineable" goToTag={goToTag} />
+              <span className="text-blue-500 hover:cursor-pointer">
+                View All
+              </span>
+            </div>
+          </div>
+          <div className="md:col-span-2 col-span-1">
+            <div className="font-bold flex items-center mb-8">
+              <span className="md:text-[60px] text-3xl mr-2 p-2">
+                $
+                {(entity && entity.price) ||
+                  (fetchedEntity[0] && fetchedEntity[0].price.toFixed(4)) ||
+                  '34,000'}
+              </span>
+              {entity &&
+                (entity['24h'] < 0 ? (
+                  <span className="p-2 text-white bg-red-500 rounded-2xl flex items-center md:text-2xl text-md">
+                    <ArrowDownIcon
+                      className="mt-2"
+                      color="white"
+                      width={15}
+                      height={15}
+                    />
+                    {(entity && (entity['24h'] * -1).toFixed(4)) ||
+                      (fetchedEntity[0] &&
+                        fetchedEntity[0]['24h'].toFixed(4)) ||
+                      '0.02%'}
+                  </span>
+                ) : (
+                  <span className="p-2 text-white bg-green-500 rounded-2xl flex items-center md:text-2xl text-md">
+                    <ArrowUpIcon
+                      className="mt-2"
+                      color="white"
+                      width={15}
+                      height={15}
+                    />
+                    {(entity && entity['24h'].toFixed(4)) ||
+                      (fetchedEntity[0] &&
+                        fetchedEntity[0]['24h'].toFixed(4)) ||
+                      '0.02%'}
+                  </span>
+                ))}
+            </div>
+            <div className="grid lg:grid-cols-4 grid-cols-2 gap-2">
+              <div className="flex-col">
+                <span className="text-[#7D7D7D]">Market Cap</span>
+                <br />
+                <span className="font-bold">
                   $
-                  {(entity && entity.price) ||
-                    (fetchedEntity[0] && fetchedEntity[0].price.toFixed(4)) ||
-                    '34,000'}
+                  {(entity && entity.marketCap) ||
+                    (fetchedEntity[0] && fetchedEntity[0].marketCap) ||
+                    '535,170,972,845'}
                 </span>
-                {entity &&
-                  (entity['24h'] < 0 ? (
-                    <span className="p-2 text-white bg-red-500 rounded-2xl flex items-center md:text-2xl text-md">
-                      <ArrowDownIcon
-                        className="mt-2"
-                        color="white"
-                        width={15}
-                        height={15}
-                      />
-                      {(entity && (entity['24h'] * -1).toFixed(4)) ||
-                        (fetchedEntity[0] &&
-                          fetchedEntity[0]['24h'].toFixed(4)) ||
-                        '0.02%'}
-                    </span>
-                  ) : (
-                    <span className="p-2 text-white bg-green-500 rounded-2xl flex items-center md:text-2xl text-md">
-                      <ArrowUpIcon
-                        className="mt-2"
-                        color="white"
-                        width={15}
-                        height={15}
-                      />
-                      {(entity && entity['24h'].toFixed(4)) ||
-                        (fetchedEntity[0] &&
-                          fetchedEntity[0]['24h'].toFixed(4)) ||
-                        '0.02%'}
-                    </span>
-                  ))}
+                <span className="flex items-center text-green-500">
+                  <ArrowUpIcon
+                    className="mt-2 mr-1"
+                    color="green"
+                    width={15}
+                    height={15}
+                  />
+                  0.02%
+                </span>
               </div>
-              <div className="grid lg:grid-cols-4 grid-cols-2 gap-2">
-                <div className="flex-col">
-                  <span className="text-[#7D7D7D]">Market Cap</span>
-                  <br />
+              <div className="flex-col">
+                <span className="text-[#7D7D7D]">Fully Diluted Market Cap</span>
+                <br />
+                <span className="font-bold">
+                  $
+                  {(entity && entity.marketCap) ||
+                    (fetchedEntity[0] && fetchedEntity[0].marketCap) ||
+                    '535,170,972,845'}
+                </span>
+                <span className="flex items-center text-green-500">
+                  <ArrowUpIcon
+                    className="mt-2 mr-1"
+                    color="green"
+                    width={15}
+                    height={15}
+                  />
+                  0.02%
+                </span>
+              </div>
+              <div className="flex-col">
+                <span className="text-[#7D7D7D]">Volume</span>
+                <br />
+                <span className="font-bold">
+                  $
+                  {(entity && entity.volume) ||
+                    (fetchedEntity[0] && fetchedEntity[0].volume) ||
+                    '$535,170,972,845'}
+                </span>
+                <span className="flex items-center text-green-500">
+                  <ArrowUpIcon
+                    className="mt-2 mr-1"
+                    color="green"
+                    width={15}
+                    height={15}
+                  />
+                  0.02%
+                </span>
+              </div>
+              <div className="flex-col">
+                <span className="text-[#7D7D7D]">Circulating Supply</span>
+                <br />
+                <div className="flex justify-between">
                   <span className="font-bold">
-                    $
-                    {(entity && entity.marketCap) ||
-                      (fetchedEntity[0] && fetchedEntity[0].marketCap) ||
-                      '535,170,972,845'}
+                    {(entity && entity.circulatingSupply) ||
+                      (fetchedEntity[0] &&
+                        fetchedEntity[0].circulatingSupply) ||
+                      '18,618,806.00'}{' '}
+                    {(entity && entity.coin) ||
+                      (fetchedEntity[0] && fetchedEntity[0].coin) ||
+                      'BTC'}
                   </span>
-                  <span className="flex items-center text-green-500">
-                    <ArrowUpIcon
-                      className="mt-2 mr-1"
-                      color="green"
-                      width={15}
-                      height={15}
-                    />
-                    0.02%
-                  </span>
-                </div>
-                <div className="flex-col">
-                  <span className="text-[#7D7D7D]">
-                    Fully Diluted Market Cap
-                  </span>
-                  <br />
-                  <span className="font-bold">
-                    $
-                    {(entity && entity.marketCap) ||
-                      (fetchedEntity[0] && fetchedEntity[0].marketCap) ||
-                      '535,170,972,845'}
-                  </span>
-                  <span className="flex items-center text-green-500">
-                    <ArrowUpIcon
-                      className="mt-2 mr-1"
-                      color="green"
-                      width={15}
-                      height={15}
-                    />
-                    0.02%
-                  </span>
-                </div>
-                <div className="flex-col">
-                  <span className="text-[#7D7D7D]">Volume</span>
-                  <br />
-                  <span className="font-bold">
-                    $
-                    {(entity && entity.volume) ||
-                      (fetchedEntity[0] && fetchedEntity[0].volume) ||
-                      '$535,170,972,845'}
-                  </span>
-                  <span className="flex items-center text-green-500">
-                    <ArrowUpIcon
-                      className="mt-2 mr-1"
-                      color="green"
-                      width={15}
-                      height={15}
-                    />
-                    0.02%
-                  </span>
-                </div>
-                <div className="flex-col">
-                  <span className="text-[#7D7D7D]">Circulating Supply</span>
-                  <br />
-                  <div className="flex justify-between">
-                    <span className="font-bold">
-                      {(entity && entity.circulatingSupply) ||
-                        (fetchedEntity[0] &&
-                          fetchedEntity[0].circulatingSupply) ||
-                        '18,618,806.00'}{' '}
-                      {(entity && entity.coin) ||
-                        (fetchedEntity[0] && fetchedEntity[0].coin) ||
-                        'BTC'}
-                    </span>
-                  </div>{' '}
-                  <span className="flex items-center text-green-500">
-                    <div className="w-full bg-gray-400 rounded-full h-2.5 dark:bg-gray-700">
-                      <div
-                        className="bg-gray-700 h-2.5 rounded-full"
-                        style={{ width: '92%' }}
-                      ></div>
-                    </div>
-                  </span>
-                </div>
+                </div>{' '}
+                <span className="flex items-center text-green-500">
+                  <div className="w-full bg-gray-400 rounded-full h-2.5 dark:bg-gray-700">
+                    <div
+                      className="bg-gray-700 h-2.5 rounded-full"
+                      style={{ width: '92%' }}
+                    ></div>
+                  </div>
+                </span>
               </div>
             </div>
           </div>
-        </>
+        </div>
       )}
       <div className="my-4">
         <ToggleComponent view={toggleView} setView={setView} />
