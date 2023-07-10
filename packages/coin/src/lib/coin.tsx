@@ -312,9 +312,9 @@ export function Coin(props: CoinProps) {
                       width={15}
                       height={15}
                     />
-                    {(entity && (entity['24h'] * -1).toFixed(4)) ||
+                    {(entity && (entity['24h'] * -1).toFixed(2)) ||
                       (fetchedEntity[0] &&
-                        fetchedEntity[0]['24h'].toFixed(4)) ||
+                        fetchedEntity[0]['24h'].toFixed(2)) ||
                       '0.02%'}
                   </span>
                 ) : (
@@ -325,9 +325,9 @@ export function Coin(props: CoinProps) {
                       width={15}
                       height={15}
                     />
-                    {(entity && entity['24h'].toFixed(4)) ||
+                    {(entity && entity['24h'].toFixed(2)) ||
                       (fetchedEntity[0] &&
-                        fetchedEntity[0]['24h'].toFixed(4)) ||
+                        fetchedEntity[0]['24h'].toFixed(2)) ||
                       '0.02%'}
                   </span>
                 ))}

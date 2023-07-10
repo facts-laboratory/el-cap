@@ -59,7 +59,7 @@ const TopCoinsCard: React.FC<TopCoinsCardProps> = ({
                 height={20}
                 color="#ff0000"
               />
-              {Math.abs(metric[dataKeyOfMetric]).toFixed(4)}%
+              {Math.abs(metric[dataKeyOfMetric]).toFixed(2)}%
             </span>
           );
         }
@@ -71,14 +71,14 @@ const TopCoinsCard: React.FC<TopCoinsCardProps> = ({
               height={20}
               color="#00ff00"
             />
-            {Math.abs(metric[dataKeyOfMetric]).toFixed(4)}%
+            {Math.abs(metric[dataKeyOfMetric]).toFixed(2)}%
           </span>
         );
 
       default:
         return (
           <span className="font-bold">
-            ${metric[dataKeyOfMetric].toFixed(4)}
+            ${metric[dataKeyOfMetric].toFixed(2)}
           </span>
         );
     }

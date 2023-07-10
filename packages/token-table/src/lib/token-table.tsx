@@ -183,21 +183,21 @@ export const TokenTable = memo((props: TokenTableProps) => {
                         entity['1h'] < 0 ? 'text-red-500' : 'text-green-500'
                       }`}
                     >
-                      {entity['1h'].toFixed(4)}%
+                      {entity['1h'].toFixed(2)}%
                     </td>
                     <td
                       className={`px-6 py-4 ${
                         entity['24h'] < 0 ? 'text-red-500' : 'text-green-500'
                       }`}
                     >
-                      {entity['24h'].toFixed(4)}%
+                      {entity['24h'].toFixed(2)}%
                     </td>
                     <td
                       className={`px-6 py-4 ${
                         entity['7d'] < 0 ? 'text-red-500' : 'text-green-500'
                       }`}
                     >
-                      {entity['7d'].toFixed(4)}%
+                      {entity['7d'].toFixed(2)}%
                     </td>
 
                     <td className="px-6 py-4">
