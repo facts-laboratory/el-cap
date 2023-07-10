@@ -17,7 +17,8 @@
     "storybook": "nx run ${NAME}:storybook",
     "prepare": "husky install",
     "version": "nx run-many --targets=version --parallel=false --all --releaseAs=${TYPE}",
-    "version:pre-release": "nx run workspace:version --releaseAs=prerelease --preid=${TYPE}"
+    "version:pre-release": "nx run workspace:version --releaseAs=prerelease --preid=${TYPE}",
+    "perma-deploy": "node ./tools/scripts/perma-deploy.mjs dist/apps/el-cap/"
   },
   "private": true,
   "devDependencies": {
