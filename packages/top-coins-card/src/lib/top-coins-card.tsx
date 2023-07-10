@@ -14,7 +14,7 @@ type TopCoinsCardProps = {
   title: string;
   type: string;
   data: ProcessedTokenData[];
-  goToCoin: (symbol: string) => void;
+  goToCoin: (symbol: string, entity: ProcessedTokenData) => void;
   goToFeed: (title: string) => void;
   dataKey: string;
 };
@@ -110,7 +110,7 @@ const TopCoinsCard: React.FC<TopCoinsCardProps> = ({
               <div
                 className="flex justify-between m-2 cursor-pointer"
                 key={index}
-                onClick={() => goToCoin(coin.coin)}
+                onClick={() => goToCoin(coin.coin, coin)}
               >
                 <div className="flex items-center gap-3 whitespace-nowrap">
                   <img src={coin.image} className="h-5 w-5" alt={coin.coin} />
