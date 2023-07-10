@@ -34,13 +34,14 @@ enum LoadingStatus {
 
 export interface SearchBarProps {
   goToFeed: () => void;
+  goToCoin: (ticker: string) => void;
   coins: ProcessedTokenData[];
   loadingStatus: string;
 }
 
 const SearchBar = (props: SearchBarProps) => {
   const [menuStatus, setMenuStatus] = useState<boolean>(true);
-  const { goToFeed, coins } = props;
+  const { goToFeed, coins, goToCoin } = props;
 
   const groupedOptionsCommunity = [
     {
@@ -314,6 +315,7 @@ const SearchBar = (props: SearchBarProps) => {
           loadingStatus={loadingStatus}
           searchResults={searchResults}
           error={error}
+          goToCoin={(ticker: string) => goToCoin(ticker)}
         />
       </div>
       <div className="block xl:hidden">

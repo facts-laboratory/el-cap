@@ -4,6 +4,7 @@ import SearchBarItem from '../components/searchBarItem';
 import RecentSearchItem from '../components/recentSearchItem';
 
 interface SearchInputProps {
+  goToCoin: (ticker: string) => void;
   fetchTrending: () => void;
   trending: SearchCoin[];
   fetchSearch: (query: string) => void;
@@ -33,6 +34,7 @@ export default function SearchInput(props: SearchInputProps) {
     loadingStatus,
     searchResults,
     error,
+    goToCoin,
   } = props;
 
   const [openSearch, setOpenSearch] = useState<boolean>(false);
@@ -109,6 +111,7 @@ export default function SearchInput(props: SearchInputProps) {
         name={item.name}
         coin={item.coin}
         position={`#${item.ranking}`}
+        goToCoin={() => goToCoin(item.coin)}
       />
     );
   });
@@ -120,6 +123,7 @@ export default function SearchInput(props: SearchInputProps) {
       name={item.name}
       coin={item.coin}
       position={`#${item.ranking}`}
+      goToCoin={() => goToCoin(item.coin)}
     />
   ));
 

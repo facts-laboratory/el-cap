@@ -1,4 +1,4 @@
-import { mapStateToProps } from '@el-cap/store';
+import { goToCoin, mapStateToProps } from '@el-cap/store';
 import { connect } from 'react-redux';
 import StatusBar from './statusBar';
 import SearchBar from './searchBar';
@@ -10,6 +10,7 @@ import { ArAccount } from 'arweave-account';
 export interface HeaderProps {
   goToFeed: () => void;
   goToWatchlist: () => void;
+  goToCoin: (ticker: string) => void;
   header: {
     fetchContractcoins: () => void;
     coins: ProcessedTokenData[];
@@ -27,7 +28,7 @@ export interface HeaderProps {
 export function Header(props: HeaderProps) {
   // const ref: React.RefObject<HTMLDivElement> = useRef(null);
 
-  const { header, goToFeed, goToWatchlist } = props;
+  const { header, goToFeed, goToWatchlist, goToCoin } = props;
   const {
     fetchContractcoins,
     coins,
@@ -60,6 +61,7 @@ export function Header(props: HeaderProps) {
       />
       <SearchBar
         goToFeed={() => goToFeed()}
+        goToCoin={(ticker: string) => goToCoin(ticker)}
         coins={coins}
         loadingStatus={loadingStatus}
       />
@@ -72,4 +74,8 @@ export default Header;
 export const ConnectedHeader = connect(mapStateToProps, (dispatch) => ({
   goToFeed: (key: string) => dispatch({ type: 'FEED', payload: { key } }),
   goToWatchlist: () => dispatch({ type: 'WATCHLIST' }),
+  goToCoin: (ticker: string, entity: any) => {
+    console.log('ARE WE HERE?', ticker);
+    dispatch({ type: 'COIN', payload: { ticker, entity } });
+  },
 }))(Header);
