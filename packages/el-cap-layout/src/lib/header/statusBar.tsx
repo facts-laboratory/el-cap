@@ -15,37 +15,22 @@ interface StatusBarProps {
 
 const StatusBar = (props: StatusBarProps) => {
   const { setUser, user, unsetUser, goToWatchlist, marketData } = props;
-  const [localUser, setLocalUser] = useState<ArAccount | undefined>();
-  const [othent, setOthent] = useState<useOthentReturnProps | null>(null);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [localUser, setLocalUser] = useState<ArAccount | null>();
 
   console.log('marketdata in component', marketData);
-
-  useEffect(() => {
-    console.log('running');
-    const initOthent = async () => {
-      const instance = await Othent({
-        API_ID: '2384f84424a36b36ede2873be3e0c7e9',
-      });
-      console.log('instance', instance);
-      setOthent(instance);
-    };
-
-    initOthent();
-  }, []);
-
-  useEffect(() => {
-    setLocalUser(user);
-  }, [user, localUser]);
 
   const handleLogin = async () => {
     setUser();
   };
 
   const handleLogout = async () => {
-    console.log('localUser', localUser, 'othent', othent);
     unsetUser();
   };
+
+  useEffect(() => {
+    setLocalUser(user);
+  }, [user]);
 
   useEffect(() => {
     const handleOutsideClick = (event: MouseEvent) => {
@@ -169,10 +154,11 @@ const StatusBar = (props: StatusBarProps) => {
               >
                 <img
                   alt="profile"
-                  src={localUser.profile.avatarURL}
+                  src={localUser.profile?.avatarURL}
                   className="w-8 h-8 rounded-full mr-2"
                 />
-                {localUser.profile.handleName || localUser.addr.substring(0, 9)}
+                {localUser.profile?.handleName ||
+                  localUser.addr?.substring(0, 9)}
               </div>
               {dropdownOpen && (
                 <div
