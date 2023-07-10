@@ -55,10 +55,23 @@ export const fetchHistoricalPrice = async (input) => {
 function trimData(inputArray) {
   const reduced = removeDuplicatesByTimestamp(inputArray);
   let outputArray = reduced.map((item) => {
-    let timestamp = item.timestamp;
+    let timestampInSeconds = item.timestamp / 1000;
+
+    // Create a new Date object from the timestamp
+    let date = new Date(timestampInSeconds * 1000);
+
+    // If the seconds are not 59, add one minute and set the seconds to 0
+    if (date.getSeconds() !== 59) {
+      date.setMinutes(date.getMinutes() + 1);
+      date.setSeconds(0);
+    }
+
+    // Convert back to a timestamp in seconds
+    let roundedTimestamp = date.getTime() / 1000;
+
     return {
       value: item.value,
-      timestamp,
+      timestamp: roundedTimestamp,
       symbol: item.symbol,
     };
   });

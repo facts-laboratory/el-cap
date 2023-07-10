@@ -299,8 +299,8 @@ export function Coin(props: CoinProps) {
             <div className="font-bold flex items-center mb-8">
               <span className="md:text-[60px] text-3xl mr-2 p-2">
                 $
-                {(entity && entity.price) ||
-                  (fetchedEntity[0] && fetchedEntity[0].price.toFixed(4)) ||
+                {(entity && entity.price.toFixed(2)) ||
+                  (fetchedEntity[0] && fetchedEntity[0].price.toFixed(2)) ||
                   '34,000'}
               </span>
               {entity &&
@@ -338,8 +338,9 @@ export function Coin(props: CoinProps) {
                 <br />
                 <span className="font-bold">
                   $
-                  {(entity && entity.marketCap) ||
-                    (fetchedEntity[0] && fetchedEntity[0].marketCap) ||
+                  {(entity && entity.marketCap.toLocaleString()) ||
+                    (fetchedEntity[0] &&
+                      fetchedEntity[0].marketCap.toLocaleString()) ||
                     '535,170,972,845'}
                 </span>
                 <span className="flex items-center text-green-500">
@@ -357,8 +358,9 @@ export function Coin(props: CoinProps) {
                 <br />
                 <span className="font-bold">
                   $
-                  {(entity && entity.marketCap) ||
-                    (fetchedEntity[0] && fetchedEntity[0].marketCap) ||
+                  {(entity && entity.marketCap.toLocaleString()) ||
+                    (fetchedEntity[0] &&
+                      fetchedEntity[0].marketCap.toLocaleString()) ||
                     '535,170,972,845'}
                 </span>
                 <span className="flex items-center text-green-500">
@@ -376,8 +378,9 @@ export function Coin(props: CoinProps) {
                 <br />
                 <span className="font-bold">
                   $
-                  {(entity && entity.volume) ||
-                    (fetchedEntity[0] && fetchedEntity[0].volume) ||
+                  {(entity && entity.volume.toLocaleString()) ||
+                    (fetchedEntity[0] &&
+                      fetchedEntity[0].volume.toLocaleString()) ||
                     '$535,170,972,845'}
                 </span>
                 <span className="flex items-center text-green-500">
@@ -395,9 +398,12 @@ export function Coin(props: CoinProps) {
                 <br />
                 <div className="flex justify-between">
                   <span className="font-bold">
-                    {(entity && entity.circulatingSupply) ||
+                    {(entity &&
+                      entity.circulatingSupply.toFixed(2).toLocaleString()) ||
                       (fetchedEntity[0] &&
-                        fetchedEntity[0].circulatingSupply) ||
+                        fetchedEntity[0].circulatingSupply
+                          .toFixed(2)
+                          .toLocaleString()) ||
                       '18,618,806.00'}{' '}
                     {(entity && entity.coin) ||
                       (fetchedEntity[0] && fetchedEntity[0].coin) ||

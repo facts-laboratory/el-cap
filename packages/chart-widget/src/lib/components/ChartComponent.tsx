@@ -35,6 +35,10 @@ const ChartComponent: React.FC<ChartProps> = ({
     };
     if (chartContainerRef.current) {
       chart.current = createChart(chartContainerRef.current, {
+        timeScale: {
+          timeVisible: true,
+          secondsVisible: false,
+        },
         layout: {
           background: {
             type: ColorType.Solid,
