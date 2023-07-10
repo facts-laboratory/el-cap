@@ -4,6 +4,7 @@ import react from '@vitejs/plugin-react';
 import viteTsConfigPaths from 'vite-tsconfig-paths';
 
 export default defineConfig({
+  base: './',
   cacheDir: '../../node_modules/.vite/el-cap',
 
   server: {
