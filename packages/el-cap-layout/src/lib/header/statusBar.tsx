@@ -9,7 +9,6 @@ import {
   useStrategy,
 } from 'arweave-wallet-kit';
 import { persistor } from '@el-cap/store';
-import { add } from 'ramda';
 
 interface StatusBarProps {
   goToWatchlist: () => void;
