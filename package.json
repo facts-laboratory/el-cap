@@ -18,7 +18,7 @@
     "prepare": "husky install",
     "version": "nx run-many --targets=version --parallel=false --all --releaseAs=${TYPE}",
     "version:pre-release": "nx run workspace:version --releaseAs=prerelease --preid=${TYPE}",
-    "perma-deploy": "node ./tools/scripts/perma-deploy.mjs dist/apps/el-cap/"
+    "perma-deploy": "rm -rf dist/apps/el-cap-* && node ./tools/scripts/perma-deploy.mjs dist/apps/el-cap/"
   },
   "private": true,
   "devDependencies": {
