@@ -15,7 +15,7 @@ export interface HeaderProps {
     fetchContractcoins: () => void;
     coins: ProcessedTokenData[];
     loadingStatus: string;
-    setUser: () => void;
+    setUser: (input: { address: string; strategy: string | false }) => void;
     user: ArAccount;
     unsetUser: () => void;
     feedLoadingStatus: string;

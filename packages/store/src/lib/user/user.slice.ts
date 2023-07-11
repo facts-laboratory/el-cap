@@ -31,10 +31,13 @@ export const userAdapter = createEntityAdapter<User>();
 
 export const setUser = createAsyncThunk(
   'user/fetchStatus',
-  async (address: string, thunkAPI) => {
+  async (input: { address: string; strategy: string }, thunkAPI) => {
+    const { address, strategy } = input;
     const user = await account.get(address);
 
-    return [user];
+    const userWithStrategy = { ...user, strategy };
+
+    return [userWithStrategy];
   }
 );
 

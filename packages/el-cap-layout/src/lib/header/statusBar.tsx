@@ -6,12 +6,12 @@ import { ProcessedMarketData } from '@el-cap/interfaces';
 import {
   useActiveAddress,
   useConnection,
-  useProfileModal,
+  useStrategy,
 } from 'arweave-wallet-kit';
 
 interface StatusBarProps {
   goToWatchlist: () => void;
-  setUser: (address: string) => void;
+  setUser: (input: { address: string; strategy: string | false }) => void;
   user: ArAccount;
   unsetUser: () => void;
   marketData: ProcessedMarketData;
@@ -22,9 +22,6 @@ const StatusBar = (props: StatusBarProps) => {
   const [localUser, setLocalUser] = useState<ArAccount | null>();
 
   const { connected, connect } = useConnection();
-  const profileModal = useProfileModal();
-
-  const [address, setAddress] = useState(null);
 
   const handleLogin = async () => {
     if (!connected) {
@@ -154,8 +151,8 @@ const StatusBar = (props: StatusBarProps) => {
 export default StatusBar;
 
 interface ConnectedUserProps {
-  setUser: (address: string) => void;
-  localUser: ArAccount;
+  setUser: (input: { address: string; strategy: string | false }) => void;
+  localUser?: ArAccount | null;
   unsetUser: () => void;
 }
 
@@ -168,6 +165,7 @@ const ConnectedUser = ({
   const { disconnect } = useConnection();
 
   const address = useActiveAddress();
+  const strategy = useStrategy();
 
   const handleLogout = async () => {
     disconnect();
@@ -176,9 +174,10 @@ const ConnectedUser = ({
 
   useEffect(() => {
     if (address && !localUser) {
-      setUser(address);
+      console.log('strategy', strategy);
+      setUser({ address, strategy });
     }
-  }, [address, setUser, localUser]);
+  }, [address, setUser, localUser, strategy]);
 
   useEffect(() => {
     const handleOutsideClick = (event: MouseEvent) => {

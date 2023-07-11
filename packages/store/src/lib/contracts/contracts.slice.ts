@@ -49,7 +49,6 @@ export const fetchMarketData = createAsyncThunk(
   async (_, thunkAPI) => {
     const data = await getMarketData();
     const marketData = extractMarketData(data);
-    console.log('marketData', marketData);
     return marketData;
   }
 );
@@ -57,7 +56,10 @@ export const fetchMarketData = createAsyncThunk(
 export const addToWatchlist = createAsyncThunk(
   'contracts/addToWatchlist',
   async (coin: string, thunkAPI) => {
-    const queryCrewState = await getCrewMemberContract();
+    const state = thunkAPI.getState();
+    const address = state.user.user.addr;
+    const strategy = state.user.user.strategy;
+    const queryCrewState = await getCrewMemberContract(address);
     if (queryCrewState.length > 0) {
       try {
         await writeContract({
@@ -73,7 +75,7 @@ export const addToWatchlist = createAsyncThunk(
         console.log('==transaction not yet finalised==');
       }
     } else {
-      deploy(coin);
+      deploy(coin, address, strategy);
     }
   }
 );

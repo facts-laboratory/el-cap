@@ -65,7 +65,8 @@ export function App(props: AppProps) {
     fetchContractcoins: () => dispatch(fetchContractcoins()),
     coins: useAppSelector(selectAllContracts),
     loadingStatus: useAppSelector(selectContractsLoadingStatus),
-    setUser: (address: string) => dispatch(setUser(address)),
+    setUser: (input: { address: string; strategy: string }) =>
+      dispatch(setUser(input)),
     user: useAppSelector(selectUser),
     unsetUser: () => dispatch(unsetUser()),
     fetchFeed: (key: string) => dispatch(fetchFeed(key)),

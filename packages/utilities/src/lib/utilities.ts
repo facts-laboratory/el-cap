@@ -34,8 +34,9 @@ export async function processTokenData(
         volume: combinedTokenItem.total_volume || 0,
         circulatingSupply: combinedTokenItem.circulating_supply || 0,
         '1h':
-          combinedTokenItem.price_change_percentage_1h_in_currency ||
-          combinedTokenItem.market.price_change_percentage_1h_in_currency.usd ||
+          combinedTokenItem?.price_change_percentage_1h_in_currency ||
+          combinedTokenItem?.market.price_change_percentage_1h_in_currency
+            .usd ||
           0,
         '24h': combinedTokenItem.price_change_percentage_24h_in_currency || 0,
         '7d': combinedTokenItem.price_change_percentage_7d_in_currency || 0,
