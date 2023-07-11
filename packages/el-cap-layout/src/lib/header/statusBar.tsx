@@ -1,13 +1,17 @@
 import { useEffect, useRef, useState } from 'react';
 import StatusInfo from '../components/statusInfo';
 import { PortfolioIcon, WatchlistIcon, WalletIcon } from '../icons';
-import { Othent, useOthentReturnProps } from 'othent';
 import { ArAccount } from 'arweave-account';
 import { ProcessedMarketData } from '@el-cap/interfaces';
+import {
+  useActiveAddress,
+  useConnection,
+  useProfileModal,
+} from 'arweave-wallet-kit';
 
 interface StatusBarProps {
   goToWatchlist: () => void;
-  setUser: () => void;
+  setUser: (address: string) => void;
   user: ArAccount;
   unsetUser: () => void;
   marketData: ProcessedMarketData;
@@ -15,36 +19,36 @@ interface StatusBarProps {
 
 const StatusBar = (props: StatusBarProps) => {
   const { setUser, user, unsetUser, goToWatchlist, marketData } = props;
-  const [dropdownOpen, setDropdownOpen] = useState(false);
   const [localUser, setLocalUser] = useState<ArAccount | null>();
+
+  const { connected, connect } = useConnection();
+  const profileModal = useProfileModal();
 
   console.log('marketdata in component', marketData);
 
-  const handleLogin = async () => {
-    setUser();
-  };
+  const [address, setAddress] = useState(null);
 
-  const handleLogout = async () => {
-    unsetUser();
+  useEffect(() => {
+    const fetchAddress = async () => {
+      const activeAddress = useActiveAddress();
+      setAddress(activeAddress);
+    };
+
+    fetchAddress();
+  }, []);
+
+  const handleLogin = async () => {
+    if (!connected) {
+      connect();
+    }
+    console.log('address', address);
+    setUser(address);
   };
+  console.log('connected', connected);
 
   useEffect(() => {
     setLocalUser(user);
   }, [user]);
-
-  useEffect(() => {
-    const handleOutsideClick = (event: MouseEvent) => {
-      if (!(event.target as Element).closest('.dropdown')) {
-        setDropdownOpen(false);
-      }
-    };
-
-    window.addEventListener('click', handleOutsideClick);
-
-    return () => {
-      window.removeEventListener('click', handleOutsideClick);
-    };
-  }, []);
 
   const marqueeRef = useRef<HTMLDivElement | null>(null);
 
@@ -138,7 +142,7 @@ const StatusBar = (props: StatusBarProps) => {
             <PortfolioIcon className="mr-1" width={24} height={24} />
             Portfolio
           </span>
-          {!localUser ? (
+          {!connected ? (
             <button
               onClick={handleLogin}
               className="bg-gray-300 hover:bg-gray-400 text-black font-bold py-2 px-4 inline-flex items-center rounded-full"
@@ -147,37 +151,12 @@ const StatusBar = (props: StatusBarProps) => {
               <span>Connect Wallet</span>
             </button>
           ) : (
-            <div className="cursor-pointer dropdown relative inline-block text-left ">
-              <div
-                onClick={() => setDropdownOpen(!dropdownOpen)}
-                className="cursor-pointer font-bold mr-4 flex items-center"
-              >
-                <img
-                  alt="profile"
-                  src={localUser.profile?.avatarURL}
-                  className="w-8 h-8 rounded-full mr-2"
-                />
-                {localUser.profile?.handleName ||
-                  localUser.addr?.substring(0, 9)}
-              </div>
-              {dropdownOpen && (
-                <div
-                  className="cursor=pointer origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10"
-                  role="menu"
-                  aria-orientation="vertical"
-                  aria-labelledby="menu-button"
-                >
-                  <div className="py-1" role="none">
-                    <div
-                      className="text-gray-700 block px-4 py-2 text-sm"
-                      role="menuitem"
-                      onClick={handleLogout}
-                    >
-                      Logout
-                    </div>
-                  </div>
-                </div>
-              )}
+            <div>
+              <ConnectedUser
+                setUser={setUser}
+                localUser={localUser}
+                unsetUser={unsetUser}
+              />
             </div>
           )}
         </div>
@@ -187,3 +166,79 @@ const StatusBar = (props: StatusBarProps) => {
 };
 
 export default StatusBar;
+
+interface ConnectedUserProps {
+  setUser: (address: string) => void;
+  localUser: ArAccount;
+  unsetUser: () => void;
+}
+
+const ConnectedUser = ({
+  setUser,
+  localUser,
+  unsetUser,
+}: ConnectedUserProps) => {
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const { disconnect } = useConnection();
+
+  const address = useActiveAddress();
+
+  const handleLogout = async () => {
+    disconnect();
+    unsetUser();
+  };
+
+  useEffect(() => {
+    if (address) {
+      setUser(address);
+    }
+  }, [address, setUser]);
+
+  useEffect(() => {
+    const handleOutsideClick = (event: MouseEvent) => {
+      if (!(event.target as Element).closest('.dropdown')) {
+        setDropdownOpen(false);
+      }
+    };
+
+    window.addEventListener('click', handleOutsideClick);
+
+    return () => {
+      window.removeEventListener('click', handleOutsideClick);
+    };
+  }, []);
+
+  return (
+    <div className="cursor-pointer dropdown relative inline-block text-left ">
+      <div
+        onClick={() => setDropdownOpen(!dropdownOpen)}
+        className="cursor-pointer font-bold mr-4 flex items-center"
+      >
+        <img
+          alt="profile"
+          src={localUser.profile?.avatarURL}
+          className="w-8 h-8 rounded-full mr-2"
+        />
+        {localUser.profile?.handleName || localUser.addr?.substring(0, 9)}
+      </div>
+      {dropdownOpen && (
+        <div
+          className="cursor=pointer origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10"
+          role="menu"
+          aria-orientation="vertical"
+          aria-labelledby="menu-button"
+        >
+          <div className="py-1" role="none">
+            <div
+              className="text-gray-700 block px-4 py-2 text-sm"
+              role="menuitem"
+              onClick={handleLogout}
+            >
+              Logout
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};

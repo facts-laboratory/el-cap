@@ -11,6 +11,7 @@ import { Othent } from 'othent';
 import { User } from '@el-cap/interfaces';
 import { ArConnect } from 'arweavekit/auth';
 import Account, { ArAccount } from 'arweave-account';
+import { useConnection, useActiveAddress } from 'arweave-wallet-kit';
 
 const account = new Account();
 
@@ -30,13 +31,8 @@ export const userAdapter = createEntityAdapter<User>();
 
 export const setUser = createAsyncThunk(
   'user/fetchStatus',
-  async (_, thunkAPI) => {
+  async (address: string, thunkAPI) => {
     console.log('setting user');
-    await ArConnect.connect({
-      permissions: ['SIGN_TRANSACTION', 'ACCESS_ADDRESS'],
-      appInfo: { name: 'El Capitan' },
-    });
-    const address = await ArConnect.getActiveAddress();
 
     const user = await account.get(address);
     console.log('address', address, 'user', user);

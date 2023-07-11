@@ -33,6 +33,7 @@ import {
 } from '@el-cap/store';
 import { connect } from 'react-redux';
 import loadable from '@loadable/component';
+import { ArweaveWalletKit } from 'arweave-wallet-kit';
 
 import './global.css';
 
@@ -64,7 +65,7 @@ export function App(props: AppProps) {
     fetchContractcoins: () => dispatch(fetchContractcoins()),
     coins: useAppSelector(selectAllContracts),
     loadingStatus: useAppSelector(selectContractsLoadingStatus),
-    setUser: () => dispatch(setUser()),
+    setUser: (address: string) => dispatch(setUser(address)),
     user: useAppSelector(selectUser),
     unsetUser: () => dispatch(unsetUser()),
     fetchFeed: (key: string) => dispatch(fetchFeed(key)),
@@ -111,17 +112,25 @@ export function App(props: AppProps) {
   const Page = components[(page as keyof ObjectKeys) || 'Feed'];
   return (
     <div className="flex flex-col h-screen">
-      <ConnectedHeader header={header} />
-      <ContentContainer
-        children={
-          <Page
-            coinPage={coinPage}
-            feedPage={feedPage}
-            watchlistPage={watchlistPage}
-          />
-        }
-      />
-      <Footer />
+      <ArweaveWalletKit
+        config={{
+          permissions: ['ACCESS_ADDRESS'],
+          appInfo: { name: 'El Capitan' },
+          ensurePermissions: true,
+        }}
+      >
+        <ConnectedHeader header={header} />
+        <ContentContainer
+          children={
+            <Page
+              coinPage={coinPage}
+              feedPage={feedPage}
+              watchlistPage={watchlistPage}
+            />
+          }
+        />
+        <Footer />
+      </ArweaveWalletKit>
     </div>
   );
 }
