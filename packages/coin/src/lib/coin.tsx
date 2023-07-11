@@ -124,7 +124,6 @@ const coinAttributeButtonData = [
 ];
 
 export function Coin(props: CoinProps) {
-  console.log('coinpageprops', props);
   const { entity, ticker, coinPage } = props;
   const {
     coinChartProps,
@@ -153,10 +152,6 @@ export function Coin(props: CoinProps) {
     window.location.href = tagName.replace(/\s/g, '-');
   };
 
-  const fetchHistoricalPrice = (symbol: string) => {
-    console.log(symbol);
-  };
-
   function findNameByTicker(ticker: string, coins: ProcessedTokenData[]) {
     const coin = coins.find(
       (c) => c.coin.toLowerCase() === ticker.toLowerCase()
@@ -170,9 +165,7 @@ export function Coin(props: CoinProps) {
       ticker !== fetchedEntity[0]?.coin &&
       Object.keys(coins).length > 0
     ) {
-      console.log('testing working');
       const name = findNameByTicker(ticker, coins);
-      console.log('name', name);
       fetchCoin({ symbol: ticker, name });
       setShouldLoad(false);
     }
@@ -194,7 +187,6 @@ export function Coin(props: CoinProps) {
             fetchedEntity,
             true
           );
-          console.log('entitiesOnWatchlist', entitiesOnWatchlist);
           setIsInWatchlist(Object.keys(entitiesOnWatchlist).length > 0);
         } catch (error) {
           setIsInWatchlist(false);
@@ -206,9 +198,7 @@ export function Coin(props: CoinProps) {
 
   // Update the watchlist state whenever the coin data changes
   useEffect(() => {
-    console.log('setting on watchlist', entity, fetchedEntity);
     if (entity || fetchedEntity) {
-      console.log('setting on watchlist', entity, fetchedEntity);
       setIsInWatchlist(entity?.watchlist || fetchedEntity[0]?.watchlist);
     }
   }, [entity, fetchedEntity]);
@@ -220,8 +210,6 @@ export function Coin(props: CoinProps) {
   };
 
   if (error) return <p>{error}</p>;
-
-  console.log(coinChartProps);
 
   return (
     <div className="bg-gray-100 min-h-screen">

@@ -32,15 +32,8 @@ export const userAdapter = createEntityAdapter<User>();
 export const setUser = createAsyncThunk(
   'user/fetchStatus',
   async (address: string, thunkAPI) => {
-    console.log('setting user');
-
     const user = await account.get(address);
-    console.log('address', address, 'user', user);
-    // const othent = await Othent({
-    //   API_ID: '2384f84424a36b36ede2873be3e0c7e9',
-    // });
-    // const user = await othent.logIn();
-    // console.log('user in slice', user);
+
     return [user];
   }
 );
@@ -48,16 +41,8 @@ export const setUser = createAsyncThunk(
 export const unsetUser = createAsyncThunk(
   'user/unsetUser',
   async (_, thunkAPI) => {
-    console.log('logging out');
-    const disconnected = await ArConnect.disconnect();
-    console.log('disconnected', disconnected);
+    console.log('unsetting user thunk');
     return [];
-    // const othent = await Othent({
-    //   API_ID: '2384f84424a36b36ede2873be3e0c7e9',
-    // });
-    // const logout = await othent.logOut();
-    // console.log('user in slice', logout);
-    // return [logout];
   }
 );
 

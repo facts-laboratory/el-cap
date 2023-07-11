@@ -28,9 +28,7 @@ export function ChartWidget(props: CoinChartProps) {
   const buttonRefs = useRef(new Map()).current;
 
   useEffect(() => {
-    console.log('chartData in effect', chartData);
     if (chartData['24h'] && !chartData['7d']) {
-      console.log('fetching', ticker);
       fetchRemaining({ symbol: ticker, interval: '7d' });
     }
   }, [chartData, loadingStatus, ticker, fetchRemaining]);

@@ -75,7 +75,6 @@ export const ConnectedHeader = connect(mapStateToProps, (dispatch) => ({
   goToFeed: (key: string) => dispatch({ type: 'FEED', payload: { key } }),
   goToWatchlist: () => dispatch({ type: 'WATCHLIST' }),
   goToCoin: (ticker: string, entity: any) => {
-    console.log('ARE WE HERE?', ticker);
     dispatch({ type: 'COIN', payload: { ticker, entity } });
   },
 }))(Header);

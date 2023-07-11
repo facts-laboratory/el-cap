@@ -46,8 +46,6 @@ export async function processTokenData(
     }
   });
 
-  console.log('combibedTokenData', combinedTokenData);
-
   try {
     await window.arweaveWallet.getActiveAddress();
 
@@ -76,25 +74,20 @@ export const checkCoinsOnWatchlist = async (
 
     if (queryCrewState.length > 0) {
       const state = (await readState(queryCrewState[0].node.id)) as State;
-      console.log('state in checkCoinsOnWatchlist', state);
       watchlist = state.watchlist.map((item: string) => item.toLowerCase());
     }
 
     let resultEntities = {} as Dictionary<ProcessedTokenData>;
 
-    console.log('entities here', entities);
     Object.keys(entities).forEach((coinKey: string) => {
       const coin = entities[coinKey];
       if (coin) {
-        console.log('coin here', coin);
         resultEntities[coinKey] = {
           ...coin,
           watchlist: watchlist.includes(coin.coin.toLowerCase()),
         };
       }
     });
-
-    console.log('resultEntities', resultEntities, entities);
 
     if (returnOnlyWatchlist) {
       resultEntities = Object.keys(resultEntities)
@@ -107,7 +100,6 @@ export const checkCoinsOnWatchlist = async (
         );
     }
 
-    console.log('return result entities', resultEntities);
     return resultEntities;
   } catch {
     return entities;
@@ -144,7 +136,6 @@ export function sortPrices(
   prices: Dictionary<ProcessedTokenData>,
   key: string | undefined = 'marketCap'
 ): ProcessedTokenData[] | undefined {
-  console.log('sortkey in function', key);
   if (!Object.values(SortKey).includes(key as SortKey)) {
     key = SortKey.MARKET_CAP; // Fallback to sorting by marketCap
   }
@@ -200,7 +191,6 @@ export async function updateCoinsRecursive(
 
 export const getLastUpdatedState = async () => {
   const state = await readState();
-  console.log('readState', state);
   return state;
 };
 
@@ -253,7 +243,6 @@ export function mergeObjects(
   redstone: RedstoneObject,
   remaining: RemainingObject
 ): Array<unknown> | RedstoneObject {
-  console.log('merge here', redstone, remaining);
   if (remaining) {
     const redstoneLowered: Record<string, unknown> = Object.keys(
       redstone
@@ -263,7 +252,6 @@ export function mergeObjects(
     }, {});
 
     return Object.keys(remaining).map((key) => {
-      console.log('key here', key);
       const symbolLower = remaining[key].symbol.toLowerCase();
       if (Object.prototype.hasOwnProperty.call(redstoneLowered, symbolLower)) {
         return {

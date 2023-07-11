@@ -57,14 +57,9 @@ export const fetchMarketData = createAsyncThunk(
 export const addToWatchlist = createAsyncThunk(
   'contracts/addToWatchlist',
   async (coin: string, thunkAPI) => {
-    console.log('==addToWatchlist==');
     const queryCrewState = await getCrewMemberContract();
     if (queryCrewState.length > 0) {
-      console.log('queryCrewState', queryCrewState[0]);
-
       try {
-        const state = (await readState(queryCrewState[0].node.id)) as State;
-        console.log('state in addToWatchlist', state);
         await writeContract({
           environment: 'mainnet' as const,
           contractTxId: queryCrewState[0].node.id,

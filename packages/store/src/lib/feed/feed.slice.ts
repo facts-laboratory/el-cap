@@ -42,61 +42,41 @@ export const feedAdapter = createEntityAdapter<FeedEntity>({
 export const fetchFeed = createAsyncThunk(
   'feed/fetchFeed',
   async (key: string, thunkAPI) => {
-    console.log('fetchFeed: Start');
     try {
       const { feed } = thunkAPI.getState() as RootState;
-      console.log('fetchFeed: Got RootState', feed);
       const { entities } = feed;
 
       if (Object.keys(entities).length === 0) {
-        console.log('fetchFeed: Entities is empty');
         const prices = await getPrices();
-        console.log('fetchFeed: Prices fetched', prices);
         if (Object.keys(prices.remaining).length > 0) {
-          console.log('fetchFeed: Prices.remaining is not empty');
           const combinedPrices = mergeObjects(
             prices.redstone,
             prices.remaining
           );
-          console.log('fetchFeed: CombinedPrices', combinedPrices);
 
           const processedPrices = await processTokenData(combinedPrices);
-          console.log('fetchFeed: ProcessedPrices', processedPrices);
           const first30ProcessedPricesArray = Object.keys(processedPrices)
             .slice(0, 30)
             .map((key) => processedPrices[key])
             .filter((item): item is ProcessedTokenData => item !== undefined);
-          console.log(
-            'fetchFeed: First30ProcessedPricesArray',
-            first30ProcessedPricesArray
-          );
+
           if (await isLastUpdatedOverDay()) {
-            console.log('fetchFeed: Last updated over a day ago');
             updateCoinsRecursive(first30ProcessedPricesArray);
           } else {
             console.log('fetchFeed: Last updated within a day');
           }
           const sortedPrices = sortPrices(entriesToObj(processedPrices), key);
-          console.log('fetchFeed: SortedPrices', sortedPrices);
-          console.log('fetchFeed: Ready to return sorted prices');
           return sortedPrices;
         } else {
-          console.log('fetchFeed: Prices.remaining is empty');
           const state = await getLastUpdatedState();
-          console.log('fetchFeed: LastUpdatedState', state);
-          console.log('fetchFeed: Returning prices.redstone');
           return state.coins;
         }
       } else {
-        console.log('fetchFeed: Entities exist');
         const sortedEntities = sortPrices(entriesToObj(entities), key);
-        console.log('fetchFeed: SortedEntities', sortedEntities);
-        console.log('fetchFeed: Returning sorted entities');
         return sortedEntities;
       }
     } catch (error) {
       console.log('fetchFeed: Error', error);
-      console.log('fetchFeed: Returning empty array');
       return [];
     }
   }
@@ -141,7 +121,6 @@ export const feedSlice = createSlice({
       .addCase(
         fetchFeed.fulfilled,
         (state: FeedState, action: PayloadAction<ProcessedTokenData[]>) => {
-          console.log('feed thunk', action.payload);
           feedAdapter.setAll(state, action.payload);
           state.loadingStatus = 'loaded';
         }

@@ -24,27 +24,13 @@ const StatusBar = (props: StatusBarProps) => {
   const { connected, connect } = useConnection();
   const profileModal = useProfileModal();
 
-  console.log('marketdata in component', marketData);
-
   const [address, setAddress] = useState(null);
-
-  useEffect(() => {
-    const fetchAddress = async () => {
-      const activeAddress = useActiveAddress();
-      setAddress(activeAddress);
-    };
-
-    fetchAddress();
-  }, []);
 
   const handleLogin = async () => {
     if (!connected) {
       connect();
     }
-    console.log('address', address);
-    setUser(address);
   };
-  console.log('connected', connected);
 
   useEffect(() => {
     setLocalUser(user);
@@ -189,10 +175,10 @@ const ConnectedUser = ({
   };
 
   useEffect(() => {
-    if (address) {
+    if (address && !localUser) {
       setUser(address);
     }
-  }, [address, setUser]);
+  }, [address, setUser, localUser]);
 
   useEffect(() => {
     const handleOutsideClick = (event: MouseEvent) => {
@@ -207,6 +193,10 @@ const ConnectedUser = ({
       window.removeEventListener('click', handleOutsideClick);
     };
   }, []);
+
+  if (!localUser) {
+    return null;
+  }
 
   return (
     <div className="cursor-pointer dropdown relative inline-block text-left ">

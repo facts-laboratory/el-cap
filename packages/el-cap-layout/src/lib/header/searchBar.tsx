@@ -256,7 +256,6 @@ const SearchBar = (props: SearchBarProps) => {
     // Fetch search results from API or other data source
 
     try {
-      console.log('coins in search', coins);
       const regex = new RegExp(query, 'i');
       const filteredItems = coins
         .filter((item) => item.name.match(regex))

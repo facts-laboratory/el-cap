@@ -45,9 +45,7 @@ export const watchlistAdapter = createEntityAdapter<WatchlistEntity>({
 export const fetchWatchlist = createAsyncThunk(
   'watchlist/fetchStatus',
   async (_, thunkAPI) => {
-    console.log('==addToWatchlist==');
     const riggingState = thunkAPI.getState() as RootState;
-    console.log('riggingState', riggingState);
     const coins = riggingState.contracts.entities;
 
     const coinsOnWatchlist = await checkCoinsOnWatchlist(coins, true);
