@@ -11,6 +11,7 @@ import { writeContract } from 'arweavekit/contract';
 import {
   deploy,
   getCrewMemberContract,
+  getUserSigner,
   readState,
 } from '@el-cap/contract-integrations';
 import { getMarketData } from '../feed/el-cap-kit.js';
@@ -60,19 +61,25 @@ export const addToWatchlist = createAsyncThunk(
     const address = state.user.user.addr;
     const strategy = state.user.user.strategy;
     const queryCrewState = await getCrewMemberContract(address);
+    console.log('queryCrewState', queryCrewState);
     if (queryCrewState.length > 0) {
-      try {
-        await writeContract({
-          environment: 'mainnet' as const,
-          contractTxId: queryCrewState[0].node.id,
-          wallet: 'use_wallet' as const,
-          options: {
-            function: 'updateWatchlist',
-            ticker: coin,
-          },
-        });
-      } catch (error) {
-        console.log('==transaction not yet finalised==');
+      const userSigner = await getUserSigner(strategy);
+      if (userSigner) {
+        try {
+          console.log('strategy and userSginer', strategy, userSigner);
+          await writeContract({
+            environment: 'mainnet' as const,
+            contractTxId: queryCrewState[0].node.id,
+            wallet: userSigner,
+            options: {
+              function: 'updateWatchlist',
+              ticker: coin,
+            },
+          });
+        } catch (error) {
+          console.log('error', error);
+          console.log('==transaction not yet finalised==');
+        }
       }
     } else {
       deploy(coin, address, strategy);

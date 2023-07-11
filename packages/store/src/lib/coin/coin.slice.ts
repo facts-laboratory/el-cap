@@ -33,6 +33,8 @@ export const fetchCoin = createAsyncThunk(
   'coin/fetchStatus',
   async (input: { symbol: string; name: string }, thunkAPI) => {
     const { symbol, name } = input;
+    const state = thunkAPI.getState() as RootState;
+    const address = state.user.user?.addr;
 
     try {
       const coinData = await getCoin({ symbol, name });
@@ -55,9 +57,10 @@ export const fetchCoin = createAsyncThunk(
           coinData.remaining.market_data.price_change_percentage_7d_in_currency
             .usd || 0,
       };
-      const coinWithWatchListFlag = await checkCoinsOnWatchlist([
-        processedCoin,
-      ]);
+      const coinWithWatchListFlag = await checkCoinsOnWatchlist(
+        [processedCoin],
+        address
+      );
 
       return coinWithWatchListFlag;
     } catch (error) {

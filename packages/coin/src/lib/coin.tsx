@@ -185,6 +185,7 @@ export function Coin(props: CoinProps) {
         try {
           const entitiesOnWatchlist = await checkCoinsOnWatchlist(
             fetchedEntity,
+            user.addr,
             true
           );
           setIsInWatchlist(Object.keys(entitiesOnWatchlist).length > 0);

@@ -17,7 +17,8 @@ import {
 import { writeContract } from 'arweavekit/contract';
 
 export async function processTokenData(
-  combinedTokenData: Record<string, any>
+  combinedTokenData: Record<string, any>,
+  address?: string
 ): Promise<Dictionary<ProcessedTokenData>> {
   const processedData: Dictionary<ProcessedTokenData> = {};
 
@@ -46,14 +47,11 @@ export async function processTokenData(
       console.log('error here', error);
     }
   });
-
-  try {
-    await window.arweaveWallet.getActiveAddress();
-
-    return await checkCoinsOnWatchlist(processedData);
-  } catch {
+if (address) {
+    return await checkCoinsOnWatchlist(processedData, address);
+  } else {
     return processedData;
-  }
+}
 }
 
 export function entriesToObj(
@@ -67,16 +65,18 @@ export function entriesToObj(
 
 export const checkCoinsOnWatchlist = async (
   entities: Dictionary<ProcessedTokenData>,
+  address: string
   returnOnlyWatchlist = false
 ) => {
   try {
-    const queryCrewState = await getCrewMemberContract();
+    const queryCrewState = await getCrewMemberContract(address);
     let watchlist: string[] = [];
 
     if (queryCrewState.length > 0) {
       const state = (await readState(queryCrewState[0].node.id)) as State;
       watchlist = state.watchlist.map((item: string) => item.toLowerCase());
     }
+
 
     let resultEntities = {} as Dictionary<ProcessedTokenData>;
 
@@ -100,6 +100,7 @@ export const checkCoinsOnWatchlist = async (
           {}
         );
     }
+    console.log('resultentities', resultEntities);
 
     return resultEntities;
   } catch {

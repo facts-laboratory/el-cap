@@ -13,12 +13,10 @@ import {
   sortTopCoins,
   entriesToObj,
   updateCoinsRecursive,
-  getMergedPrices,
   getLastUpdatedState,
   isLastUpdatedOverDay,
 } from '@el-cap/utilities';
-import { readState, EL_CAP_RIGGING_TX } from '@el-cap/contract-integrations';
-import { ProcessedTokenData, TopCoins } from '@el-cap/interfaces';
+import { ProcessedTokenData, State, TopCoins } from '@el-cap/interfaces';
 import { getPrices } from './el-cap-kit.js';
 import { RootState } from '../store.js';
 
@@ -43,8 +41,9 @@ export const fetchFeed = createAsyncThunk(
   'feed/fetchFeed',
   async (key: string, thunkAPI) => {
     try {
-      const { feed } = thunkAPI.getState() as RootState;
+      const { feed, user } = thunkAPI.getState() as RootState;
       const { entities } = feed;
+      const address = user.user?.addr;
 
       if (Object.keys(entities).length === 0) {
         const prices = await getPrices();
@@ -54,7 +53,10 @@ export const fetchFeed = createAsyncThunk(
             prices.remaining
           );
 
-          const processedPrices = await processTokenData(combinedPrices);
+          const processedPrices = await processTokenData(
+            combinedPrices,
+            address
+          );
           const first30ProcessedPricesArray = Object.keys(processedPrices)
             .slice(0, 30)
             .map((key) => processedPrices[key])
@@ -68,7 +70,7 @@ export const fetchFeed = createAsyncThunk(
           const sortedPrices = sortPrices(entriesToObj(processedPrices), key);
           return sortedPrices;
         } else {
-          const state = await getLastUpdatedState();
+          const state = (await getLastUpdatedState()) as State;
           return state.coins;
         }
       } else {
