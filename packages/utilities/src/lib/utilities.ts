@@ -47,11 +47,11 @@ export async function processTokenData(
       console.log('error here', error);
     }
   });
-if (address) {
+  if (address) {
     return await checkCoinsOnWatchlist(processedData, address);
   } else {
     return processedData;
-}
+  }
 }
 
 export function entriesToObj(
@@ -65,7 +65,7 @@ export function entriesToObj(
 
 export const checkCoinsOnWatchlist = async (
   entities: Dictionary<ProcessedTokenData>,
-  address: string
+  address: string,
   returnOnlyWatchlist = false
 ) => {
   try {
@@ -76,7 +76,6 @@ export const checkCoinsOnWatchlist = async (
       const state = (await readState(queryCrewState[0].node.id)) as State;
       watchlist = state.watchlist.map((item: string) => item.toLowerCase());
     }
-
 
     let resultEntities = {} as Dictionary<ProcessedTokenData>;
 
