@@ -6,6 +6,7 @@ import {
   EntityState,
   PayloadAction,
 } from '@reduxjs/toolkit';
+import { PURGE } from 'redux-persist';
 import { persistor, RootState } from '../store';
 import { Othent } from 'othent';
 import { User } from '@el-cap/interfaces';
@@ -49,6 +50,7 @@ export const unsetUser = createAsyncThunk(
   'user/unsetUser',
   async (_, thunkAPI) => {
     console.log('unsetting user thunk');
+
     return [];
   }
 );
@@ -91,12 +93,14 @@ export const userSlice = createSlice({
         state.user = null;
         userAdapter.removeAll(state);
         state.loadingStatus = 'loaded';
-        persistor.purge();
         console.log('unset user in thunk', state.user);
       })
       .addCase(unsetUser.rejected, (state: UserState, action) => {
         state.loadingStatus = 'error';
         state.error = action.error.message;
+      })
+      .addCase(PURGE, () => {
+        return initialUserState;
       });
   },
 });

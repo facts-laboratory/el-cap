@@ -1,3 +1,4 @@
+export * from './lib/purge.slice';
 export * from './lib/watchlist/watchlist.slice';
 export * from './lib/user/user.slice';
 export * from './lib/contracts/contracts.slice';

@@ -15,6 +15,7 @@ import {
   updateCoinsRecursive,
   getLastUpdatedState,
   isLastUpdatedOverDay,
+  checkCoinsOnWatchlist,
 } from '@el-cap/utilities';
 import { ProcessedTokenData, State, TopCoins } from '@el-cap/interfaces';
 import { getPrices } from './el-cap-kit.js';
@@ -42,8 +43,8 @@ export const fetchFeed = createAsyncThunk(
   async (key: string, thunkAPI) => {
     try {
       const { feed, user } = thunkAPI.getState() as RootState;
-      const { entities } = feed;
       const address = user.user?.addr;
+      const { entities } = feed;
 
       if (Object.keys(entities).length === 0) {
         const prices = await getPrices();
@@ -70,11 +71,16 @@ export const fetchFeed = createAsyncThunk(
           const sortedPrices = sortPrices(entriesToObj(processedPrices), key);
           return sortedPrices;
         } else {
-          const state = (await getLastUpdatedState()) as State;
+          const state = await getLastUpdatedState();
           return state.coins;
         }
       } else {
-        const sortedEntities = sortPrices(entriesToObj(entities), key);
+        console.log('fetchFeed: Entities exist');
+        const watchlistEntities = await checkCoinsOnWatchlist(
+          entities,
+          address
+        );
+        const sortedEntities = sortPrices(entriesToObj(watchlistEntities), key);
         return sortedEntities;
       }
     } catch (error) {

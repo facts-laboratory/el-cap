@@ -8,6 +8,8 @@ import {
   useConnection,
   useStrategy,
 } from 'arweave-wallet-kit';
+import { persistor } from '@el-cap/store';
+import { add } from 'ramda';
 
 interface StatusBarProps {
   goToWatchlist: () => void;
@@ -127,7 +129,9 @@ const StatusBar = (props: StatusBarProps) => {
           </span>
           {!connected ? (
             <button
-              onClick={handleLogin}
+              onClick={() => {
+                handleLogin();
+              }}
               className="bg-gray-300 hover:bg-gray-400 text-black font-bold py-2 px-4 inline-flex items-center rounded-full"
             >
               <WalletIcon className="mr-2" width={24} height={24} />
@@ -162,22 +166,32 @@ const ConnectedUser = ({
   unsetUser,
 }: ConnectedUserProps) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [shouldSetUser, setShouldSetUser] = useState(true);
+
   const { disconnect } = useConnection();
 
   const address = useActiveAddress();
   const strategy = useStrategy();
-
-  const handleLogout = async () => {
-    disconnect();
-    unsetUser();
-  };
+  const connected = useConnection();
 
   useEffect(() => {
-    if (address && !localUser) {
-      console.log('strategy', strategy);
+    if (shouldSetUser && address && !localUser && connected) {
       setUser({ address, strategy });
     }
-  }, [address, setUser, localUser, strategy]);
+  }, [address, setUser, localUser, strategy, connected, shouldSetUser]);
+
+  useEffect(() => {
+    console.log('address', address);
+  }, [address]);
+
+  const disconnectAndPurge = () => {
+    setShouldSetUser(false);
+    disconnect().then(() => {
+      persistor.purge().then(() => {
+        setShouldSetUser(true);
+      });
+    });
+  };
 
   useEffect(() => {
     const handleOutsideClick = (event: MouseEvent) => {
@@ -221,7 +235,7 @@ const ConnectedUser = ({
             <div
               className="text-gray-700 block px-4 py-2 text-sm"
               role="menuitem"
-              onClick={handleLogout}
+              onClick={disconnectAndPurge}
             >
               Logout
             </div>
