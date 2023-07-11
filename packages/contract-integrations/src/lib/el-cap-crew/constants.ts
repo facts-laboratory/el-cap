@@ -1,5 +1,5 @@
-export const EL_CAP_RIGGING_TX = 'vaKGjup0IKFy1ROMMbVl7_OiPNLGaQIC37tVQMOf0pQ';
-export const EL_CAP_CREW_SRC = 'EAvzPUDf4ZqlqQ5Df2j-8Ag85c4g7owC5IrjaXVyUdQ';
+export const EL_CAP_RIGGING_TX = 'YXK7aT0OTt40wTVqv4uldrQ3GaOCsbOqcqgtVJ_KE80';
+export const EL_CAP_CREW_SRC = '8Wjvne0fjcEW6SCPTHgVyULsMRcy8thNfR4zOAUpRXE';
 
 export const CONTRACT_PARAMS = {
   environment: 'mainnet' as const,

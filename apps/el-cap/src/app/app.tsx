@@ -115,7 +115,12 @@ export function App(props: AppProps) {
     <div className="flex flex-col h-screen">
       <ArweaveWalletKit
         config={{
-          permissions: ['ACCESS_ADDRESS'],
+          permissions: [
+            'ACCESS_ADDRESS',
+            'ACCESS_PUBLIC_KEY',
+            'SIGN_TRANSACTION',
+            'SIGNATURE',
+          ],
           appInfo: { name: 'El Capitan' },
           ensurePermissions: true,
         }}

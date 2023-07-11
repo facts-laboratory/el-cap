@@ -6,7 +6,7 @@ import {
   EntityState,
   PayloadAction,
 } from '@reduxjs/toolkit';
-import { RootState } from '../store';
+import { persistor, RootState } from '../store';
 import { Othent } from 'othent';
 import { User } from '@el-cap/interfaces';
 import { ArConnect } from 'arweavekit/auth';
@@ -21,10 +21,14 @@ export const USER_FEATURE_KEY = 'user';
  * Update these interfaces according to your requirements.
  */
 
+interface StArAccount extends ArAccount {
+  strategy: string;
+}
+
 export interface UserState extends EntityState<User> {
   loadingStatus: 'not loaded' | 'loading' | 'loaded' | 'error';
   error?: string | null;
-  user: ArAccount | null;
+  user: StArAccount | null;
 }
 
 export const userAdapter = createEntityAdapter<User>();
@@ -70,7 +74,7 @@ export const userSlice = createSlice({
       })
       .addCase(
         setUser.fulfilled,
-        (state: UserState, action: PayloadAction<ArAccount[]>) => {
+        (state: UserState, action: PayloadAction<StArAccount[]>) => {
           state.user = action.payload[0];
           state.loadingStatus = 'loaded';
         }
@@ -83,8 +87,12 @@ export const userSlice = createSlice({
         state.loadingStatus = 'loading';
       })
       .addCase(unsetUser.fulfilled, (state: UserState) => {
+        console.log('unsetting user in thunk', state.user);
         state.user = null;
+        userAdapter.removeAll(state);
         state.loadingStatus = 'loaded';
+        persistor.purge();
+        console.log('unset user in thunk', state.user);
       })
       .addCase(unsetUser.rejected, (state: UserState, action) => {
         state.loadingStatus = 'error';

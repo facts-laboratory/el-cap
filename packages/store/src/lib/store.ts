@@ -26,7 +26,7 @@ const { reducer, middleware, enhancer } = connectRoutes(routesMap, {
 const persistConfig = {
   key: 'user',
   storage: storage,
-  whitelist: [USER_FEATURE_KEY], // Only persist the user reducer
+  whitelist: ['user'], // Only persist the user reducer
 };
 
 const persistedReducer = persistReducer(persistConfig, userReducer);

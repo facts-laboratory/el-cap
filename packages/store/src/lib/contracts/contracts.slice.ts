@@ -6,6 +6,7 @@ import {
   EntityState,
   PayloadAction,
 } from '@reduxjs/toolkit';
+import { InjectedArweaveSigner } from 'warp-contracts-plugin-deploy';
 import { RootState } from '../store';
 import { writeContract } from 'arweavekit/contract';
 import {
@@ -13,6 +14,7 @@ import {
   getCrewMemberContract,
   getUserSigner,
   readState,
+  updateWatchList,
 } from '@el-cap/contract-integrations';
 import { getMarketData } from '../feed/el-cap-kit.js';
 import { MarketData, State } from '@el-cap/interfaces';
@@ -57,32 +59,23 @@ export const fetchMarketData = createAsyncThunk(
 export const addToWatchlist = createAsyncThunk(
   'contracts/addToWatchlist',
   async (coin: string, thunkAPI) => {
-    const state = thunkAPI.getState();
-    const address = state.user.user.addr;
-    const strategy = state.user.user.strategy;
-    const queryCrewState = await getCrewMemberContract(address);
-    console.log('queryCrewState', queryCrewState);
-    if (queryCrewState.length > 0) {
-      const userSigner = await getUserSigner(strategy);
-      if (userSigner) {
+    const { user } = thunkAPI.getState() as RootState;
+    const address = user.user?.addr;
+    const strategy = user.user?.strategy;
+    if (address && strategy) {
+      const queryCrewState = await getCrewMemberContract(address);
+      console.log('queryCrewState', queryCrewState);
+      if (queryCrewState.length > 0) {
+        console.log('running here');
         try {
-          console.log('strategy and userSginer', strategy, userSigner);
-          await writeContract({
-            environment: 'mainnet' as const,
-            contractTxId: queryCrewState[0].node.id,
-            wallet: userSigner,
-            options: {
-              function: 'updateWatchlist',
-              ticker: coin,
-            },
-          });
+          const userSigner = await getUserSigner(strategy);
+          await updateWatchList(userSigner, queryCrewState[0].node.id, coin);
         } catch (error) {
           console.log('error', error);
-          console.log('==transaction not yet finalised==');
         }
+      } else {
+        deploy(coin, address, strategy);
       }
-    } else {
-      deploy(coin, address, strategy);
     }
   }
 );
