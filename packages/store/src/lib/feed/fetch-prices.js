@@ -9,7 +9,6 @@ export async function fetchRedstonePrices(input = {}) {
 
   try {
     const response = await fetchData(url);
-    console.log('response', response);
     if (!response.ok) {
       return null;
     }

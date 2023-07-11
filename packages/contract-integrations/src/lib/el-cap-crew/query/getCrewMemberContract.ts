@@ -1,9 +1,7 @@
-import { getActiveWalletAddress } from '../read';
-
-export async function getCrewMemberContract() {
+export async function getCrewMemberContract(address: string) {
   const query = `
   {
-    transactions(first: 30, tags: [{name: "El-Cap-Version", values: ["MVP-21"]}], owners:["${await getActiveWalletAddress()}"]) {
+    transactions(first: 30, tags: [{name: "El-Cap-Version", values: ["MVP-22"]}], owners:["${address}"]) {
       edges {
         node {
           id

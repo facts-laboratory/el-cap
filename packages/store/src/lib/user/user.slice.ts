@@ -11,6 +11,7 @@ import { Othent } from 'othent';
 import { User } from '@el-cap/interfaces';
 import { ArConnect } from 'arweavekit/auth';
 import Account, { ArAccount } from 'arweave-account';
+import { useConnection, useActiveAddress } from 'arweave-wallet-kit';
 
 const account = new Account();
 
@@ -30,38 +31,21 @@ export const userAdapter = createEntityAdapter<User>();
 
 export const setUser = createAsyncThunk(
   'user/fetchStatus',
-  async (_, thunkAPI) => {
-    console.log('setting user');
-    await ArConnect.connect({
-      permissions: ['SIGN_TRANSACTION', 'ACCESS_ADDRESS'],
-      appInfo: { name: 'El Capitan' },
-    });
-    const address = await ArConnect.getActiveAddress();
-
+  async (input: { address: string; strategy: string }, thunkAPI) => {
+    const { address, strategy } = input;
     const user = await account.get(address);
-    console.log('address', address, 'user', user);
-    // const othent = await Othent({
-    //   API_ID: '2384f84424a36b36ede2873be3e0c7e9',
-    // });
-    // const user = await othent.logIn();
-    // console.log('user in slice', user);
-    return [user];
+
+    const userWithStrategy = { ...user, strategy };
+
+    return [userWithStrategy];
   }
 );
 
 export const unsetUser = createAsyncThunk(
   'user/unsetUser',
   async (_, thunkAPI) => {
-    console.log('logging out');
-    const disconnected = await ArConnect.disconnect();
-    console.log('disconnected', disconnected);
+    console.log('unsetting user thunk');
     return [];
-    // const othent = await Othent({
-    //   API_ID: '2384f84424a36b36ede2873be3e0c7e9',
-    // });
-    // const logout = await othent.logOut();
-    // console.log('user in slice', logout);
-    // return [logout];
   }
 );
 

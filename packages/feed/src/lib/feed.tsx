@@ -67,7 +67,6 @@ export function Feed(props: FeedProps) {
     setSortKey(key);
 
     if (loadingStatus !== 'loaded' && loadingStatus !== 'loading') {
-      console.log('running feed');
       fetchFeedRef.current(key);
     }
   }, [loadingStatus, path, sortKey, user]);
@@ -111,7 +110,6 @@ export function Feed(props: FeedProps) {
     // TODO after we have top coins in slice add getTopCoins to dependency and !== 'loaded' for getTopCoins
 
     if (entities.length > 0) {
-      console.log('loading extra data in feed');
       getTopCoins();
     }
   }, [entities]);

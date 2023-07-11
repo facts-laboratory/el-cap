@@ -1,12 +1,10 @@
 import { WarpFactory } from 'warp-contracts';
-import {
-  DeployPlugin,
-  InjectedArweaveSigner,
-} from 'warp-contracts-plugin-deploy';
+import { DeployPlugin } from 'warp-contracts-plugin-deploy';
 import { stateFromFile } from './initial-state';
 import { EL_CAP_CREW_SRC } from './constants';
+import { getUserSigner } from './write';
 
-export async function deploy(coin: string) {
+export async function deploy(coin: string, address: string, strategy: string) {
   const warp = WarpFactory.forMainnet().use(new DeployPlugin());
 
   await window.arweaveWallet.connect([
@@ -20,20 +18,20 @@ export async function deploy(coin: string) {
     ...stateFromFile,
 
     ...{
-      owner: await window.arweaveWallet.getActiveAddress(),
+      owner: address,
       watchlist: [coin],
     },
   };
 
-  const userSigner = new InjectedArweaveSigner(window.arweaveWallet);
-  await userSigner.setPublicKey();
+  const userSigner = await getUserSigner(strategy);
 
+  console.log('usersigner', userSigner);
   const deployFromSourceTx = async () => {
     return await warp.deployFromSourceTx({
       initState: JSON.stringify({ ...initialState }),
       srcTxId: EL_CAP_CREW_SRC,
       wallet: userSigner,
-      tags: [{ name: 'El-Cap-Version', value: 'MVP-21' }],
+      tags: [{ name: 'El-Cap-Version', value: 'MVP-22' }],
     });
   };
 

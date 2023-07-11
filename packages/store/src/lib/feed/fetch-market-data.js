@@ -6,7 +6,6 @@ export async function fetchMarketData() {
   try {
     const response = await fetchData(url);
     const data = await response.json();
-    console.log('data', data);
     return data.data;
   } catch (error) {
     console.log(error);

@@ -11,6 +11,7 @@ import { writeContract } from 'arweavekit/contract';
 import {
   deploy,
   getCrewMemberContract,
+  getUserSigner,
   readState,
 } from '@el-cap/contract-integrations';
 import { getMarketData } from '../feed/el-cap-kit.js';
@@ -49,7 +50,6 @@ export const fetchMarketData = createAsyncThunk(
   async (_, thunkAPI) => {
     const data = await getMarketData();
     const marketData = extractMarketData(data);
-    console.log('marketData', marketData);
     return marketData;
   }
 );
@@ -57,28 +57,32 @@ export const fetchMarketData = createAsyncThunk(
 export const addToWatchlist = createAsyncThunk(
   'contracts/addToWatchlist',
   async (coin: string, thunkAPI) => {
-    console.log('==addToWatchlist==');
-    const queryCrewState = await getCrewMemberContract();
+    const state = thunkAPI.getState();
+    const address = state.user.user.addr;
+    const strategy = state.user.user.strategy;
+    const queryCrewState = await getCrewMemberContract(address);
+    console.log('queryCrewState', queryCrewState);
     if (queryCrewState.length > 0) {
-      console.log('queryCrewState', queryCrewState[0]);
-
-      try {
-        const state = (await readState(queryCrewState[0].node.id)) as State;
-        console.log('state in addToWatchlist', state);
-        await writeContract({
-          environment: 'mainnet' as const,
-          contractTxId: queryCrewState[0].node.id,
-          wallet: 'use_wallet' as const,
-          options: {
-            function: 'updateWatchlist',
-            ticker: coin,
-          },
-        });
-      } catch (error) {
-        console.log('==transaction not yet finalised==');
+      const userSigner = await getUserSigner(strategy);
+      if (userSigner) {
+        try {
+          console.log('strategy and userSginer', strategy, userSigner);
+          await writeContract({
+            environment: 'mainnet' as const,
+            contractTxId: queryCrewState[0].node.id,
+            wallet: userSigner,
+            options: {
+              function: 'updateWatchlist',
+              ticker: coin,
+            },
+          });
+        } catch (error) {
+          console.log('error', error);
+          console.log('==transaction not yet finalised==');
+        }
       }
     } else {
-      deploy(coin);
+      deploy(coin, address, strategy);
     }
   }
 );
