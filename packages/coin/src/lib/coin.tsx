@@ -26,6 +26,7 @@ import CoinAttributeLinkButton from '../assets/component/CoinAttributeLinkButton
 import ToggleComponent from '../assets/component/ToggleComponent';
 import { ArAccount } from 'arweave-account';
 import { checkCoinsOnWatchlist } from '@el-cap/utilities';
+import CoinContent from './components/CoinContent';
 
 interface CoinProps {
   goToFeed: () => void;
@@ -120,6 +121,82 @@ const coinAttributeButtonData = [
     title: 'Whitepaper',
     url: 'bitcoin.org',
     type: 'link',
+  },
+];
+
+const coinContent = [
+  {
+    title: 'CSPR Price Live Data',
+    content: (
+      <p>
+        The live Casper price today is $0.039212 USD with a 24-hour trading
+        volume of $2,183,202 USD. We update our CSPR to USD price in real-time.
+        Casper is down 1.35% in the last 24 hours. The current CoinMarketCap
+        ranking is #90, with a live market cap of $437,103,546 USD. It has a
+        circulating supply of 11,147,256,030 CSPR coins and the max. supply is
+        not available.
+        <div className="my-2"></div>
+        If you would like to know where to buy Casper at the current rate, the
+        top cryptocurrency exchanges for trading in Casper stock are currently{' '}
+        <span className="text-blue-700">OKX, Bitrue, Bitget, BingX</span>, and
+        <span className="text-blue-700">BitMart</span>. You can find others
+        listed on our{' '}
+        <span className="text-blue-700">crypto exchanges page</span>.
+      </p>
+    ),
+  },
+  {
+    title: 'What Is Casper (CSPR)?',
+    content: (
+      <p>
+        Launched on mainnet on March 30, 2021, Casper is the first live
+        proof-of-stake (PoS) blockchain built off the Casper CBC specification.
+        The Casper platform is designed to boost the adoption of{' '}
+        <span className="text-blue-700">blockchain technology</span>, smart
+        contracts, and DApps on a global scale.
+        <div className="my-2"></div>
+        With its future-proof architecture, Casper is designed to ensure the
+        platform is continually developed according to the evolving needs of its
+        users, and that it's maximally accessible to developers of all
+        backgrounds. As per the official whitepaper, Casper is optimized to suit
+        both enterprise and developer needs. Casper's mission is to usher in a
+        new era for Web3, as demand for intuitive, interconnected services
+        continues to grow across the board. Casper does so by solving the
+        adoption trilemma: offering enterprise-grade security, scalability and
+        decentralization all within the same blockchain protocol.
+      </p>
+    ),
+  },
+  {
+    title: 'Who Are the Founders of Casper?',
+    content: (
+      <p>
+        ### Medha Parlikar, Co-Founder and CTO
+        <div className="my-2"></div>Medha is one of the co-founders of
+        CasperLabs and serves as its CTO. She started working with technology in
+        the early 80's, building computers in her basement. Since then, she has
+        spent the past two decades delivering production SaaS software for major
+        corporations such as Adobe, Omniture, and Avalara. In addition to her
+        technical proficiencies, Medha's strengths include building high
+        functioning technical teams and inspiring them to deliver solutions that
+        solve customer problems.
+      </p>
+    ),
+  },
+  {
+    title: 'Mrinal Manohar, Co-Founder and CEO',
+    content: (
+      <p>
+        Mrinal has an extensive career as both a computer programmer and a
+        finance professional. Before founding Casper, Mrinal was a Principal and
+        the Technology/Media/Telecom Sector Head at Sagard Capital, a Private
+        Equity Associate at Bain Capital, and an Associate Consultant at Bain &
+        Company. In addition to his professional contributions to the blockchain
+        industry, Mrinal has been personally investing in the sector since 2012
+        as a seed investor in Ethereum, Blockstack, Basis, Maker, Filecoin, and
+        more.
+      </p>
+    ),
   },
 ];
 
@@ -424,6 +501,11 @@ export function Coin(props: CoinProps) {
             error={null}
           />
         )}
+      </div>
+      <div className="my-8">
+        {coinContent.map((val, key) => (
+          <CoinContent key={key} title={val.title} content={val.content} />
+        ))}
       </div>
     </div>
   );
