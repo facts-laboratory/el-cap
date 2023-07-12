@@ -9,8 +9,8 @@ export async function getUserSigner(strategy: string) {
     if (strategy === 'arconnect') {
       userSigner = new InjectedArweaveSigner(window.arweaveWallet);
       console.log('userSigner', userSigner);
-      await userSigner.setPublicKey();
     } else if (strategy === 'webwallet') {
+      console.log('using webwallet strategy', strategy);
       const wallet = new ArweaveWebWallet({
         name: 'El Capitan',
       });
@@ -19,6 +19,7 @@ export async function getUserSigner(strategy: string) {
 
       userSigner = new InjectedArweaveSigner(wallet);
     }
+    await userSigner.setPublicKey();
   } catch (error) {
     console.log(error);
   }

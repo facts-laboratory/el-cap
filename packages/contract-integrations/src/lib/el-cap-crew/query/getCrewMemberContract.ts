@@ -1,7 +1,7 @@
 export async function getCrewMemberContract(address: string) {
   const query = `
   {
-    transactions(first: 30, tags: [{name: "El-Cap-Version", values: ["TST-1"]}], owners:["${address}"]) {
+    transactions(first: 30, tags: [{name: "El-Cap-Version", values: ["TST-3"]}], owners:["${address}"]) {
       edges {
         node {
           id

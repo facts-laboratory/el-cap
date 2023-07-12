@@ -31,7 +31,7 @@ export async function deploy(coin: string, address: string, strategy: string) {
       initState: JSON.stringify({ ...initialState }),
       srcTxId: EL_CAP_CREW_SRC,
       wallet: userSigner,
-      tags: [{ name: 'El-Cap-Version', value: 'TST-1' }],
+      tags: [{ name: 'El-Cap-Version', value: 'TST-3' }],
     });
   };
 
