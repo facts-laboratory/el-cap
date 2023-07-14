@@ -1,10 +1,9 @@
 import { memo, useEffect, useState } from 'react';
-import styles from './token-table.module.css';
-import BitcoinSVG from '../assets/svg/bitcoin.svg';
 import { WatchlistIcon } from '../assets/icons';
 import { LoadingStatus, ProcessedTokenData } from '@el-cap/interfaces';
 import { ArAccount } from 'arweave-account';
 import { TokenTableSkeleton } from '@el-cap/skeleton';
+import SparklineChart from './component/SparklineChart';
 
 /* eslint-disable-next-line */
 export interface TokenTableProps {
@@ -164,7 +163,7 @@ export const TokenTable = memo((props: TokenTableProps) => {
                     </th>
                     <td className="px-6 py-4">{key + 1}</td>
                     <td
-                      className="px-6 py-4 flex items-center my-4 cursor-pointer"
+                      className="px-6 flex items-center cursor-pointer h-24"
                       onClick={() => goToCoin(entity.coin, entity)}
                     >
                       <img
@@ -209,17 +208,12 @@ export const TokenTable = memo((props: TokenTableProps) => {
                     <td className="px-6 py-4">
                       {entity.circulatingSupply.toLocaleString()}
                     </td>
-                    <td className="px-6 py-4 cursor-pointer">
-                      <img
-                        className="text-teal-400"
-                        style={{
-                          filter:
-                            'hue-rotate(85deg) saturate(80%) brightness(0.85)',
-                        }}
-                        src={
-                          'https://s3.coinmarketcap.com/generated/sparklines/web/7d/2781/1.svg'
-                        }
-                        alt=""
+                    <td
+                      className="cursor-pointer"
+                      onClick={() => goToCoin(entity.coin, entity)}
+                    >
+                      <SparklineChart
+                        data={[10, 41, 20, 51, 49, 100, 190, 200, 240, 300]}
                       />
                     </td>
                   </tr>

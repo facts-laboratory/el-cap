@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
-
 import { connect } from 'react-redux';
 
 import { RootState, mapStateToProps } from '@el-cap/store';
