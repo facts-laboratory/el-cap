@@ -208,7 +208,10 @@ export const TokenTable = memo((props: TokenTableProps) => {
                     <td className="px-6 py-4">
                       {entity.circulatingSupply.toLocaleString()}
                     </td>
-                    <td className="cursor-pointer">
+                    <td
+                      className="cursor-pointer"
+                      onClick={() => goToCoin(entity.coin, entity)}
+                    >
                       <SparklineChart
                         data={[10, 41, 20, 51, 49, 100, 190, 200, 240, 300]}
                       />
