@@ -11,13 +11,7 @@ import {
 import SearchInput from './searchInput';
 import DropDownMenu from '../components/dropDownMenu';
 import { ProcessedTokenData } from '@el-cap/interfaces';
-
-type DropDownOption = {
-  value: string;
-  label: string;
-  destination: string;
-  image: string;
-};
+import { useConnection } from 'arweave-wallet-kit';
 
 type SearchCoin = {
   name: string;
@@ -42,6 +36,15 @@ export interface SearchBarProps {
 const SearchBar = (props: SearchBarProps) => {
   const [menuStatus, setMenuStatus] = useState<boolean>(true);
   const { goToFeed, coins, goToCoin } = props;
+  const [openPanel, setOpenPanel] = useState(null);
+
+  const togglePanel = (panel) => {
+    if (openPanel === panel) {
+      setOpenPanel(null);
+    } else {
+      setOpenPanel(panel);
+    }
+  };
 
   const groupedOptionsCommunity = [
     {
@@ -190,6 +193,15 @@ const SearchBar = (props: SearchBarProps) => {
   const [searchResults, setSearchResults] = useState<SearchCoin[]>([]);
   const [error, setError] = useState<string | null>(null);
 
+  const { disconnect } = useConnection();
+  const { connected, connect } = useConnection();
+
+  const handleLogin = async () => {
+    if (!connected) {
+      connect();
+    }
+  };
+
   const fetchTrending = async () => {
     setLoadingStatus(LoadingStatus.LOADING);
 
@@ -276,16 +288,16 @@ const SearchBar = (props: SearchBarProps) => {
   }, []);
 
   return (
-    <div className="flex items-center justify-between py-2 px-10 border-b-2 h-16 flex-row-reverse md:flex-row">
-      <div className="hidden md:block">
+    <div className="flex items-center justify-between py-2 sm:px-10 px-4 border-b-2 h-16 md:flex-row">
+      <div className="hidden lg:block">
         <div className="flex text-2xl items-center">
           <div
             onClick={() => goToFeed()}
-            className="flex text-2xl items-center"
+            className="flex text-2xl items-center whitespace-nowrap"
           >
             <CapitionIcon className="mr-2 w-10 h-10" />
             <span className="font-bold mr-10 hover:text-blue-500 hover:cursor-pointer">
-              El Capitan
+              El Caption
             </span>
           </div>
 
@@ -301,45 +313,44 @@ const SearchBar = (props: SearchBarProps) => {
             goToFeed={goToFeed}
           />
 
-          <span className="font-bold mr-10 hover:text-blue-500 hover:cursor-pointer">
-            FAQ
-          </span>
+          <DropDownMenu label="FAQ" groupedOptions={[]} goToFeed={goToFeed} />
         </div>
       </div>
-      <div>
-        <SearchInput
-          fetchTrending={fetchTrending}
-          trending={trending}
-          fetchSearch={fetchSearch}
-          loadingStatus={loadingStatus}
-          searchResults={searchResults}
-          error={error}
-          goToCoin={(ticker: string) => goToCoin(ticker)}
-        />
-      </div>
-      <div className="block xl:hidden">
+
+      <div className="block lg:hidden">
         <button className="p-2" onClick={() => setMenuStatus(!menuStatus)}>
           <MenuIcon className="font-black" width={26} height={26} />
         </button>
       </div>
+
+      <SearchInput
+        fetchTrending={fetchTrending}
+        trending={trending}
+        fetchSearch={fetchSearch}
+        loadingStatus={loadingStatus}
+        searchResults={searchResults}
+        error={error}
+        goToCoin={(ticker: string) => goToCoin(ticker)}
+      />
+
       {/* responsive sidebar start */}
       <div
         className={`transform w-full z-40 h-full absolute bg-gray-100 top-0 left-0 shadow flex-col transition duration-150 ease-in-out ${
           menuStatus ? '-translate-x-full' : ''
         }`}
       >
-        <div className="bg-white">
-          <button className="p-2" onClick={() => setMenuStatus(!menuStatus)}>
-            <CloseIcon className="font-black" width={26} height={26} />
-          </button>
-        </div>
-        <div className="text-xl px-4 py-2">
-          <div className="flex border-b-2 border-gray-600 py-2 px-1">
+        <div className="bg-white flex justify-between py-2 px-4 shadow-sm">
+          <div className="flex items-center">
             <CapitionIcon className="mr-2 w-8 h-8" />
             <span className="font-bold mr-10 hover:text-blue-500 hover:cursor-pointer">
               El Capitan
             </span>
           </div>
+          <button className="p-2" onClick={() => setMenuStatus(!menuStatus)}>
+            <CloseIcon className="font-black" width={26} height={26} />
+          </button>
+        </div>
+        <div className="px-4 py-2">
           <div className="border-b-2 border-gray-600 py-2 px-1">
             <span className="font-bold mr-10 hover:text-blue-500 hover:cursor-pointer">
               Cryptocurrencies
@@ -347,12 +358,12 @@ const SearchBar = (props: SearchBarProps) => {
           </div>
           <div className="border-b-2 border-gray-600 py-2 px-1">
             <span className="font-bold mr-10 hover:text-blue-500 hover:cursor-pointer">
-              FAQ
+              Community
             </span>
           </div>
           <div className="border-b-2 border-gray-600 py-2 px-1">
             <span className="font-bold mr-10 hover:text-blue-500 hover:cursor-pointer">
-              Community
+              FAQ
             </span>
           </div>
           <div className="border-b-2 border-gray-600 py-2 px-1">
@@ -367,9 +378,15 @@ const SearchBar = (props: SearchBarProps) => {
               Portfolio
             </span>
           </div>
+
           <div className="py-1 px-1 mt-2">
-            <button className="bg-gray-300 w-full hover:bg-gray-400 text-black font-bold py-2 px-4 flex justify-center items-center rounded-full">
-              <WalletIcon className="mr-2" width={24} height={24} />
+            <button
+              onClick={() => {
+                handleLogin();
+              }}
+              className="bg-gray-300 w-full hover:bg-gray-400 text-black font-bold py-2 px-4 flex justify-center items-center rounded-full whitespace-nowrap"
+            >
+              <WalletIcon className="mr-2" width={22} height={22} />
               <span>Connect Wallet</span>
             </button>
           </div>

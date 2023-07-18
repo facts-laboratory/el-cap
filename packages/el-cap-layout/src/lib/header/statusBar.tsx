@@ -63,7 +63,7 @@ const StatusBar = (props: StatusBarProps) => {
   }, [marketData]);
 
   return (
-    <div className="flex justify-between items-center py-2 px-10 border-b-2 h-16">
+    <div className="flex justify-between items-center py-2 sm:px-10 px-4 border-b-2 h-16">
       {marketData && (
         <div
           ref={marqueeRef}
@@ -110,18 +110,18 @@ const StatusBar = (props: StatusBarProps) => {
           />
         </div>
       )}
-      <div className="hidden xl:block">
+      <div className="hidden lg:block">
         <div className="flex items-center text-sm">
           <span
             onClick={goToWatchlist}
-            className="cursor-pointer font-bold mr-4 flex"
+            className="cursor-pointer font-bold mr-4 flex items-center hover:bg-gray-100 p-2 rounded-lg"
           >
             <WatchlistIcon className="mr-1" width={24} height={24} />
             Watchlist
           </span>
           <span
             onClick={() => alert('Coming Soon!')}
-            className="cursor-pointer font-bold mr-4 flex items-center"
+            className="cursor-pointer font-bold mr-4 flex items-center hover:bg-gray-100 p-2 rounded-lg"
           >
             <PortfolioIcon className="mr-1" width={24} height={24} />
             Portfolio
@@ -131,9 +131,9 @@ const StatusBar = (props: StatusBarProps) => {
               onClick={() => {
                 handleLogin();
               }}
-              className="bg-gray-300 hover:bg-gray-400 text-black font-bold py-2 px-4 inline-flex items-center rounded-full"
+              className="bg-gray-300 hover:bg-gray-400 text-black font-bold py-2 px-4 inline-flex items-center rounded-full whitespace-nowrap"
             >
-              <WalletIcon className="mr-2" width={24} height={24} />
+              <WalletIcon className="mr-2" width={22} height={22} />
               <span>Connect Wallet</span>
             </button>
           ) : (

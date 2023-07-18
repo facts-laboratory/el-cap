@@ -128,7 +128,7 @@ export function Feed(props: FeedProps) {
                 <span className="text-green-500 font-bold">$1.18T,</span>a
                 <span className="text-green-500 font-bold">+1.38%</span>{' '}
                 increase over the last day.{' '}
-                <span className="text-gray-400">Read More</span>
+                <span className="text-gray-400 underline">Read More</span>
               </p>
             </div>
             {!sortKey && (
