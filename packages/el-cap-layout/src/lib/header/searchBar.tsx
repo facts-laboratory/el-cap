@@ -11,18 +11,7 @@ import {
 import SearchInput from './searchInput';
 import DropDownMenu from '../components/dropDownMenu';
 import { ProcessedTokenData } from '@el-cap/interfaces';
-import {
-  useActiveAddress,
-  useConnection,
-  useStrategy,
-} from 'arweave-wallet-kit';
-
-type DropDownOption = {
-  value: string;
-  label: string;
-  destination: string;
-  image: string;
-};
+import { useConnection } from 'arweave-wallet-kit';
 
 type SearchCoin = {
   name: string;
@@ -47,6 +36,15 @@ export interface SearchBarProps {
 const SearchBar = (props: SearchBarProps) => {
   const [menuStatus, setMenuStatus] = useState<boolean>(true);
   const { goToFeed, coins, goToCoin } = props;
+  const [openPanel, setOpenPanel] = useState(null);
+
+  const togglePanel = (panel) => {
+    if (openPanel === panel) {
+      setOpenPanel(null);
+    } else {
+      setOpenPanel(panel);
+    }
+  };
 
   const groupedOptionsCommunity = [
     {
@@ -341,7 +339,7 @@ const SearchBar = (props: SearchBarProps) => {
           menuStatus ? '-translate-x-full' : ''
         }`}
       >
-        <div className="bg-white flex justify-between py-2 px-4">
+        <div className="bg-white flex justify-between py-2 px-4 shadow-sm">
           <div className="flex items-center">
             <CapitionIcon className="mr-2 w-8 h-8" />
             <span className="font-bold mr-10 hover:text-blue-500 hover:cursor-pointer">
